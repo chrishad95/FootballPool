@@ -3,7 +3,7 @@ Imports System.Collections
 Imports System.Collections.Generic
 Imports System.ComponentModel
 Imports System.Data
-Imports System.Data.odbc
+Imports System.Data.SQLClient
 Imports System.Drawing
 Imports System.Drawing.Drawing2D
 Imports System.Web
@@ -26,34 +26,34 @@ Namespace Rasputin
 
 		private myconnstring as string = System.Configuration.ConfigurationSettings.AppSettings("connString")
 
-		private con as odbcconnection
+		private con as SQLConnection
 
 		Public sub MakeSystemLog (log_title as string, log_text as string)
 		
 			dim sql as string
-			dim cmd as odbccommand
-			dim con as odbcconnection
-			dim parm1 as odbcparameter
+			dim cmd as SQLCommand
+			dim con as SQLConnection
+			dim parm1 as SQLParameter
 			
 			sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
 			
 			dim connstring as string
 			connstring = myconnstring
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 		
-			parm1 = new odbcparameter("username", odbctype.varchar, 50)
+			parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
 			parm1.value = "chadley"
 			cmd.parameters.add(parm1)
-			parm1 = new odbcparameter("journal_type", odbctype.varchar, 20)
+			parm1 = new SQLParameter("journal_type", SQLDbType.varchar, 20)
 			parm1.value = "SYSTEM"
 			cmd.parameters.add(parm1)
-			parm1 = new odbcparameter("entry_title", odbctype.varchar, 200)
+			parm1 = new SQLParameter("entry_title", SQLDbType.varchar, 200)
 			parm1.value = log_title & " - " & system.datetime.now
 			cmd.parameters.add(parm1)
-			parm1 = new odbcparameter("entry_text", odbctype.text, 32700)
+			parm1 = new SQLParameter("entry_text", SQLDbType.text, 32700)
 			parm1.value = log_text
 			cmd.parameters.add(parm1)
 			
@@ -68,24 +68,24 @@ Namespace Rasputin
 			try
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim dr as odbcdatareader
-				dim oda as odbcdataadapter
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim dr as SQLDataReader
+				dim oda as SQLDataAdapter
+				dim parm1 as SQLParameter
 				
 				dim ds as dataset
 				dim drow as datarow
 				dim dt as datatable
 				
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 
 				sql = "select  * from pool.comments where ref_id is null and pool_id in (select pool_id from pool.players where username=?)  order by comment_tsp DESC"
-				cmd = new odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = username
 
-				oda = new odbcdataadapter()
+				oda = new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 			catch ex as exception
@@ -101,26 +101,26 @@ Namespace Rasputin
 			try
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim dr as odbcdatareader
-				dim oda as odbcdataadapter
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim dr as SQLDataReader
+				dim oda as SQLDataAdapter
+				dim parm1 as SQLParameter
 				
 				dim ds as dataset
 				dim drow as datarow
 				dim dt as datatable
 				
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 
 				sql = "select  * from pool.comments where ref_id is null and pool_id=? and pool_id in (select pool_id from pool.players where username=?) order by comment_tsp DESC"
-				cmd = new odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = username
 				
-				oda = new odbcdataadapter()
+				oda = new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -134,19 +134,19 @@ Namespace Rasputin
 		public function CreatePOOL(POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String) as string
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "insert into POOL.POOLS(POOL_OWNER, POOL_NAME, POOL_DESC, POOL_TSP, ELIGIBILITY, POOL_LOGO, POOL_BANNER) values (?, ?, ?, ?, ?, ?, ?)"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_OWNER", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@POOL_NAME", odbctype.VARCHAR, 100))
-				cmd.parameters.add(new odbcparameter("@POOL_DESC", odbctype.VARCHAR, 500))
-				cmd.parameters.add(new odbcparameter("@POOL_TSP", odbctype.datetime))
-				cmd.parameters.add(new odbcparameter("@ELIGIBILITY", odbctype.VARCHAR, 10))
-				cmd.parameters.add(new odbcparameter("@POOL_LOGO", odbctype.VARCHAR, 255))
-				cmd.parameters.add(new odbcparameter("@POOL_BANNER", odbctype.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_OWNER", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@POOL_NAME", SQLDbType.VARCHAR, 100))
+				cmd.parameters.add(new SQLParameter("@POOL_DESC", SQLDbType.VARCHAR, 500))
+				cmd.parameters.add(new SQLParameter("@POOL_TSP", SQLDbType.datetime))
+				cmd.parameters.add(new SQLParameter("@ELIGIBILITY", SQLDbType.VARCHAR, 10))
+				cmd.parameters.add(new SQLParameter("@POOL_LOGO", SQLDbType.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_BANNER", SQLDbType.VARCHAR, 255))
 				cmd.parameters("@POOL_OWNER").value = POOL_OWNER
 				cmd.parameters("@POOL_NAME").value = POOL_NAME
 				cmd.parameters("@POOL_DESC").value = POOL_DESC
@@ -169,21 +169,21 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.rss_feeds"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -201,25 +201,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.pools where pool_owner=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -237,25 +237,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.pools where pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -273,24 +273,24 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "update pool.comments set views=views + 1 where pool_id=? and comment_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
-				cmd.Parameters.Add(New OdbcParameter("@comment_id", odbctype.Int))
+				cmd.Parameters.Add(New SQLParameter("@comment_id", SQLDbType.Int))
 				cmd.Parameters("@comment_id").value = comment_id
 				
 				Dim rowsupdated As Integer = 0
@@ -314,27 +314,27 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.comments where pool_id=? and comment_id=?"
 				
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
-				cmd.Parameters.Add(New OdbcParameter("@comment_id", odbctype.Int))
+				cmd.Parameters.Add(New SQLParameter("@comment_id", SQLDbType.Int))
 				cmd.Parameters("@comment_id").value = comment_id
 				
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -416,29 +416,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.game_id=? and sched.pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@game_id", odbctype.int)
+				parm1 = new SQLParameter("@game_id", SQLDbType.int)
 				parm1.value = game_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -455,29 +455,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by sched.game_tsp"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -496,29 +496,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from football.teams where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by team_name"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -536,29 +536,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.invites where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by email"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -576,27 +576,27 @@ Namespace Rasputin
 			try
 			
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.players a full outer join admin.users b " _
 				& " on a.username=b.username where a.pool_id=? and a.player_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new odbcparameter("@pool_id", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 				cmd.parameters("@pool_id").value = pool_id
-				cmd.parameters.add(new odbcparameter("@player_id", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@player_id", SQLDbType.int))
 				cmd.parameters("@player_id").value = player_id
 				
-				Dim oda As New odbcdataadapter()
+				Dim oda As New SQLDataAdapter()
 				Dim player_ds As New DataSet()
 				
 				oda.selectcommand = cmd
@@ -612,18 +612,18 @@ Namespace Rasputin
 					sql = "insert into football.fastkeys (username,pool_id,week_id,fastkey) " _
 					& " values (?,?,?,?)"
 					
-					cmd = new odbccommand(sql,con)
+					cmd = new SQLCommand(sql,con)
 
-					cmd.parameters.add(new odbcparameter("@username", odbctype.varchar, 30))
+					cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 30))
 					cmd.parameters("@username").value = username
 					
-					cmd.parameters.add(new odbcparameter("@pool_id", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 					cmd.parameters("@pool_id").value = pool_id
 					
-					cmd.parameters.add(new odbcparameter("@week_id", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
 					cmd.parameters("@week_id").value = week_id					
 
-					cmd.parameters.add(new odbcparameter("@fastkey", odbctype.varchar, 30))
+					cmd.parameters.add(new SQLParameter("@fastkey", SQLDbType.varchar, 30))
 					cmd.parameters("@fastkey").value = fastkey
 					Dim rowsaffected As Integer = 0
 					
@@ -710,25 +710,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.players where pool_id=? order by username"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -762,26 +762,26 @@ Namespace Rasputin
 			
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.options where pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
 				dim ds as new DataSet()
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(ds)
 			
@@ -814,25 +814,25 @@ Namespace Rasputin
 			Dim res as String = ""
 			try
 
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 
-				Dim cmd as odbccommand
+				Dim cmd as SQLCommand
 				Dim sql as String
 
 				sql = "select a.game_id, b.away_score, b.home_score, c.team_id as away_id, d.team_id as home_id from football.sched a full outer join football.scores b on a.pool_id=b.pool_id and a.game_id=b.game_id full outer join football.teams c on a.pool_id=c.pool_id and a.away_id=c.team_id full outer join football.teams d on a.pool_id=d.pool_id and a.home_id=d.team_id where a.pool_id=? and (d.team_id=? or c.team_id=?)"
 
-				cmd = new odbccommand(sql, con)
+				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add("pool_id", odbctype.int)
-				cmd.parameters.add("team_id1", odbctype.int)
-				cmd.parameters.add("team_id2", odbctype.int)
+				cmd.parameters.add("pool_id", SQLDbType.int)
+				cmd.parameters.add("team_id1", SQLDbType.int)
+				cmd.parameters.add("team_id2", SQLDbType.int)
 
 				cmd.parameters("pool_id").value = pool_id
 				cmd.parameters("team_id1").value = team_id
 				cmd.parameters("team_id2").value = team_id
 	
-				Dim oda as new odbcdataadapter()
+				Dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				Dim ds as new dataset()
 				oda.fill(ds)
@@ -882,22 +882,22 @@ Namespace Rasputin
 		Public function UpdatePool(POOL_ID as INTEGER, POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String, scorer as string) as string
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update POOL.POOLS set POOL_NAME=?, POOL_DESC=?, POOL_TSP=?, ELIGIBILITY=?, POOL_LOGO=?, POOL_BANNER=? , scorer=? where POOL_ID=? and pool_owner=?"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_NAME", odbctype.VARCHAR, 100))
-				cmd.parameters.add(new odbcparameter("@POOL_DESC", odbctype.VARCHAR, 3000))
-				cmd.parameters.add(new odbcparameter("@POOL_TSP", odbctype.datetime))
-				cmd.parameters.add(new odbcparameter("@ELIGIBILITY", odbctype.VARCHAR, 10))
-				cmd.parameters.add(new odbcparameter("@POOL_LOGO", odbctype.VARCHAR, 255))
-				cmd.parameters.add(new odbcparameter("@POOL_BANNER", odbctype.VARCHAR, 255))
-				cmd.parameters.add(new odbcparameter("scorer", odbctype.VARCHAR, 30))
+				cmd.parameters.add(new SQLParameter("@POOL_NAME", SQLDbType.VARCHAR, 100))
+				cmd.parameters.add(new SQLParameter("@POOL_DESC", SQLDbType.VARCHAR, 3000))
+				cmd.parameters.add(new SQLParameter("@POOL_TSP", SQLDbType.datetime))
+				cmd.parameters.add(new SQLParameter("@ELIGIBILITY", SQLDbType.VARCHAR, 10))
+				cmd.parameters.add(new SQLParameter("@POOL_LOGO", SQLDbType.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_BANNER", SQLDbType.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("scorer", SQLDbType.VARCHAR, 30))
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@POOL_OWNER", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@POOL_OWNER", SQLDbType.VARCHAR, 50))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@POOL_OWNER").value = POOL_OWNER
@@ -921,7 +921,7 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 
@@ -935,12 +935,12 @@ Namespace Rasputin
 					if temp_rows.length > 0 then
 
 						sql = "insert into FOOTBALL.TEAMS(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( ?, ?, ?, ?)"
-						dim cmd as odbccommand = new odbccommand(sql, cn)
+						dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-						cmd.parameters.add(new odbcparameter("@TEAM_NAME", odbctype.VARCHAR, 40))
-						cmd.parameters.add(new odbcparameter("@TEAM_SHORTNAME", odbctype.VARCHAR, 5))
-						cmd.parameters.add(new odbcparameter("@URL", odbctype.VARCHAR, 200))
-						cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+						cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
+						cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", SQLDbType.VARCHAR, 5))
+						cmd.parameters.add(new SQLParameter("@URL", SQLDbType.VARCHAR, 200))
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 						cmd.parameters("@TEAM_NAME").value = TEAM_NAME
 						cmd.parameters("@TEAM_SHORTNAME").value = TEAM_SHORTNAME
 						cmd.parameters("@URL").value = URL
@@ -1127,16 +1127,16 @@ Namespace Rasputin
 		Public function CreateInvite(POOL_ID as INTEGER, EMAIL as String, INVITE_KEY as String, INVITE_TSP as datetime) as string
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "insert into POOL.INVITES(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (?, ?, ?, ?)"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@EMAIL", odbctype.VARCHAR, 255))
-				cmd.parameters.add(new odbcparameter("@INVITE_KEY", odbctype.VARCHAR, 40))
-				cmd.parameters.add(new odbcparameter("@INVITE_TSP", odbctype.datetime))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@INVITE_KEY", SQLDbType.VARCHAR, 40))
+				cmd.parameters.add(new SQLParameter("@INVITE_TSP", SQLDbType.datetime))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@EMAIL").value = EMAIL
 				cmd.parameters("@INVITE_KEY").value = INVITE_KEY
@@ -1153,14 +1153,14 @@ Namespace Rasputin
 		Public function DeleteInvite(POOL_ID as INTEGER, EMAIL as String) as string
 			dim res as string = "FAILURE"
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "delete from POOL.INVITES where pool_id=? and email=?"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@EMAIL", odbctype.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@EMAIL").value = EMAIL
 
@@ -1177,7 +1177,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new odbcconnection()
+					dim cn as new SQLConnection()
 					cn.connectionstring = myconnstring
 					cn.open()
 					dim sql as string = ""
@@ -1186,14 +1186,14 @@ Namespace Rasputin
 
 					makesystemlog("debug", sql)
 
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 					dim rowsupdated as integer
 
-					cmd.parameters.add(new odbcparameter("@game_id", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int))
 					cmd.parameters("@game_id").value = game_id
 
 					dim game_ds as new dataset()
-					dim oda as new odbcdataadapter()
+					dim oda as new SQLDataAdapter()
 					oda.selectcommand = cmd
 					oda.fill(game_ds)
 					try
@@ -1212,11 +1212,11 @@ Namespace Rasputin
 						away_team_id = game_ds.tables(0).rows(0)("away_id")
 						week_id = 		game_ds.tables(0).rows(0)("week_id")
 						sql = "select * from football.teams where pool_id=? and team_name in (?,?)"
-						cmd = new odbccommand(sql, cn)
+						cmd = new SQLCommand(sql, cn)
 
-						cmd.parameters.add(new odbcparameter("@pool_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@away", odbctype.varchar))
-						cmd.parameters.add(new odbcparameter("@home", odbctype.varchar))
+						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@away", SQLDbType.varchar))
+						cmd.parameters.add(new SQLParameter("@home", SQLDbType.varchar))
 
 						cmd.parameters("@pool_id").value = pool_id
 						cmd.parameters("@home").value = home_teamname
@@ -1259,13 +1259,13 @@ Namespace Rasputin
 						end if
 
 						sql = "insert into football.sched (pool_id, week_id, home_id, away_id, game_tsp) values (?,?,?,?,?)"
-						cmd = new odbccommand(sql, cn)
+						cmd = new SQLCommand(sql, cn)
 
-						cmd.parameters.add(new odbcparameter("@pool_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@week_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@home_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@away_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@game_tsp", odbctype.datetime))
+						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@home_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@away_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@game_tsp", SQLDbType.datetime))
 
 						cmd.parameters("@pool_id").value = pool_id
 						cmd.parameters("@week_id").value = week_id
@@ -1304,7 +1304,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new odbcconnection()
+					dim cn as new SQLConnection()
 					cn.connectionstring = myconnstring
 					cn.open()
 					dim sql as string = ""
@@ -1312,10 +1312,10 @@ Namespace Rasputin
 					sql = "insert into football.teams (pool_id, team_name, team_shortname) select " & pool_id & ", team_name, team_shortname from pool.copy_teams where team_id=?"
 					makesystemlog("debug", sql)
 
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 					dim rowsupdated as integer
 
-					cmd.parameters.add(new odbcparameter("@TEAM_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
 					cmd.parameters("@TEAM_ID").value = TEAM_ID
 					rowsupdated = cmd.executenonquery()
 					cn.close()
@@ -1344,20 +1344,20 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new odbcconnection()
+					dim cn as new SQLConnection()
 					cn.connectionstring = myconnstring
 					cn.open()
 					dim sql as string = ""
 
 					sql = "update FOOTBALL.TEAMS set TEAM_NAME=?, TEAM_SHORTNAME=?, URL=? where POOL_ID=? and TEAM_ID=?"
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 					dim rowsupdated as integer
 
-					cmd.parameters.add(new odbcparameter("@TEAM_NAME", odbctype.VARCHAR, 40))
-					cmd.parameters.add(new odbcparameter("@TEAM_SHORTNAME", odbctype.VARCHAR, 5))
-					cmd.parameters.add(new odbcparameter("@URL", odbctype.VARCHAR, 200))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@TEAM_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
+					cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", SQLDbType.VARCHAR, 5))
+					cmd.parameters.add(new SQLParameter("@URL", SQLDbType.VARCHAR, 200))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
 					cmd.parameters("@TEAM_ID").value = TEAM_ID
 					cmd.parameters("@TEAM_NAME").value = TEAM_NAME
 					cmd.parameters("@TEAM_SHORTNAME").value = TEAM_SHORTNAME
@@ -1391,25 +1391,25 @@ Namespace Rasputin
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string
-					dim cmd as odbccommand
-					dim con as odbcconnection
-					dim parm1 as odbcparameter
+					dim cmd as SQLCommand
+					dim con as SQLConnection
+					dim parm1 as SQLParameter
 					
 					dim connstring as string
 					connstring = myconnstring
 					
-					con = new odbcconnection(connstring)
+					con = new SQLConnection(connstring)
 					con.open()
 
 					sql = "select * from pool.tiebreakers where pool_id=?"
 
-					cmd = new odbccommand(sql,con)
+					cmd = new SQLCommand(sql,con)
 
-					parm1 = new odbcparameter("@pool_id", odbctype.int)
+					parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 					parm1.value = pool_id
 					cmd.parameters.add(parm1)
 
-					dim oda as new odbcdataadapter()
+					dim oda as new SQLDataAdapter()
 					oda.selectcommand = cmd
 					oda.fill(res)
 				
@@ -1427,25 +1427,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select distinct week_id from football.sched where pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -1462,25 +1462,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select distinct username from pool.players a where a.pool_id in (select pool_id from pool.pools where pool_owner=?)"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar)
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -1498,25 +1498,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.players where pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -1531,7 +1531,7 @@ Namespace Rasputin
 		Public function AddGames(POOL_ID as INTEGER, pool_owner as string, games_text as string) as string
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 
@@ -1583,25 +1583,25 @@ Namespace Rasputin
 			dim res as string = "NO TEAM FOUND"
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 
 				dim sql as string = "select team_id from football.teams where (team_name=? or ucase(team_shortname)=?) and pool_id=?"
 
 
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
 
-				cmd.parameters.add(new odbcparameter("@TEAM_NAME", odbctype.VARCHAR, 40))
-				cmd.parameters.add(new odbcparameter("@TEAM_shortname", odbctype.VARCHAR))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
+				cmd.parameters.add(new SQLParameter("@TEAM_shortname", SQLDbType.VARCHAR))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 
 				cmd.parameters("@TEAM_NAME").value = TEAM_NAME
 				cmd.parameters("@TEAM_shortname").value = TEAM_NAME.toupper()
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				dim ds as new dataset()
 				oda.selectcommand = cmd
 				oda.fill(ds)
@@ -1624,7 +1624,7 @@ Namespace Rasputin
 		Public function CreateGame(WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 
@@ -1633,14 +1633,14 @@ Namespace Rasputin
 
 						dim sql as string = "insert into FOOTBALL.SCHED(WEEK_ID, HOME_ID, AWAY_ID, GAME_TSP, GAME_URL, POOL_ID) values (?, ?, ?, ?, ?, ?)"
 
-						dim cmd as odbccommand = new odbccommand(sql, cn)
+						dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-						cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@HOME_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@AWAY_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@GAME_TSP", odbctype.datetime))
-						cmd.parameters.add(new odbcparameter("@GAME_URL", odbctype.VARCHAR, 300))
-						cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+						cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@HOME_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@AWAY_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@GAME_TSP", SQLDbType.datetime))
+						cmd.parameters.add(new SQLParameter("@GAME_URL", SQLDbType.VARCHAR, 300))
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 						cmd.parameters("@WEEK_ID").value = WEEK_ID
 						cmd.parameters("@HOME_ID").value = HOME_ID
 						cmd.parameters("@AWAY_ID").value = AWAY_ID
@@ -1666,23 +1666,23 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string 
 
-				dim cmd as odbccommand 
+				dim cmd as SQLCommand 
 
 
 				sql = "insert into POOL.COMMENTS(POOL_ID, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, views) values (?, ?, ?, ?, ?, 0)"
 				
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TEXT", odbctype.text))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TSP", odbctype.datetime))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TITLE", odbctype.VARCHAR, 200))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TSP", SQLDbType.datetime))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
@@ -1705,24 +1705,24 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string 
 
-				dim cmd as odbccommand 
+				dim cmd as SQLCommand 
 
 
 				sql = "insert into POOL.COMMENTS(POOL_ID, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, ref_id, views) values (?, ?, ?, ?, ?, ?, 0)"
 				
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TEXT", odbctype.text))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TSP", odbctype.datetime))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TITLE", odbctype.VARCHAR, 200))
-				cmd.parameters.add(new odbcparameter("@ref_id", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TSP", SQLDbType.datetime))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
+				cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
@@ -1744,22 +1744,22 @@ Namespace Rasputin
 			
 			dim res as string = ""
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string 
 
-				dim cmd as odbccommand 
+				dim cmd as SQLCommand 
 
 
 				sql = "update POOL.COMMENTS set comment_title=?, comment_text=? where pool_id=? and comment_id=?"
 				
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@COMMENT_TITLE", odbctype.VARCHAR, 200))
-				cmd.parameters.add(new odbcparameter("@COMMENT_TEXT", odbctype.text))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@comment_id", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
+				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@comment_id", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
 				cmd.parameters("@COMMENT_TITLE").value = COMMENT_TITLE
@@ -1780,19 +1780,19 @@ Namespace Rasputin
 			dim res as string
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new odbcconnection()
+					dim cn as new SQLConnection()
 					cn.connectionstring = myconnstring
 					cn.open()
 					dim sql as string = "update FOOTBALL.SCHED set WEEK_ID=?, HOME_ID=?, AWAY_ID=?, GAME_TSP=?, GAME_URL=? where GAME_ID=? and pool_id=?"
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@HOME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@AWAY_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@GAME_TSP", odbctype.datetime))
-					cmd.parameters.add(new odbcparameter("@GAME_URL", odbctype.VARCHAR, 300))
-					cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@HOME_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@AWAY_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@GAME_TSP", SQLDbType.datetime))
+					cmd.parameters.add(new SQLParameter("@GAME_URL", SQLDbType.VARCHAR, 300))
+					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 					cmd.parameters("@GAME_ID").value = GAME_ID
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
 					cmd.parameters("@HOME_ID").value = HOME_ID
@@ -1818,25 +1818,25 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select count(*)  from pool.pools where scorer=? and pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@scorer", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@scorer", SQLDbType.varchar, 50)
 				parm1.value = username
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				dim pool_count as integer = 0
@@ -1858,25 +1858,25 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select count(*)  from pool.pools where pool_owner=? and pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				dim pool_count as integer = 0
@@ -1899,15 +1899,15 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update POOL.pools set feed_ID=? where pool_id=?"
 
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@FEED_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@FEED_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@FEED_ID").value = FEED_ID
 				
@@ -1933,16 +1933,16 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update POOL.options set optionvalue=? where pool_id=? and optionname=?"
 
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@OPTIONVALUE", odbctype.varchar, 255))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@OPTIONNAME", odbctype.varchar, 30))
+				cmd.parameters.add(new SQLParameter("@OPTIONVALUE", SQLDbType.varchar, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@OPTIONNAME", SQLDbType.varchar, 30))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@OPTIONVALUE").value = OPTIONVALUE
 				cmd.parameters("@OPTIONNAME").value = OPTIONNAME
@@ -1956,11 +1956,11 @@ Namespace Rasputin
 					sql = "insert into POOL.options (optionvalue, pool_id, optionname) values (?,?,?)"
 					
 	
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 	
-					cmd.parameters.add(new odbcparameter("@OPTIONVALUE", odbctype.varchar, 255))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@OPTIONNAME", odbctype.varchar, 30))
+					cmd.parameters.add(new SQLParameter("@OPTIONVALUE", SQLDbType.varchar, 255))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@OPTIONNAME", SQLDbType.varchar, 30))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@OPTIONVALUE").value = OPTIONVALUE
 					cmd.parameters("@OPTIONNAME").value = OPTIONNAME
@@ -1974,9 +1974,9 @@ Namespace Rasputin
 				if optionname = "AUTOHOMEPICKS" then
 					sql = "update pool.pools set updatescore_tsp = current timestamp where pool_id=?"
 
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 	
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					rowsaffected = cmd.executenonquery()
 
@@ -1996,26 +1996,26 @@ Namespace Rasputin
 			try
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				sql = "select * from pool.rss_feeds where feed_id=(select feed_id from pool.pools where pool_id=?)"
 
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 			
 
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				dim ds as new dataset()
 				oda.selectcommand = cmd
 				oda.fill(ds)
@@ -2078,17 +2078,17 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new odbcconnection()
+					dim cn as new SQLConnection()
 					cn.connectionstring = myconnstring
 					cn.open()
 					dim sql as string = "update POOL.TIEBREAKERS set GAME_ID=?, tb_tsp=? where pool_id=? and week_id=?"
 
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@TB_TSP", odbctype.datetime))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@TB_TSP", SQLDbType.datetime))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
 					cmd.parameters("@GAME_ID").value = GAME_ID
@@ -2100,12 +2100,12 @@ Namespace Rasputin
 					if rowsaffected = 0 then
 
 						sql = "insert into POOL.TIEBREAKERS(POOL_ID, WEEK_ID, GAME_ID, TB_TSP) values (?, ?, ?, ?)"
-						cmd = new odbccommand(sql, cn)
+						cmd = new SQLCommand(sql, cn)
 
-						cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@TB_TSP", odbctype.datetime))
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@TB_TSP", SQLDbType.datetime))
 						cmd.parameters("@POOL_ID").value = POOL_ID
 						cmd.parameters("@WEEK_ID").value = WEEK_ID
 						cmd.parameters("@GAME_ID").value = GAME_ID
@@ -2134,24 +2134,24 @@ Namespace Rasputin
 
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select count(*) from football.fastkeys where username=? and week_id=? and fastkey=? and pool_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 30))
-				cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@FASTKEY", odbctype.CHAR, 30))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
+				cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@FASTKEY", SQLDbType.CHAR, 30))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@USERNAME").value = player_name
 				cmd.parameters("@WEEK_ID").value = WEEK_ID
 				cmd.parameters("@FASTKEY").value = FASTKEY
@@ -2180,14 +2180,14 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "select username from admin.users where ucase(email)=?"
 
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = email.toupper()
 
 				res = cmd.executescalar()
@@ -2206,14 +2206,14 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "select email from admin.users where username=?"
 
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
 
 				res = cmd.executescalar()
@@ -2232,14 +2232,14 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "select email from admin.users where username=?"
 
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
 
 				dim email as string = ""
@@ -2247,9 +2247,9 @@ Namespace Rasputin
 
 				dim pool_name as string
 				sql = "select pool_name from pool.pools where pool_id=?"
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@pool_id", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 				cmd.parameters("@pool_id").value = pool_id
 				pool_name = cmd.executescalar()
 
@@ -2267,22 +2267,22 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string 
-				dim cmd as odbccommand
+				dim cmd as SQLCommand
 				dim updatetime as datetime = datetime.now
 
 				sql = "insert into POOL.PICKS_history (POOL_ID, GAME_ID, USERNAME, TEAM_ID, MOD_USER, MOD_TSP) values (?, ?, ?, ?,?,?)"
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@TEAM_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@MOD_USER", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@MOD_TSP", odbctype.datetime))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@MOD_TSP", SQLDbType.datetime))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@GAME_ID").value = GAME_ID
@@ -2294,15 +2294,15 @@ Namespace Rasputin
 				cmd.executenonquery()
 
 				sql = "update POOL.PICKS set TEAM_ID=?, mod_user=?, mod_tsp=? where POOL_ID=? and GAME_ID=? and USERNAME=? and team_id <> ?"
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@TEAM_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@MOD_USER", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@MOD_TSP", odbctype.datetime))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@TEAM_ID2", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@MOD_TSP", SQLDbType.datetime))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@TEAM_ID2", SQLDbType.int))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@GAME_ID").value = GAME_ID
@@ -2316,11 +2316,11 @@ Namespace Rasputin
 
 
 				sql = "select count(*) from pool.picks where POOL_ID=? and GAME_ID=? and USERNAME=?"
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@GAME_ID").value = GAME_ID
@@ -2331,14 +2331,14 @@ Namespace Rasputin
 				If rowsaffected = 0 and picksfound = 0 Then
 
 					sql = "insert into POOL.PICKS(POOL_ID, GAME_ID, USERNAME, TEAM_ID, MOD_USER, MOD_TSP) values (?, ?, ?, ?,?,?)"
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-					cmd.parameters.add(new odbcparameter("@TEAM_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@MOD_USER", odbctype.VARCHAR, 50))
-					cmd.parameters.add(new odbcparameter("@MOD_TSP", odbctype.datetime))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
+					cmd.parameters.add(new SQLParameter("@MOD_TSP", SQLDbType.datetime))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@GAME_ID").value = GAME_ID
 					cmd.parameters("@USERNAME").value = USERNAME
@@ -2365,25 +2365,25 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select min(game_tsp) as game_tsp from football.sched a where a.pool_id=? and a.week_id=? "
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 	
@@ -2394,7 +2394,7 @@ Namespace Rasputin
 				Dim gamedate As datetime
 				
 				Dim ds As New DataSet()
-				Dim oda As New OdbcDataAdapter()
+				Dim oda As New SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(ds)
 				If ds.tables.Count > 0 Then
@@ -2423,25 +2423,25 @@ Namespace Rasputin
 			try
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				sql = "select count(*) from pool.players where pool_id=? and username=?"
 
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 			
 
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
-				parm1 = new odbcparameter("@username", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 				parm1.value = player_name
 				cmd.parameters.add(parm1)
 
@@ -2463,15 +2463,15 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update POOL.PLAYERS set NICKNAME=? WHERE POOL_ID=? AND USERNAME=?"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@NICKNAME", odbctype.VARCHAR, 100))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 30))
+				cmd.parameters.add(new SQLParameter("@NICKNAME", SQLDbType.VARCHAR, 100))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
@@ -2501,29 +2501,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select a.game_id,a.week_id,a.away_id,a.home_id,a.game_tsp,b.team_name as away_team, b.team_shortname as away_shortname, b.url as away_url, c.team_name as home_team, c.team_shortname as home_shortname, c.url as home_url from football.sched a full outer join football.teams b on a.pool_id=b.pool_id and a.away_id=b.team_id full outer join football.teams c on a.pool_id=c.pool_id and a.home_id=c.team_id  where a.pool_id=? and a.week_id=? order by  a.game_tsp"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -2541,26 +2541,26 @@ Namespace Rasputin
 			dim res as integer = 0
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select min(week_id) as week_id from (select week_id from football.sched where pool_id=? and  game_tsp > current timestamp - 1 days ) as t"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
 				dim ds as new dataset()
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(ds)
 				if ds.tables.count > 0 then
@@ -2588,29 +2588,29 @@ Namespace Rasputin
 			try
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				sql = "select tb.*, sched.*, away.team_name as away_team, home.team_name as home_team from pool.tiebreakers tb full outer join football.sched sched on tb.pool_id=sched.pool_id and tb.game_id=sched.game_id full outer join football.teams away on away.pool_id=sched.pool_id and away.team_id=sched.away_id full outer join football.teams home on home.pool_id=sched.pool_id and home.team_id=sched.home_id where tb.pool_id=? and tb.week_id=?"
 
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 			
 
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
-				parm1 = new odbcparameter("@week_id", odbctype.int)
+				parm1 = new SQLParameter("@week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				dim ds as new dataset()
 				oda.selectcommand = cmd
 				oda.fill(ds)
@@ -2661,16 +2661,16 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update FOOTBALL.TIEBREAKER set SCORE=? where USERNAME=? and WEEK_ID=? and  POOL_ID=? "
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@SCORE", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@WEEK_ID").value = WEEK_ID
 				cmd.parameters("@SCORE").value = SCORE
@@ -2682,12 +2682,12 @@ Namespace Rasputin
 				If rowsaffected = 0 Then
 
 					sql = "insert into FOOTBALL.TIEBREAKER(USERNAME, WEEK_ID, SCORE, POOL_ID) values (?, ?, ?, ?)"
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-					cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@SCORE", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 					cmd.parameters("@USERNAME").value = USERNAME
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
 					cmd.parameters("@SCORE").value = SCORE
@@ -2715,17 +2715,17 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update FOOTBALL.TIEBREAKER set SCORE=? , mod_user=? where USERNAME=? and WEEK_ID=? and  POOL_ID=? "
-				Dim cmd As odbccommand = New odbccommand(sql, cn)
+				Dim cmd As SQLCommand = New SQLCommand(sql, cn)
 				
-				cmd.parameters.add(new odbcparameter("@SCORE", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@MOD_USER", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@MOD_USER").value = mod_user
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@WEEK_ID").value = WEEK_ID
@@ -2738,13 +2738,13 @@ Namespace Rasputin
 				If rowsaffected = 0 Then
 
 					sql = "insert into FOOTBALL.TIEBREAKER(USERNAME, WEEK_ID, SCORE, POOL_ID, mod_user) values (?, ?, ?, ?, ?)"
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-					cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@SCORE", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@MOD_USER", odbctype.VARCHAR, 50))
+					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
 					cmd.parameters("@MOD_USER").value = mod_user
 					cmd.parameters("@USERNAME").value = USERNAME
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
@@ -2772,19 +2772,19 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = ""
-				dim cmd as odbccommand
+				dim cmd as SQLCommand
 
 				sql = "select count(*) from football.scores where away_score=? and home_score=? and game_id=? and pool_id=?"
-				cmd = new odbccommand(sql, cn)
+				cmd = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@AWAY_SCORE", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@HOME_SCORE", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 
 				cmd.parameters("@GAME_ID").value = GAME_ID
 				cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
@@ -2797,13 +2797,13 @@ Namespace Rasputin
 				if rowcount <> 1 then
 
 					sql = "insert into football.scores_history (away_score, home_score, game_id, pool_id, mod_user, mod_tsp) values (?,?,?,?,?, current timestamp)"
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 	
-					cmd.parameters.add(new odbcparameter("@AWAY_SCORE", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@HOME_SCORE", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@scorer", odbctype.varchar, 30))
+					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@scorer", SQLDbType.varchar, 30))
 	
 					cmd.parameters("@GAME_ID").value = GAME_ID
 					cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
@@ -2817,12 +2817,12 @@ Namespace Rasputin
 					rowsupdated = cmd.executenonquery()
 	
 					sql = "update FOOTBALL.SCORES set AWAY_SCORE=?, HOME_SCORE=? where GAME_ID=? and pool_id=?"
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 	
-					cmd.parameters.add(new odbcparameter("@AWAY_SCORE", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@HOME_SCORE", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 	
 	
 					cmd.parameters("@GAME_ID").value = GAME_ID
@@ -2840,12 +2840,12 @@ Namespace Rasputin
 						res = "SUCCESS"
 					else
 						sql = "insert into FOOTBALL.SCORES(GAME_ID, AWAY_SCORE, HOME_SCORE, pool_id) values (?, ?, ?, ?)"
-						cmd = new odbccommand(sql, cn)
+						cmd = new SQLCommand(sql, cn)
 	
-						cmd.parameters.add(new odbcparameter("@GAME_ID", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@AWAY_SCORE", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@HOME_SCORE", odbctype.int))
-						cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+						cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 	
 						cmd.parameters("@GAME_ID").value = GAME_ID
 						cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
@@ -2861,10 +2861,10 @@ Namespace Rasputin
 					end if
 	
 					sql = "update pool.pools set updatescore_tsp = ? where pool_id=?"
-					cmd = new odbccommand(sql, cn)
+					cmd = new SQLCommand(sql, cn)
 	
-					cmd.parameters.add(new odbcparameter("@UPDATESCORE_TSP", odbctype.datetime))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@UPDATESCORE_TSP", SQLDbType.datetime))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 	
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@UPDATESCORE_TSP").value = system.datetime.now
@@ -2886,33 +2886,33 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select a.pool_id, a.game_id, a.username, a.team_id, b.team_shortname as pick_name, c.game_tsp from pool.picks a full outer join football.teams b on a.team_id=b.team_id and a.pool_id=b.pool_id full outer join football.sched c on a.game_id=c.game_id and a.pool_id=c.pool_id where a.pool_id=? and a.game_id in (select game_id from football.sched where pool_id=? and week_id=?)"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("pool_id2", odbctype.int)
+				parm1 = new SQLParameter("pool_id2", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -2931,25 +2931,25 @@ Namespace Rasputin
 			dim res as string = "NOTSET"
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select game_id from pool.tiebreakers where pool_id=? and week_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
@@ -2973,29 +2973,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from football.tiebreaker where pool_id=? and week_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -3067,14 +3067,14 @@ Namespace Rasputin
 				temp_table.Columns.Add(temp_col)
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 				sql = "select comment_id as thread_id, comment_title as thread_title, username as thread_author, " _
 					& " comment_tsp as thread_tsp, username as last_poster, 0 as replies, views " _
@@ -3084,13 +3084,13 @@ Namespace Rasputin
 					sql = sql & " fetch first " & count & " rows only"
 				end if
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim dr as odbcdatareader
+				dim dr as SQLDataReader
 				dr = cmd.executereader()
 				while dr.read()
 
@@ -3112,21 +3112,21 @@ Namespace Rasputin
 				if temp_table.rows.count > 0 then
 					for i as integer = 0 to temp_table.rows.count -1
 						sql = "select count(*) from pool.comments where ref_id=? and pool_id=?"
-						cmd = new odbccommand(sql,con)
-						cmd.parameters.add(new odbcparameter("ref_id", odbctype.int))
+						cmd = new SQLCommand(sql,con)
+						cmd.parameters.add(new SQLParameter("ref_id", SQLDbType.int))
 						cmd.parameters("ref_id").value = temp_table.rows(i)("thread_id")
 
-						cmd.parameters.add(new odbcparameter("pool_id", odbctype.int))
+						cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 						cmd.parameters("pool_id").value = pool_id
 						
 						temp_table.rows(i)("replies") = cmd.executescalar()
 
 						sql = "select * from pool.comments where pool_id=? and (comment_id=? or ref_id=?) order by comment_tsp desc"
-						cmd = new odbccommand(sql,con)
-						cmd.parameters.add(new odbcparameter("pool_id", odbctype.int))
+						cmd = new SQLCommand(sql,con)
+						cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 						cmd.parameters("pool_id").value = pool_id
-						cmd.parameters.add(new odbcparameter("comment_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("ref_id", odbctype.int))
+						cmd.parameters.add(new SQLParameter("comment_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("ref_id", SQLDbType.int))
 						cmd.parameters("comment_id").value = temp_table.rows(i)("thread_id")
 						cmd.parameters("ref_id").value = temp_table.rows(i)("thread_id")
 
@@ -3154,14 +3154,14 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select a.pool_id, a.username, a.comment_text, a.comment_tsp, a.comment_id, a.ref_id, a.comment_title, a.views, b.nickname from pool.comments a full outer join pool.players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=? and (a.comment_id=? or a.ref_id=?) order by comment_tsp asc"
@@ -3171,18 +3171,18 @@ Namespace Rasputin
 				end if
 
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				cmd.parameters.add(new odbcparameter("comment_id", odbctype.int))
-				cmd.parameters.add(new odbcparameter("ref_id", odbctype.int))
+				cmd.parameters.add(new SQLParameter("comment_id", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("ref_id", SQLDbType.int))
 				cmd.parameters("comment_id").value = thread_id
 				cmd.parameters("ref_id").value = thread_id
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -3200,29 +3200,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select a.game_id, a.away_score, a.home_score from football.scores a full outer join football.sched b on a.pool_id=b.pool_id where a.pool_id=? and b.week_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -3239,20 +3239,20 @@ Namespace Rasputin
 			Dim temp_ds As New system.Data.DataSet()
 			try
 				Dim sql As String = ""
-				dim cmd as odbccommand
-				Dim oda As system.Data.Odbc.OdbcDataAdapter
+				dim cmd as SQLCommand
+				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 
 				sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and a.pool_id =b.pool_id and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not t.away_score is null order by t.username, d.week_id"
-				cmd = New odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@POOL_ID2", odbctype.int))
+				cmd = New SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = pool_id
 				cmd.parameters("@POOL_ID2").value = pool_id
 				
-				oda = new odbcdataadapter()
+				oda = new SQLDataAdapter()
 				oda.selectcommand = cmd
 				dim ds as new dataset()
 				oda.fill(ds)
@@ -3399,10 +3399,10 @@ Namespace Rasputin
 			Dim temp_ds As New system.Data.DataSet()
 			try
 				Dim sql As String = ""
-				dim cmd as odbccommand
-				Dim oda As system.Data.Odbc.OdbcDataAdapter
+				dim cmd as SQLCommand
+				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 				
 
@@ -3499,18 +3499,18 @@ Namespace Rasputin
 					Dim picks_ds As New dataset()
 					
 					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and b.pool_id=? and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not d.away_id is null and d.week_id <=? and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
-					cmd = New odbccommand(sql,con)
+					cmd = New SQLCommand(sql,con)
 					
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID2", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID3", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@week_id", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID3", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = pool_id
 					cmd.parameters("@POOL_ID2").value = pool_id
 					cmd.parameters("@POOL_ID3").value = pool_id
 					cmd.parameters("@week_id").value = week_id
 					
-					oda = New odbcdataadapter()
+					oda = New SQLDataAdapter()
 					oda.SelectCommand = cmd
 					oda.fill(picks_ds)
 
@@ -3752,15 +3752,15 @@ Namespace Rasputin
 			Dim temp_ds As New system.Data.DataSet()
 			try
 				Dim sql As String = ""
-				dim cmd as odbccommand
-				Dim oda As system.Data.Odbc.OdbcDataAdapter
+				dim cmd as SQLCommand
+				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 				
 				sql = "select count(*) from pool.pools where pool_id=? and (updatescore_tsp > standings_tsp or standings_tsp is null)"
-				cmd = New odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd = New SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = pool_id
 				dim c as integer = 0
 				c = cmd.executescalar()
@@ -3863,16 +3863,16 @@ Namespace Rasputin
 					Dim picks_ds As New dataset()
 					
 					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and b.pool_id=? and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not d.away_id is null and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
-					cmd = New odbccommand(sql,con)
+					cmd = New SQLCommand(sql,con)
 					
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID2", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@POOL_ID3", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@POOL_ID3", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = pool_id
 					cmd.parameters("@POOL_ID2").value = pool_id
 					cmd.parameters("@POOL_ID3").value = pool_id
 					
-					oda = New odbcdataadapter()
+					oda = New SQLDataAdapter()
 					oda.SelectCommand = cmd
 					oda.fill(picks_ds)
 
@@ -4081,8 +4081,8 @@ Namespace Rasputin
 					
 					temp_ds.tables.add(temp_table)
 					sql = "delete from pool.standings where pool_id=?"
-					cmd = New odbccommand(sql,con)
-					cmd.parameters.add(new odbcparameter("pool_id", odbctype.int))
+					cmd = New SQLCommand(sql,con)
+					cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 					cmd.parameters("pool_id").value = pool_id
 					cmd.executenonquery()
 
@@ -4100,18 +4100,18 @@ Namespace Rasputin
 						dim current_rank as integer = top_score - inrow("totalscore")
 
 						sql = "insert into pool.standings (pool_id, username, wins, losses, home, away, weekwins, lwp, totalscore, rank) values (?,?,?,?,?,?,?,?,?,?)"
-						cmd = New odbccommand(sql,con)
+						cmd = New SQLCommand(sql,con)
 
-						cmd.parameters.add(new odbcparameter("pool_id", odbctype.int))
-						cmd.parameters.add(new odbcparameter("username", odbctype.varchar, 50))
-						cmd.parameters.add(new odbcparameter("wins", odbctype.int))
-						cmd.parameters.add(new odbcparameter("losses", odbctype.int))
-						cmd.parameters.add(new odbcparameter("home", odbctype.int))
-						cmd.parameters.add(new odbcparameter("away", odbctype.int))
-						cmd.parameters.add(new odbcparameter("weekwins", odbctype.int))
-						cmd.parameters.add(new odbcparameter("lwp", odbctype.int))
-						cmd.parameters.add(new odbcparameter("totalscore", odbctype.int))
-						cmd.parameters.add(new odbcparameter("rank", odbctype.int))
+						cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("username", SQLDbType.varchar, 50))
+						cmd.parameters.add(new SQLParameter("wins", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("losses", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("home", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("away", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("weekwins", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("lwp", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("totalscore", SQLDbType.int))
+						cmd.parameters.add(new SQLParameter("rank", SQLDbType.int))
 
 						cmd.parameters("pool_id").value = pool_id
 						cmd.parameters("username").value = inrow("username")
@@ -4129,18 +4129,18 @@ Namespace Rasputin
 					next
 
 					sql = "update pool.pools set standings_tsp = current timestamp where pool_id=?"
-					cmd = New odbccommand(sql,con)
-					cmd.parameters.add(new odbcparameter("pool_id", odbctype.int))
+					cmd = New SQLCommand(sql,con)
+					cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 					cmd.parameters("pool_id").value = pool_id
 					cmd.executenonquery()
 
 				end if
 				sql = "select a.*, b.nickname from pool.standings a full outer join pool.players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=?"
-				cmd = New odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("pool_id", odbctype.int))
+				cmd = New SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 				cmd.parameters("pool_id").value = pool_id
 
-				oda = new odbcdataadapter()
+				oda = new SQLDataAdapter()
 				oda.selectcommand = cmd
 				temp_ds = new dataset()
 				oda.fill(temp_ds)
@@ -4249,38 +4249,38 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.picks  where pool_id=? and username=? and game_id in (select game_id from football.sched where pool_id=? and week_id=?)"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
 
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
 
 
-				parm1 = new odbcparameter("pool_id2", odbctype.int)
+				parm1 = new SQLParameter("pool_id2", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("week_id", odbctype.int)
+				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
@@ -4297,30 +4297,30 @@ Namespace Rasputin
 			dim res as integer = 0
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select team_id from pool.picks  where pool_id=? and username=? and game_id=?"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
 
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
 
 
-				parm1 = new odbcparameter("game_id", odbctype.int)
+				parm1 = new SQLParameter("game_id", SQLDbType.int)
 				parm1.value = game_id
 				cmd.parameters.add(parm1)
 
@@ -4341,33 +4341,33 @@ Namespace Rasputin
 			try
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				sql = "select score from football.tiebreaker  where pool_id=? and week_id=? and username=?"
 
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 			
 
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
-				parm1 = new odbcparameter("@week_id", odbctype.int)
+				parm1 = new SQLParameter("@week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@username", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 				parm1.value = player_name
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				dim ds as new dataset()
 				oda.selectcommand = cmd
 				oda.fill(ds)
@@ -4392,29 +4392,29 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.pools where pool_owner=? or pool_id in (select pool_id from pool.players where username=?)"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 				parm1.value = player_name
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("@player_name", odbctype.varchar, 50)
+				parm1 = new SQLParameter("@player_name", SQLDbType.varchar, 50)
 				parm1.value = player_name
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -4430,20 +4430,20 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select a.*, b.team_name as home_team, c.team_name as away_team from pool.copy_scheds a left join pool.copy_teams b on a.home_id=b.team_id left join pool.copy_teams c on a.away_id=c.team_id order by game_tsp asc"
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -4460,21 +4460,21 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.copy_teams order by team_name"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -4492,25 +4492,25 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_id=?) order by sched.game_tsp"
 
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 
-				parm1 = new odbcparameter("@pool_id", odbctype.int)
+				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
@@ -4528,22 +4528,22 @@ Namespace Rasputin
 
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 
 				sql = "select * from pool.invites where email=? and pool_id=? and invite_key=?"
 
-				cmd = new odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@EMAIL", odbctype.VARCHAR, 255))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@INVITE_KEY", odbctype.VARCHAR, 40))
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@INVITE_KEY", SQLDbType.VARCHAR, 40))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@EMAIL").value = EMAIL
@@ -4554,7 +4554,7 @@ Namespace Rasputin
 				'makesystemlog("debug", "invite_key=" &  cmd.parameters("@INVITE_KEY").value & ".")
 
 				dim invites_ds as new dataset()
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(invites_ds)
 				if invites_ds.tables(0).rows.count > 0 then
@@ -4574,23 +4574,23 @@ Namespace Rasputin
 
 			try
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new odbcconnection(connstring)
+				con = new SQLConnection(connstring)
 				con.open()
 				sql = "select * from pool.pools a full outer join admin.users b on a.pool_owner=b.username where pool_id=?"
 
-				cmd = new odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 
 				dim pool_ds as new dataset()
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(pool_ds)
 
@@ -4608,10 +4608,10 @@ Namespace Rasputin
 
 				sql = "insert into pool.players (pool_id, username, player_tsp) values (?,?,?)"
 
-				cmd = new odbccommand(sql,con)
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 50))
-				cmd.parameters.add(new odbcparameter("@PLAYER_TSP", odbctype.datetime))
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@PLAYER_TSP", SQLDbType.datetime))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = player_name
@@ -4622,10 +4622,10 @@ Namespace Rasputin
 
 					sql = "delete from pool.invites where email=? and pool_id=? and invite_key=?"
 
-					cmd = new odbccommand(sql,con)
-					cmd.parameters.add(new odbcparameter("@EMAIL", odbctype.VARCHAR, 255))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@INVITE_KEY", odbctype.VARCHAR, 40))
+					cmd = new SQLCommand(sql,con)
+					cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@INVITE_KEY", SQLDbType.VARCHAR, 40))
 
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@EMAIL").value = EMAIL
@@ -4634,8 +4634,8 @@ Namespace Rasputin
 
 					sql = "update pool.pools set updatescore_tsp = current timestamp where pool_id=?"
 
-					cmd = new odbccommand(sql,con)
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd = new SQLCommand(sql,con)
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.executenonquery()
 
@@ -4678,30 +4678,30 @@ Namespace Rasputin
 				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(temppassword))
 
 				dim sql as string
-				dim cmd as odbccommand
-				dim con as odbcconnection
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim con as SQLConnection
+				dim parm1 as SQLParameter
 				
 				sql = "select * from final table (update admin.users set temp_password=? where ucase(username)=? or ucase(email)=?)"
 								
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 			
-				parm1 = new odbcparameter("password", odbctype.Binary, 16)
+				parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
 				parm1.value = hashedbytes
 				cmd.parameters.add(parm1)
 
-				parm1 = new odbcparameter("username", odbctype.varchar, 50)
+				parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
 				parm1.value = username.toUpper()
 				cmd.parameters.add(parm1)
 				
-				parm1 = new odbcparameter("email", odbctype.varchar, 50)
+				parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
 				parm1.value = username.toUpper()
 				cmd.parameters.add(parm1)
 				
 				dim user_ds as system.data.dataset = new dataset()
-				dim oda as system.data.odbc.odbcdataadapter = new system.data.odbc.odbcdataadapter()
+				dim oda as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(user_ds)
 				con.close()
@@ -4817,24 +4817,24 @@ Namespace Rasputin
 				
 				dim validate_key as string
 				
-				dim con as odbcconnection
-				dim cmd as odbccommand
-				dim dr as odbcdatareader
-				dim parm1 as odbcparameter
+				dim con as SQLConnection
+				dim cmd as SQLCommand
+				dim dr as SQLDataReader
+				dim parm1 as SQLParameter
 							
 				dim sql as string
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 				
 				sql = "select count(*) from admin.users where ucase(username) = ? or ucase(email) = ?"
 				
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new odbcparameter("username", odbctype.varchar, 30)
+				parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 				parm1.value = username.toupper()
 				cmd.parameters.add(parm1)
 				
-				parm1 = new odbcparameter("email", odbctype.varchar, 50)
+				parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
 				parm1.value = email.toupper()
 				cmd.parameters.add(parm1)
 				
@@ -4870,25 +4870,25 @@ Namespace Rasputin
 								
 					sql = "insert into admin.users (username,email,password,login_count,validated,validate_key, last_seen) values (?,?,?,0,'N',?, ?)"
 					
-					cmd = new odbccommand(sql,con)
+					cmd = new SQLCommand(sql,con)
 					
-					parm1 = new odbcparameter("username", odbctype.varchar, 30)
+					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 					parm1.value = username
 					cmd.parameters.add(parm1)
 					
-					parm1 = new odbcparameter("email", odbctype.varchar, 50)
+					parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
 					parm1.value = email
 					cmd.parameters.add(parm1)
 					
-					parm1 = new odbcparameter("password", odbctype.Binary, 16)
+					parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
 					parm1.value = hashedbytes
 					cmd.parameters.add(parm1)
 					
-					parm1 = new odbcparameter("validate_key", odbctype.varchar, 40)
+					parm1 = new SQLParameter("validate_key", SQLDbType.varchar, 40)
 					parm1.value = validate_key
 					cmd.parameters.add(parm1)
 
-					parm1 = new odbcparameter("last_seen", odbctype.datetime)
+					parm1 = new SQLParameter("last_seen", SQLDbType.datetime)
 					parm1.value = system.datetime.now
 					cmd.parameters.add(parm1)
 					
@@ -4923,27 +4923,27 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cmd as odbccommand
-				dim dr as odbcdatareader
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim dr as SQLDataReader
+				dim parm1 as SQLParameter
 							
 				dim sql as string
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 				
 				sql = "select a.pool_id, a.email, a.invite_key, b.pool_owner, b.pool_name, b.pool_desc from pool.invites a full outer join pool.pools b on a.pool_id=b.pool_id where a.pool_id=? and a.email=?"
 				
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new odbcparameter("pool_id", odbctype.int)
+				parm1 = new SQLParameter("pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				
-				parm1 = new odbcparameter("email", odbctype.varchar, 50)
+				parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
 				parm1.value = email
 				cmd.parameters.add(parm1)
 
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				dim invite_ds as new dataset()
 				oda.selectcommand = cmd
 				oda.fill(invite_ds)
@@ -5024,13 +5024,13 @@ Namespace Rasputin
 
 				dim usercount as integer = 0		
 				
-				dim cmd as odbccommand
-				dim dr as odbcdatareader
-				dim parm1 as odbcparameter
+				dim cmd as SQLCommand
+				dim dr as SQLDataReader
+				dim parm1 as SQLParameter
 				
 				dim sql as string
 						
-				con = new odbcconnection(myconnstring)
+				con = new SQLConnection(myconnstring)
 				con.open()
 				
 				'Encrypt the password
@@ -5043,18 +5043,18 @@ Namespace Rasputin
 				
 				sql = "select username from admin.users where ucase(username) = ? and password=? and validated='Y'"
 				
-				cmd = new odbccommand(sql,con)
+				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new odbcparameter("username", odbctype.varchar, 30)
+				parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 				parm1.value = username.toupper()
 				cmd.parameters.add(parm1)
 				
-				parm1 = new odbcparameter("password", odbctype.Binary, 16)
+				parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
 				parm1.value = hashedbytes
 				cmd.parameters.add(parm1)
 				
 				dim user_ds as system.data.dataset = new dataset()
-				dim oda as system.data.odbc.odbcdataadapter = new system.data.odbc.odbcdataadapter()
+				dim oda as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(user_ds)
 		
@@ -5063,27 +5063,27 @@ Namespace Rasputin
 					
 					sql = "select username from admin.users where ucase(username) = ? and temp_password=? and validated='Y'"
 					
-					cmd = new odbccommand(sql,con)
+					cmd = new SQLCommand(sql,con)
 					
-					parm1 = new odbcparameter("username", odbctype.varchar, 30)
+					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 					parm1.value = username.toupper()
 					cmd.parameters.add(parm1)
 					
-					parm1 = new odbcparameter("password", odbctype.Binary, 16)
+					parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
 					parm1.value = hashedbytes
 					cmd.parameters.add(parm1)
 					
 					dim user_ds2 as system.data.dataset = new dataset()
-					dim oda2 as system.data.odbc.odbcdataadapter = new system.data.odbc.odbcdataadapter()
+					dim oda2 as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
 					oda2.selectcommand = cmd
 					oda2.fill(user_ds2)
 				
 					if user_ds2.tables(0).rows.count > 0 then
 						sql = "update admin.users set password=temp_password where username = ?"
 		
-						cmd = new odbccommand(sql,con)
+						cmd = new SQLCommand(sql,con)
 		
-						parm1 = new odbcparameter("username", odbctype.varchar, 30)
+						parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 						parm1.value = user_ds2.tables(0).rows(0)("username")
 						cmd.parameters.add(parm1)
 						
@@ -5095,18 +5095,18 @@ Namespace Rasputin
 		
 						sql = "select username from admin.users where ucase(username) = ? and password=? and validated='Y'"
 				
-						cmd = new odbccommand(sql,con)
+						cmd = new SQLCommand(sql,con)
 						
-						parm1 = new odbcparameter("username", odbctype.varchar, 30)
+						parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 						parm1.value = username.toupper()
 						cmd.parameters.add(parm1)
 						
-						parm1 = new odbcparameter("password", odbctype.Binary, 16)
+						parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
 						parm1.value = hashedbytes
 						cmd.parameters.add(parm1)
 						
 						user_ds = new dataset()
-						oda = new system.data.odbc.odbcdataadapter()
+						oda = new System.Data.SQLClient.SQLDataAdapter()
 						oda.selectcommand = cmd
 						oda.fill(user_ds)
 					else
@@ -5119,9 +5119,9 @@ Namespace Rasputin
 					
 					sql = "update admin.users set login_count=login_count + 1, last_seen = current timestamp, temp_password = NULL  where username=?"
 					
-					cmd = new odbccommand(sql,con)
+					cmd = new SQLCommand(sql,con)
 					
-					parm1 = new odbcparameter("username", odbctype.varchar, 30)
+					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 					parm1.value = res
 					cmd.parameters.add(parm1)
 					
@@ -5138,20 +5138,20 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "select avatar from pool.players WHERE POOL_ID=? AND USERNAME=?"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 30))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
 				
 				dim ds as new system.data.dataset()
-				dim oda as new odbcdataadapter()
+				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(ds)
 				try
@@ -5174,15 +5174,15 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new odbcconnection()
+				dim cn as new SQLConnection()
 				cn.connectionstring = myconnstring
 				cn.open()
 				dim sql as string = "update POOL.PLAYERS set avatar=? WHERE POOL_ID=? AND USERNAME=?"
-				dim cmd as odbccommand = new odbccommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-				cmd.parameters.add(new odbcparameter("@avatar", odbctype.VARCHAR, 255))
-				cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-				cmd.parameters.add(new odbcparameter("@USERNAME", odbctype.VARCHAR, 30))
+				cmd.parameters.add(new SQLParameter("@avatar", SQLDbType.VARCHAR, 255))
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
