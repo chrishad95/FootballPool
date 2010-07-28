@@ -40,9 +40,9 @@ Dim cn2 As SQLConnection
 dim cmd2 as SQLCommand
 
 Dim sConnString As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
-dim dr as odbcdatareader
+dim dr as SQLDataReader
 dim cmd as SQLCommand
-dim oda as odbcdataadapter
+dim oda as SQLDataAdapter
 dim ds as dataset
 
 dim latest_week as integer
@@ -111,7 +111,7 @@ sql = "select a.game_id, a.week_id, a.away_id, c.team_name, c.url as away_url, a
 cmd.commandtext = sql
 
 
-oda = new odbcdataadapter()
+oda = new SQLDataAdapter()
 
 ds = new DataSet()
 oda.selectcommand = cmd

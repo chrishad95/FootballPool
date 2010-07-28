@@ -20,16 +20,16 @@
 		con.open()
 		cmd = new SQLCommand(sql,con)
 	
-		parm1 = new SQLParameter("username", odbctype.varchar, 50)
+		parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
 		parm1.value = "chadley"
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("journal_type", odbctype.varchar, 20)
+		parm1 = new SQLParameter("journal_type", SQLDbType.varchar, 20)
 		parm1.value = "SYSTEM"
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("entry_title", odbctype.varchar, 200)
+		parm1 = new SQLParameter("entry_title", SQLDbType.varchar, 200)
 		parm1.value = log_title
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("entry_text", odbctype.text, 32700)
+		parm1 = new SQLParameter("entry_text", SQLDbType.text, 32700)
 		parm1.value = log_text
 		cmd.parameters.add(parm1)
 		
@@ -56,21 +56,21 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
+		parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 		parm1.value = pool_owner
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_name", odbctype.varchar, 100)
+		parm1 = new SQLParameter("@pool_name", SQLDbType.varchar, 100)
 		parm1.value = pool_name
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_desc", odbctype.varchar, 500)
+		parm1 = new SQLParameter("@pool_desc", SQLDbType.varchar, 500)
 		parm1.value = pool_desc
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@pool_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
 
 		dim ds as new dataset()
-		dim da as new odbcdataadapter()
+		dim da as new SQLDataAdapter()
 		da.selectcommand = cmd
 		try
 			da.fill(ds)
@@ -110,19 +110,19 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
+		parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
 		parm1.value = pool_owner
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_name", odbctype.varchar, 100)
+		parm1 = new SQLParameter("@pool_name", SQLDbType.varchar, 100)
 		parm1.value = pool_name
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_desc", odbctype.varchar, 500)
+		parm1 = new SQLParameter("@pool_desc", SQLDbType.varchar, 500)
 		parm1.value = pool_desc
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@pool_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@pool_id", odbctype.int)
+		parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 		parm1.value = pool_id
 		cmd.parameters.add(parm1)
 
@@ -162,24 +162,24 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@pool_id", odbctype.int)
+		parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 		parm1.value = pool_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@team_name", odbctype.varchar, 100)
+		parm1 = new SQLParameter("@team_name", SQLDbType.varchar, 100)
 		parm1.value = team_name
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@team_shortname", odbctype.varchar, 5)
+		parm1 = new SQLParameter("@team_shortname", SQLDbType.varchar, 5)
 		parm1.value = team_shortname
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@team_url", odbctype.varchar, 255)
+		parm1 = new SQLParameter("@team_url", SQLDbType.varchar, 255)
 		parm1.value = team_url
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@team_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@team_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
 
 		dim ds as new dataset()
-		dim da as new odbcdataadapter()
+		dim da as new SQLDataAdapter()
 		da.selectcommand = cmd
 		try
 			da.fill(ds)
@@ -219,18 +219,18 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@pool_id", odbctype.int)
+		parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 		parm1.value = pool_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@game_group_name", odbctype.varchar, 100)
+		parm1 = new SQLParameter("@game_group_name", SQLDbType.varchar, 100)
 		parm1.value = game_group_name
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@game_group_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@game_group_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
 
 		dim ds as new dataset()
-		dim da as new odbcdataadapter()
+		dim da as new SQLDataAdapter()
 		da.selectcommand = cmd
 		try
 			da.fill(ds)
@@ -268,18 +268,18 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@pool_id", odbctype.int)
+		parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 		parm1.value = pool_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@username", odbctype.varchar, 30)
+		parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
 		parm1.value = username
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@player_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@player_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
 
 		dim ds as new dataset()
-		dim da as new odbcdataadapter()
+		dim da as new SQLDataAdapter()
 		da.selectcommand = cmd
 		try
 			da.fill(ds)
@@ -318,28 +318,28 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@pool_id", odbctype.int)
+		parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 		parm1.value = pool_id
 		cmd.parameters.add(parm1)
 
-		parm1 = new SQLParameter("@game_group_id", odbctype.int)
+		parm1 = new SQLParameter("@game_group_id", SQLDbType.int)
 		parm1.value = game_group_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@game_time", odbctype.datetime)
+		parm1 = new SQLParameter("@game_time", SQLDbType.datetime)
 		parm1.value = game_time
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@home_id", odbctype.int)
+		parm1 = new SQLParameter("@home_id", SQLDbType.int)
 		parm1.value = home_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@away_id", odbctype.int)
+		parm1 = new SQLParameter("@away_id", SQLDbType.int)
 		parm1.value = away_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@game_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@game_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
 
 		dim ds as new dataset()
-		dim da as new odbcdataadapter()
+		dim da as new SQLDataAdapter()
 		da.selectcommand = cmd
 		try
 			da.fill(ds)
@@ -378,21 +378,21 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@game_id", odbctype.int)
+		parm1 = new SQLParameter("@game_id", SQLDbType.int)
 		parm1.value = game_id
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@home_score", odbctype.int)
+		parm1 = new SQLParameter("@home_score", SQLDbType.int)
 		parm1.value = home_score
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@away_score", odbctype.int)
+		parm1 = new SQLParameter("@away_score", SQLDbType.int)
 		parm1.value = away_score
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@score_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@score_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
 
 		dim ds as new dataset()
-		dim da as new odbcdataadapter()
+		dim da as new SQLDataAdapter()
 		da.selectcommand = cmd
 		try
 			da.fill(ds)
@@ -430,16 +430,16 @@
 
 		cmd = new SQLCommand(sql,con)
 
-		parm1 = new SQLParameter("@home_score", odbctype.int)
+		parm1 = new SQLParameter("@home_score", SQLDbType.int)
 		parm1.value = home_score
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@away_score", odbctype.int)
+		parm1 = new SQLParameter("@away_score", SQLDbType.int)
 		parm1.value = away_score
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@score_tsp", odbctype.datetime)
+		parm1 = new SQLParameter("@score_tsp", SQLDbType.datetime)
 		parm1.value = datetime.now
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("@game_id", odbctype.int)
+		parm1 = new SQLParameter("@game_id", SQLDbType.int)
 		parm1.value = game_id
 		cmd.parameters.add(parm1)
 

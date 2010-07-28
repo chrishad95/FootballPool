@@ -53,9 +53,9 @@ Dim cn2 As SQLConnection
 dim cmd2 as SQLCommand
 
 Dim sConnString As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
-dim dr as odbcdatareader
+dim dr as SQLDataReader
 dim cmd as SQLCommand
-dim oda as odbcdataadapter
+dim oda as SQLDataAdapter
 dim ds as dataset
 dim parm1 as SQLParameter
 
@@ -107,7 +107,7 @@ else
 	
 	cmd = new SQLCommand(sql,cn)
 	
-	parm1 = new SQLParameter("username", odbctype.varchar, 30)
+	parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 	parm1.value = username
 	cmd.parameters.add(parm1)
 	

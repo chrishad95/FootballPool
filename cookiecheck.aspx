@@ -21,16 +21,16 @@
 		con.open()
 		cmd = new SQLCommand(sql,con)
 	
-		parm1 = new SQLParameter("username", odbctype.varchar, 50)
+		parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
 		parm1.value = "chadley"
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("journal_type", odbctype.varchar, 20)
+		parm1 = new SQLParameter("journal_type", SQLDbType.varchar, 20)
 		parm1.value = "SYSTEM"
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("entry_title", odbctype.varchar, 200)
+		parm1 = new SQLParameter("entry_title", SQLDbType.varchar, 200)
 		parm1.value = log_title
 		cmd.parameters.add(parm1)
-		parm1 = new SQLParameter("entry_text", odbctype.text, 32700)
+		parm1 = new SQLParameter("entry_text", SQLDbType.text, 32700)
 		parm1.value = log_text
 		cmd.parameters.add(parm1)
 		
@@ -80,9 +80,9 @@ application("football_year") = "2005"
 		
 	dim sConnString as string = ConfigurationSettings.AppSettings("connString")
 	
-	dim dr as odbcdatareader
+	dim dr as SQLDataReader
 	dim cmd as SQLCommand
-	dim oda as odbcdataadapter
+	dim oda as SQLDataAdapter
 	dim ds as dataset
 	dim parm1 as SQLParameter
 	
@@ -118,16 +118,16 @@ application("football_year") = "2005"
 				
 				cmd = new SQLCommand(sql,cn)
 				
-				parm1 = new SQLParameter("username", odbctype.varchar, 30)
+				parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 				parm1.value = username.toupper()
 				cmd.parameters.add(parm1)
 				
-				parm1 = new SQLParameter("password", odbctype.Binary, 16)
+				parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
 				parm1.value = hashedbytes
 				cmd.parameters.add(parm1)
 				
 				dim user_ds as system.data.dataset = new dataset()
-				oda = new System.Data.SQLClient.odbcdataadapter()
+				oda = new System.Data.SQLClient.SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(user_ds)
 				
@@ -141,7 +141,7 @@ application("football_year") = "2005"
 					
 					cmd = new SQLCommand(sql,cn)
 					
-					parm1 = new SQLParameter("username", odbctype.varchar, 30)
+					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
 					parm1.value = username
 					cmd.parameters.add(parm1)
 					
@@ -185,31 +185,31 @@ application("football_year") = "2005"
 	
 			cmd = new SQLCommand(sql,cn)
 		
-			parm1 = new SQLParameter("page_url", odbctype.varchar, 500)
+			parm1 = new SQLParameter("page_url", SQLDbType.varchar, 500)
 			parm1.value = cstr(page_url)
 			cmd.parameters.add(parm1)
 		
 			
 			if session("username") = "" then
-				parm1 = new SQLParameter("username", odbctype.varchar, 50)
+				parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
 				parm1.value = request.servervariables("REMOTE_ADDR")
 				cmd.parameters.add(parm1)
 			else
-				parm1 = new SQLParameter("username", odbctype.varchar, 50)
+				parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
 				parm1.value = myname
 				cmd.parameters.add(parm1)
 			end if
 			
 		
-			parm1 = new SQLParameter("http_referer", odbctype.varchar, 1000)
+			parm1 = new SQLParameter("http_referer", SQLDbType.varchar, 1000)
 			parm1.value = http_referer
 			cmd.parameters.add(parm1)
 			
-			parm1 = new SQLParameter("remote_addr", odbctype.varchar, 20)
+			parm1 = new SQLParameter("remote_addr", SQLDbType.varchar, 20)
 			parm1.value = request.servervariables("REMOTE_ADDR").toString()
 			cmd.parameters.add(parm1)
 		
-			parm1 = new SQLParameter("http_user_agent", odbctype.varchar, 255)
+			parm1 = new SQLParameter("http_user_agent", SQLDbType.varchar, 255)
 			parm1.value = http_user_agent
 			cmd.parameters.add(parm1)
 				
@@ -240,9 +240,9 @@ application("football_year") = "2005"
 
 		dim cmd1 as new SQLCommand(sql,cn)
 
-		cmd1.parameters.add(new SQLParameter("value", odbctype.text))
-		cmd1.parameters.add(new SQLParameter("session_key", odbctype.varchar, 40))
-		cmd1.parameters.add(new SQLParameter("name", odbctype.varchar, 255))
+		cmd1.parameters.add(new SQLParameter("value", SQLDbType.text))
+		cmd1.parameters.add(new SQLParameter("session_key", SQLDbType.varchar, 40))
+		cmd1.parameters.add(new SQLParameter("name", SQLDbType.varchar, 255))
 		cmd1.parameters("session_key").value = mysessionid
 
 		for each x as object in session.contents
@@ -255,9 +255,9 @@ application("football_year") = "2005"
 				sql = "insert into admin.sessions (session_key, name, value) values (?,?,?)"
 				cmd = new SQLCommand(sql,cn)
 
-				cmd.parameters.add(new SQLParameter("session_key", odbctype.varchar, 40))
-				cmd.parameters.add(new SQLParameter("name", odbctype.varchar, 255))
-				cmd.parameters.add(new SQLParameter("value", odbctype.text))
+				cmd.parameters.add(new SQLParameter("session_key", SQLDbType.varchar, 40))
+				cmd.parameters.add(new SQLParameter("name", SQLDbType.varchar, 255))
+				cmd.parameters.add(new SQLParameter("value", SQLDbType.text))
 				cmd.parameters("session_key").value = mysessionid
 				cmd.parameters("name").value = x
 				cmd.parameters("value").value = session(x)
@@ -271,10 +271,10 @@ application("football_year") = "2005"
 
 		cmd = new SQLCommand(sql,cn)
 
-		cmd.parameters.add(new SQLParameter("session_key", odbctype.varchar, 40))
+		cmd.parameters.add(new SQLParameter("session_key", SQLDbType.varchar, 40))
 		cmd.parameters("session_key").value = mysessionid
 		dim session_ds as new dataset()
-		oda = new odbcdataadapter()
+		oda = new SQLDataAdapter()
 		oda.selectcommand = cmd
 		oda.fill(session_ds)
 
