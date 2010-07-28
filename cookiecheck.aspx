@@ -28,6 +28,7 @@
 <%
 
 dim fb as new Rasputin.FootballUtility()
+fb.initialize()
 
 application("football_year") = "2005"
 	

@@ -18,6 +18,8 @@ catch
 end try
 
 dim fb as new Rasputin.FootballUtility()
+fb.initialize()
+
 isowner = fb.isowner(pool_id:=pool_id, pool_owner:=myname)
 isplayer = fb.isplayer(pool_id:=pool_id, player_name:=myname)
 

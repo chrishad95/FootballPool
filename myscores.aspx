@@ -15,6 +15,7 @@
 server.execute("/football/cookiecheck.aspx")
 
 dim fb as new Rasputin.FootballUtility()
+fb.initialize()
 dim message_text as string = ""
 
 dim myname as string = ""

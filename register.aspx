@@ -12,6 +12,7 @@
 <%
 
 	dim fb as new Rasputin.FootballUtility()
+	fb.initialize()
 	server.execute ("/football/cookiecheck.aspx")
 	dim http_host as string = ""
 	try

@@ -12,6 +12,7 @@
 </script>
 <%
 	dim fb as new Rasputin.FootballUtility()
+	fb.initialize()
 
 	dim http_host as string = ""
 	try

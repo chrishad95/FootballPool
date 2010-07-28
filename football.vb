@@ -59,8 +59,6 @@ Namespace Rasputin
 			cmd.parameters.add(parm1)
 			
 			cmd.executenonquery()
-			con.close()
-			con.dispose()
 
 		end sub 
 
@@ -78,8 +76,8 @@ Namespace Rasputin
 				dim drow as datarow
 				dim dt as datatable
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 
 				sql = "select top 50 * from fb_journal_entries where journal_type='FOOTBALL' order by entry_tsp desc"
 				cmd = new SQLCommand(sql,con)
@@ -105,8 +103,8 @@ Namespace Rasputin
 				dim parm1 as SQLParameter
 				
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				'Encrypt the password
 				Dim md5Hasher as New MD5CryptoServiceProvider()
 				
@@ -165,8 +163,8 @@ Namespace Rasputin
 				dim drow as datarow
 				dim dt as datatable
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 
 				sql = "select  * from pool.comments where ref_id is null and pool_id in (select pool_id from pool.players where username=?)  order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
@@ -198,8 +196,8 @@ Namespace Rasputin
 				dim drow as datarow
 				dim dt as datatable
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 
 				sql = "select  * from pool.comments where ref_id is null and pool_id=? and pool_id in (select pool_id from pool.players where username=?) order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
@@ -255,14 +253,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.rss_feeds"
 
@@ -272,8 +270,6 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
 			catch ex as exception
 				makesystemlog("Error in ListFeeds", ex.tostring())
 			end try
@@ -287,14 +283,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.pools where pool_owner=?"
 
@@ -308,8 +304,6 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
 			catch ex as exception
 				makesystemlog("Error getting pool list", ex.tostring())
 			end try
@@ -323,14 +317,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.pools where pool_id=?"
 
@@ -344,8 +338,6 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
 			catch ex as exception
 				makesystemlog("Error getting pool details", ex.tostring())
 			end try
@@ -359,14 +351,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "update pool.comments set views=views + 1 where pool_id=? and comment_id=?"
 
@@ -385,8 +377,8 @@ Namespace Rasputin
 				Else
 					res = "views not updated"
 				End If
-				con.close()
-				con.dispose()
+				
+				
 			catch ex as exception
 				makesystemlog("Error in incrementviewcount", ex.tostring())
 			end try
@@ -400,14 +392,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.comments where pool_id=? and comment_id=?"
 				
@@ -423,8 +415,8 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
+				
+				
 			catch ex as exception
 				makesystemlog("Error in GetCommentDetails", ex.tostring())
 			end try
@@ -502,14 +494,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.game_id=? and sched.pool_id=?"
 
@@ -527,8 +519,8 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
+				
+				
 			catch ex as exception
 				makesystemlog("Error in GetGameDetails", ex.tostring())
 			end try
@@ -541,14 +533,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by sched.game_tsp"
 
@@ -566,8 +558,8 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
+				
+				
 			catch ex as exception
 				makesystemlog("Error getting pool games", ex.tostring())
 			end try
@@ -582,14 +574,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from football.teams where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by team_name"
 
@@ -607,8 +599,8 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
-				con.dispose()
+				
+				
 			catch ex as exception
 				makesystemlog("Error getting pool details", ex.tostring())
 			end try
@@ -622,14 +614,8 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				con = new SQLConnection(connstring)
-				con.open()
 
 				sql = "select * from pool.invites where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by email"
 
@@ -647,7 +633,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool invites", ex.tostring())
 			end try
@@ -662,14 +648,14 @@ Namespace Rasputin
 			
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.players a full outer join admin.users b " _
 				& " on a.username=b.username where a.pool_id=? and a.player_id=?"
@@ -766,7 +752,7 @@ Namespace Rasputin
 			
 			
 			
-				con.close()
+				
 			Catch ex As exception
 				makesystemlog("Error in SendNotice", ex.tostring())
 			End Try
@@ -796,14 +782,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.players where pool_id=? order by username"
 
@@ -817,7 +803,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool players", ex.tostring())
 			end try
@@ -848,14 +834,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.options where pool_id=?"
 
@@ -887,7 +873,7 @@ Namespace Rasputin
 					end if
 				end if
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetPoolOptions", ex.tostring())
 			end try
@@ -899,8 +885,8 @@ Namespace Rasputin
 			Dim res as String = ""
 			try
 
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 
 				Dim cmd as SQLCommand
 				Dim sql as String
@@ -1449,14 +1435,14 @@ Namespace Rasputin
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string
 					dim cmd as SQLCommand
-					dim con as SQLConnection
+					'dim con as SQLConnection
 					dim parm1 as SQLParameter
 					
 					dim connstring as string
 					connstring = myconnstring
 					
-					con = new SQLConnection(connstring)
-					con.open()
+					'con = new SQLConnection(connstring)
+					
 
 					sql = "select * from pool.tiebreakers where pool_id=?"
 
@@ -1470,7 +1456,7 @@ Namespace Rasputin
 					oda.selectcommand = cmd
 					oda.fill(res)
 				
-					con.close()
+					
 				end if
 			catch ex as exception
 				makesystemlog("Error getting tie breakers", ex.tostring())
@@ -1485,14 +1471,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select distinct week_id from football.sched where pool_id=?"
 
@@ -1506,7 +1492,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool weeks", ex.tostring())
 			end try
@@ -1520,14 +1506,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select distinct username from pool.players a where a.pool_id in (select pool_id from pool.pools where pool_owner=?)"
 
@@ -1541,7 +1527,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetPlayers", ex.tostring())
 			end try
@@ -1556,14 +1542,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.players where pool_id=?"
 
@@ -1577,7 +1563,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetPlayers", ex.tostring())
 			end try
@@ -1849,14 +1835,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select count(*)  from pool.pools where scorer=? and pool_id=?"
 
@@ -1875,7 +1861,7 @@ Namespace Rasputin
 					res = true
 				end if
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in isowner", ex.tostring())
 			end try
@@ -1889,14 +1875,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select count(*)  from pool.pools where pool_owner=? and pool_id=?"
 
@@ -1915,7 +1901,7 @@ Namespace Rasputin
 					res = true
 				end if
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in isowner", ex.tostring())
 			end try
@@ -2019,7 +2005,7 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select * from pool.rss_feeds where feed_id=(select feed_id from pool.pools where pool_id=?)"
@@ -2027,8 +2013,8 @@ Namespace Rasputin
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 				cmd = new SQLCommand(sql,con)
 			
 
@@ -2047,7 +2033,7 @@ Namespace Rasputin
 					End If
 				End If
 				
-				con.close()
+				
 
 			catch ex as exception
 				makesystemlog("error in GetFeed", ex.tostring())
@@ -2153,14 +2139,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select count(*) from football.fastkeys where username=? and week_id=? and fastkey=? and pool_id=?"
 
@@ -2184,7 +2170,7 @@ Namespace Rasputin
 					
 				end if
 			
-				con.close()
+				
 				return res
 			catch ex as exception
 				makesystemlog("Error in isvalidfastkey", ex.tostring())
@@ -2368,14 +2354,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select min(game_tsp) as game_tsp from football.sched a where a.pool_id=? and a.week_id=? "
 
@@ -2414,7 +2400,7 @@ Namespace Rasputin
 					res = true
 				end if
 
-				con.close()
+				
 			Catch ex As exception
 				makesystemlog("error in PicksCanBeSeen", ex.toString())
 			end try
@@ -2426,7 +2412,7 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select count(*) from pool.players where pool_id=? and username=?"
@@ -2434,8 +2420,8 @@ Namespace Rasputin
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 				cmd = new SQLCommand(sql,con)
 			
 
@@ -2452,7 +2438,7 @@ Namespace Rasputin
 				if playercount > 0 then
 					res = true
 				end if
-				con.close()
+				
 
 			catch ex as exception
 				makesystemlog("error in isplayer", ex.tostring())
@@ -2501,14 +2487,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select a.game_id,a.week_id,a.away_id,a.home_id,a.game_tsp,b.team_name as away_team, b.team_shortname as away_shortname, b.url as away_url, c.team_name as home_team, c.team_shortname as home_shortname, c.url as home_url from football.sched a full outer join football.teams b on a.pool_id=b.pool_id and a.away_id=b.team_id full outer join football.teams c on a.pool_id=c.pool_id and a.home_id=c.team_id  where a.pool_id=? and a.week_id=? order by  a.game_tsp"
 
@@ -2526,7 +2512,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetGamesForWeek", ex.tostring())
 			end try
@@ -2541,14 +2527,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select min(week_id) as week_id from (select week_id from football.sched where pool_id=? and  game_tsp > current timestamp - 1 days ) as t"
 
@@ -2572,7 +2558,7 @@ Namespace Rasputin
 					end if
 				end if
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool weeks", ex.tostring())
 			end try
@@ -2588,7 +2574,7 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select tb.*, sched.*, away.team_name as away_team, home.team_name as home_team from pool.tiebreakers tb full outer join football.sched sched on tb.pool_id=sched.pool_id and tb.game_id=sched.game_id full outer join football.teams away on away.pool_id=sched.pool_id and away.team_id=sched.away_id full outer join football.teams home on home.pool_id=sched.pool_id and home.team_id=sched.home_id where tb.pool_id=? and tb.week_id=?"
@@ -2596,8 +2582,8 @@ Namespace Rasputin
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 				cmd = new SQLCommand(sql,con)
 			
 
@@ -2618,7 +2604,7 @@ Namespace Rasputin
 				catch
 					res = "Tie Breaker Game Not Set"
 				end try
-				con.close()
+				
 
 			catch ex as exception
 				makesystemlog("error in gettiebreakertext", ex.tostring())
@@ -2877,14 +2863,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select a.pool_id, a.game_id, a.username, a.team_id, b.team_shortname as pick_name, c.game_tsp from pool.picks a full outer join football.teams b on a.team_id=b.team_id and a.pool_id=b.pool_id full outer join football.sched c on a.game_id=c.game_id and a.pool_id=c.pool_id where a.pool_id=? and a.game_id in (select game_id from football.sched where pool_id=? and week_id=?)"
 
@@ -2906,7 +2892,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool GetAllPicksForWeek", ex.tostring())
 			end try
@@ -2922,14 +2908,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select game_id from pool.tiebreakers where pool_id=? and week_id=?"
 
@@ -2947,7 +2933,7 @@ Namespace Rasputin
 				game_id = cmd.executescalar()
 				res = game_id
 				
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetTiebreaker", ex.tostring())
 			end try
@@ -2964,14 +2950,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from football.tiebreaker where pool_id=? and week_id=?"
 
@@ -2989,7 +2975,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetPlayerTiebreakers", ex.tostring())
 			end try
@@ -3058,14 +3044,14 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 				sql = "select comment_id as thread_id, comment_title as thread_title, username as thread_author, " _
 					& " comment_tsp as thread_tsp, username as last_poster, 0 as replies, views " _
 					& " from pool.comments where ref_id is null and pool_id=?"
@@ -3130,7 +3116,7 @@ Namespace Rasputin
 				end if
 
 				res.tables.add(temp_table)
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in ShowThreads", ex.tostring())
 			end try
@@ -3145,14 +3131,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select a.pool_id, a.username, a.comment_text, a.comment_tsp, a.comment_id, a.ref_id, a.comment_title, a.views, b.nickname from pool.comments a full outer join pool.players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=? and (a.comment_id=? or a.ref_id=?) order by comment_tsp asc"
 
@@ -3176,7 +3162,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetComments", ex.tostring())
 			end try
@@ -3191,14 +3177,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select a.game_id, a.away_score, a.home_score from football.scores a full outer join football.sched b on a.pool_id=b.pool_id where a.pool_id=? and b.week_id=?"
 
@@ -3216,7 +3202,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool GetScoresForWeek", ex.tostring())
 			end try
@@ -3232,8 +3218,8 @@ Namespace Rasputin
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 
 				sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and a.pool_id =b.pool_id and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not t.away_score is null order by t.username, d.week_id"
 				cmd = New SQLCommand(sql,con)
@@ -3392,8 +3378,8 @@ Namespace Rasputin
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				
 
 					Dim temp_table As New system.Data.DataTable("Scores")
@@ -3745,8 +3731,8 @@ Namespace Rasputin
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				
 				sql = "select count(*) from pool.pools where pool_id=? and (updatescore_tsp > standings_tsp or standings_tsp is null)"
 				cmd = New SQLCommand(sql,con)
@@ -4240,14 +4226,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.picks  where pool_id=? and username=? and game_id in (select game_id from football.sched where pool_id=? and week_id=?)"
 
@@ -4274,7 +4260,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool picksforweek", ex.tostring())
 			end try
@@ -4288,14 +4274,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select team_id from pool.picks  where pool_id=? and username=? and game_id=?"
 
@@ -4316,7 +4302,7 @@ Namespace Rasputin
 
 				res = cmd.executescalar()
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetPick", ex.tostring())
 			end try
@@ -4332,7 +4318,7 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select score from football.tiebreaker  where pool_id=? and week_id=? and username=?"
@@ -4340,8 +4326,8 @@ Namespace Rasputin
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 				cmd = new SQLCommand(sql,con)
 			
 
@@ -4366,7 +4352,7 @@ Namespace Rasputin
 				catch
 					res = ""
 				end try
-				con.close()
+				
 
 			catch ex as exception
 				makesystemlog("error in gettiebreakervalue", ex.tostring())
@@ -4383,14 +4369,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.pools where pool_owner=? or pool_id in (select pool_id from pool.players where username=?)"
 
@@ -4408,7 +4394,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting pool list", ex.tostring())
 			end try
@@ -4421,14 +4407,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select a.*, b.team_name as home_team, c.team_name as away_team from pool.copy_scheds a left join pool.copy_teams b on a.home_id=b.team_id left join pool.copy_teams c on a.away_id=c.team_id order by game_tsp asc"
 				cmd = new SQLCommand(sql,con)
@@ -4437,7 +4423,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetImportGames", ex.tostring())
 			end try
@@ -4451,14 +4437,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.copy_teams order by team_name"
 
@@ -4468,7 +4454,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in GetImportTeams", ex.tostring())
 			end try
@@ -4483,14 +4469,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_id=?) order by sched.game_tsp"
 
@@ -4504,7 +4490,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error getting schedule", ex.tostring())
 			end try
@@ -4519,14 +4505,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 
 				sql = "select * from pool.invites where email=? and pool_id=? and invite_key=?"
 
@@ -4551,7 +4537,7 @@ Namespace Rasputin
 					res = true
 				end if
 
-				con.close()
+				
 			catch ex as exception
 				makesystemlog("Error in validatekey", ex.tostring())
 			end try
@@ -4565,14 +4551,14 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				dim connstring as string
 				connstring = myconnstring
 				
-				con = new SQLConnection(connstring)
-				con.open()
+				'con = new SQLConnection(connstring)
+				
 				sql = "select * from pool.pools a full outer join admin.users b on a.pool_owner=b.username where pool_id=?"
 
 				cmd = new SQLCommand(sql,con)
@@ -4642,7 +4628,7 @@ Namespace Rasputin
 					res = "Invalid input info."
 				end if
 
-				con.close()
+				
 			catch ex as exception
 				res = ex.message
 				makesystemlog("Error in AcceptInvitation", ex.tostring())
@@ -4669,13 +4655,13 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select * from final table (update admin.users set temp_password=? where ucase(username)=? or ucase(email)=?)"
 								
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				cmd = new SQLCommand(sql,con)
 			
 				parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
@@ -4694,7 +4680,7 @@ Namespace Rasputin
 				dim oda as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(user_ds)
-				con.close()
+				
 
 				if user_ds.tables(0).rows.count > 0 then
 					
@@ -4807,14 +4793,14 @@ Namespace Rasputin
 				
 				dim validate_key as string
 				
-				dim con as SQLConnection
+				'dim con as SQLConnection
 				dim cmd as SQLCommand
 				dim dr as SQLDataReader
 				dim parm1 as SQLParameter
 							
 				dim sql as string
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				
 				sql = "select count(*) from admin.users where ucase(username) = ? or ucase(email) = ?"
 				
@@ -4918,8 +4904,8 @@ Namespace Rasputin
 				dim parm1 as SQLParameter
 							
 				dim sql as string
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				
 				sql = "select a.pool_id, a.email, a.invite_key, b.pool_owner, b.pool_name, b.pool_desc from pool.invites a full outer join pool.pools b on a.pool_id=b.pool_id where a.pool_id=? and a.email=?"
 				
@@ -5020,8 +5006,8 @@ Namespace Rasputin
 				
 				dim sql as string
 						
-				con = new SQLConnection(myconnstring)
-				con.open()
+				'con = new SQLConnection(myconnstring)
+				
 				
 				'Encrypt the password
 				Dim md5Hasher as New MD5CryptoServiceProvider()
