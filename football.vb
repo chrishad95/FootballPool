@@ -96,6 +96,54 @@ Namespace Rasputin
 
 		end function
 
+		public function authenticate(username as string, password as string) as string
+			dim res as string = ""
+			try
+				'Encrypt the password
+				Dim md5Hasher as New MD5CryptoServiceProvider()
+				
+				Dim hashedBytes as Byte()   
+				Dim encoder as New UTF8Encoding()
+				
+				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
+				
+				sql = "select username from fb_users where upper(username) = @username and password= @password and validated='Y'"
+				
+				cmd = new SQLCommand(sql,cn)
+				
+				parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
+				parm1.value = username.toupper()
+				cmd.parameters.add(parm1)
+				
+				parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
+				parm1.value = hashedbytes
+				cmd.parameters.add(parm1)
+				
+				dim user_ds as system.data.dataset = new dataset()
+				oda = new System.Data.SQLClient.SQLDataAdapter()
+				oda.selectcommand = cmd
+				oda.fill(user_ds)
+				
+				if user_ds.tables(0).rows.count > 0 then
+					res = user_ds.tables(0).rows(0)("username")
+					sql = "update fb_users set login_count=login_count + 1, last_seen = current timestamp where username=@username"
+					
+					cmd = new SQLCommand(sql,cn)
+					
+					parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
+					parm1.value = res
+					cmd.parameters.add(parm1)
+					
+					cmd.executenonquery()
+				end if
+			catch ex exception
+				makesystemlog("error in geterrors", ex.tostring())
+			end try
+			end try
+			return res
+
+		end function
+
 		public function GetCommentsFeed(username as string) as dataset
 			dim res as new dataset()
 			try
