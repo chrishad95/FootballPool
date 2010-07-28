@@ -12,7 +12,7 @@
 </script>
 <%
 
-server.execute("/cookiecheck.aspx")
+server.execute("/football/cookiecheck.aspx")
 dim fb as new Rasputin.FootballUtility()
 dim ggr as new Rasputin.GreatGraph()
 

@@ -1,15 +1,9 @@
 <%@ Page language="VB" src="/football/football.vb" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Text" %>
-<script runat="server" language="VB">
-	
-
-	
-</script>
 <%
 
 	dim fb as new Rasputin.FootballUtility()

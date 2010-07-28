@@ -15,7 +15,7 @@
 
 
 
-	server.execute ("/cookiecheck.aspx")
+	server.execute ("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
 	try
 		myname = session("username")

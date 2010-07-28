@@ -1,7 +1,7 @@
 <%@ Page language="VB" runat="server" %>
 <%@ Import Namespace="System.Data" %>
 <%
-	server.execute("/cookiecheck.aspx")
+	server.execute("/football/cookiecheck.aspx")
 	
 	dim myname as string
 	myname = ""

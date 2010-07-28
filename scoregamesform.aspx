@@ -4,7 +4,7 @@
 <%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <%
-server.execute("/cookiecheck.aspx")
+server.execute("/football/cookiecheck.aspx")
 
 dim myname as string
 myname = ""

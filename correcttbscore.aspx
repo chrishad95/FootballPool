@@ -1,7 +1,7 @@
 <%@ Page language="VB" src="/football/football.vb" %>
 <%@ Import Namespace="System.Data" %>
 <%
-	server.execute("/cookiecheck.aspx")
+	server.execute("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
 	
 	dim myname as string

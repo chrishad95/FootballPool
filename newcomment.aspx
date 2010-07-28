@@ -9,7 +9,7 @@
 	end sub
 </script>
 <%
-server.execute("/cookiecheck.aspx")
+server.execute("/football/cookiecheck.aspx")
 dim fb as new Rasputin.FootballUtility()
 
 dim message_text as string = ""

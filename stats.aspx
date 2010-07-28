@@ -6,7 +6,7 @@
 </script>
 <%
 
-server.execute("/cookiecheck.aspx")
+server.execute("/football/cookiecheck.aspx")
 dim fb as new Rasputin.FootballUtility()
 dim myname as string = ""
 try

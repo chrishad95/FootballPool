@@ -625,7 +625,7 @@
 	catch
 	end try
 
-	server.execute ("/cookiecheck.aspx")
+	server.execute ("/football/cookiecheck.aspx")
 	dim message_text as string = ""
 	try
 		myname = session("username")

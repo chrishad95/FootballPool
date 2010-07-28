@@ -33,7 +33,7 @@ end function
 
 </script>
 <%
-server.execute("/cookiecheck.aspx")
+server.execute("/football/cookiecheck.aspx")
 dim myname as string
 myname = ""
 

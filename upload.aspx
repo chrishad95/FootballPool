@@ -65,7 +65,7 @@
  
 </script>
 <%
-server.execute("/cookiecheck.aspx")
+server.execute("/football/cookiecheck.aspx")
 server.scripttimeout = 360
 
 dim myname as string
