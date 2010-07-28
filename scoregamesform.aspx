@@ -94,7 +94,7 @@ con.close()
 <html>
 <head>
 	<title>Score Games - rasputin.dnsalias.com - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/style2.css";</style>
+	<style type="text/css" media="screen">@import "/football/style2.css";</football/style>
 	<style type="text/css">
 	.winner {
 		background-color: #00FF00;
@@ -168,7 +168,7 @@ con.close()
 	td {
 	font:11px verdana, arial, helvetica, sans-serif;
 	}
-	</style>
+	</football/style>
 </head>
 
 <body>

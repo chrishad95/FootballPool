@@ -762,8 +762,8 @@
 
 		}
 	 </script>
-	<style type="text/css" media="all">@import "/style2.css";</style>
-	<style type="text/css" media="all">@import "like-adw.css";</style>
+	<style type="text/css" media="all">@import "/football/style2.css";</football/style>
+	<style type="text/css" media="all">@import "like-adw.css";</football/style>
 <style>
 	form.cmxform fieldset {
 	  margin-bottom: 10px;
@@ -809,7 +809,7 @@
 	form.cmxform fieldset fieldset label {
 	  margin-left: 123px; /* Width plus 3 (html space) */
 	}
-</style>
+</football/style>
 </head>
 
 <body onLoad="handleteamselect()">

@@ -472,14 +472,14 @@
 			}
 		}
 	 </script>
-	<style type="text/css" media="all">@import "/style2.css";</style>
-	<style type="text/css" media="all">@import "like-adw.css";</style>
-	<style type="text/css" media="all">@import "cmxform.css";</style>
+	<style type="text/css" media="all">@import "/football/style2.css";</football/style>
+	<style type="text/css" media="all">@import "like-adw.css";</football/style>
+	<style type="text/css" media="all">@import "cmxform.css";</football/style>
 	<style>
 		.smallprint {
 			font-size: 10px;
 		}
-	</style>
+	</football/style>
 
 </head>
 

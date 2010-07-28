@@ -106,7 +106,7 @@
 <html>
 <head>
 <title>Register</title>
-<style type="text/css" media="all">@import "/style2.css";</style>
+<style type="text/css" media="all">@import "/football/style2.css";</football/style>
 </head>
 
 <body>

@@ -72,7 +72,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 <html>
 <head>
 	<title>Statistics - <% = pool_name %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/style4.css";</style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
 	<style type="text/css">
 		.content {
 			border: none;
@@ -86,7 +86,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 			font-size: 11px;
 			font-weight: bold;
 		}
-	</style>
+	</football/style>
 </head>
 
 <body>

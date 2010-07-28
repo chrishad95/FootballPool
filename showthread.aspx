@@ -93,7 +93,7 @@ end if
 	<link rel="stylesheet" href='/football/ie_fixes.css' type="text/css" media="screen, projection" />
 	<![endif]-->
 
-	<style type="text/css" media="all">@import "/style4.css";</style> 
+	<style type="text/css" media="all">@import "/football/style4.css";</football/style> 
 	<script type="text/javascript" src="/football/jquery.js"></script>
 	<script type="text/javascript" src="/football/cmxform.js"></script>
 	<style>
@@ -217,7 +217,7 @@ end if
 			padding: 0;
 		}
 		
-	</style>
+	</football/style>
 </head>
 
 <body>

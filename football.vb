@@ -34,22 +34,24 @@ Namespace Rasputin
 			dim cmd as SQLCommand
 			dim con as SQLConnection
 			dim parm1 as SQLParameter
-			
-			sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
-			
+
 			dim connstring as string
 			connstring = myconnstring
 			
 			con = new SQLConnection(connstring)
 			con.open()
+
+			sql = "create table fb_journal_entries (id int identity primary key, username varchar(50), journal_type varchar(20), entry_tsp datetime default current_timestamp, entry_title varchar(200), entry_text nvarchar(max))" 	
+			cmd = new SqlCommand(sql, con)
+			try
+				cmd.executenonquery()
+			catch ex as exception
+			end try
+
+			sql = "insert into fb_journal_entries (username,journal_type,entry_title,entry_text) values ('', 'FOOTBALL', @entry_title, @entry_text)"
+			
 			cmd = new SQLCommand(sql,con)
 		
-			parm1 = new SQLParameter("username", SQLDbType.varchar, 50)
-			parm1.value = "chadley"
-			cmd.parameters.add(parm1)
-			parm1 = new SQLParameter("journal_type", SQLDbType.varchar, 20)
-			parm1.value = "SYSTEM"
-			cmd.parameters.add(parm1)
 			parm1 = new SQLParameter("entry_title", SQLDbType.varchar, 200)
 			parm1.value = log_title & " - " & system.datetime.now
 			cmd.parameters.add(parm1)

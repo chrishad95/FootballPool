@@ -55,7 +55,7 @@ end if
 <title>New Pool</title>
 	<script type="text/javascript" src="jquery.js"></script>
     <script type="text/javascript" src="cmxform.js"></script>
-	<style type="text/css" media="all">@import "/style2.css";</style>
+	<style type="text/css" media="all">@import "/football/style2.css";</football/style>
 <style>
 	form.cmxform fieldset {
 	  margin-bottom: 10px;
@@ -101,7 +101,7 @@ end if
 	form.cmxform fieldset fieldset label {
 	  margin-left: 123px; /* Width plus 3 (html space) */
 	}
-</style>
+</football/style>
 </head>
 
 <body>

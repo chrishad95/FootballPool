@@ -505,7 +505,7 @@ if error_message <> "" then
 <html>
 <head>
 	<title>Statistics - <% = pool_name %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/style4.css";</style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
 	<style type="text/css">
 		.content {
 			border: none;
@@ -515,7 +515,7 @@ if error_message <> "" then
 		.week_column {
 			width: 100px;
 		}
-	</style>
+	</football/style>
 </head>
 
 <body>

@@ -102,7 +102,7 @@
 <html>
 <head>
 	<title>Login</title>
-	<style type="text/css" media="all">@import "/style2.css";</style> 
+	<style type="text/css" media="all">@import "/football/style2.css";</football/style> 
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="cmxform.js"></script>
 	<style>
@@ -151,7 +151,7 @@
 		form.cmxform fieldset fieldset label {
 		  margin-left: 123px; /* Width plus 3 (html space) */
 		}
-	</style>
+	</football/style>
 </head>
 
 <body>

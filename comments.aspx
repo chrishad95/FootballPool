@@ -67,7 +67,7 @@ comments_ds = fb.GetComments(pool_id:=pool_id, comment_count:=0)
 <html>
 <head>
 	<title>Pool Comments - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="all">@import "/style4.css";</style> 
+	<style type="text/css" media="all">@import "/football/style4.css";</football/style> 
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="cmxform.js"></script>
 	<style>
@@ -116,7 +116,7 @@ comments_ds = fb.GetComments(pool_id:=pool_id, comment_count:=0)
 		form.cmxform fieldset fieldset label {
 		  margin-left: 123px; /* Width plus 3 (html space) */
 		}
-	</style>
+	</football/style>
 </head>
 
 <body>

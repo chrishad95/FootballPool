@@ -1,4 +1,4 @@
-<%@ Page Language="vb" Debug="true" %>
+<%@ Page language="VB" debug="true" src="/football/football.vb" %>
 <%@ import namespace="system.io" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SQLClient" %>
@@ -6,7 +6,7 @@
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Text" %>
 <script runat="server" language="VB">
-	private sub MakeSystemLog (log_title as string, log_text as string)
+	private sub notMakeSystemLog (log_title as string, log_text as string)
 		dim sql as string
 		dim cmd as SQLCommand
 		dim con as SQLConnection
@@ -56,6 +56,8 @@
 	end function
 </script>
 <%
+
+dim fb as new Rasputin.FootballUtility()
 
 application("football_year") = "2005"
 	
@@ -151,7 +153,7 @@ application("football_year") = "2005"
 				
 	
 		catch ex as exception
-			makesystemlog("Error Detected - " & datetime.now, ex.tostring())
+			fb.makesystemlog("Error Detected - " & datetime.now, ex.tostring())
 		end try
 		
 	end if
@@ -215,7 +217,7 @@ application("football_year") = "2005"
 				
 			cmd.executenonquery()
 		catch ex as exception
-			makesystemlog("Error Detected - " & datetime.now, ex.tostring())
+			fb.makesystemlog("Error Detected - " & datetime.now, ex.tostring())
 		end try
 	end if
 

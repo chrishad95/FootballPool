@@ -70,14 +70,14 @@
 <html>
 <head>
 	<title>Change Nickname - <% = http_host %></title>
-	<style type="text/css" media="screen">@import "/style4.css";</style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
 	<style>
 		.content {
 			border: none;
 			padding: 1px;
 			margin:0px 0px 20px 170px;
 		}
-	</style>
+	</football/style>
 	
 </head>
 

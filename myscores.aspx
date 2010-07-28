@@ -100,7 +100,7 @@ scores_ds = fb.getscoresforweek(pool_id:=pool_id, week_id:=week_id)
 <html>
 <head>
 	<title>Game Scores - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/style2.css";</style>
+	<style type="text/css" media="screen">@import "/football/style2.css";</football/style>
 </head>
 
 <body>

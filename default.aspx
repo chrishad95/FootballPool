@@ -52,7 +52,7 @@
 <html>
 <head>
 <title><% = http_host %></title>
-<style type="text/css" media="all">@import "/style4.css";</style>
+<style type="text/css" media="all">@import "/football/style4.css";</football/style>
 <style>
 
 	caption {
@@ -325,7 +325,7 @@
 		color: #FFFF66;
 	}
 
-</style>
+</football/style>
 </head>
 
 <body>
