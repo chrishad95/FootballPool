@@ -25,21 +25,24 @@ Namespace Rasputin
 	public Class FootballUtility
 
 		private myconnstring as string = System.Configuration.ConfigurationSettings.AppSettings("connString")
-
 		private con as SQLConnection
+		private isInitialized as boolean
+
+		public sub initialize()
+			con = new SQLConnection(myconnstring)
+			con.open()
+			isInitialized = true
+		end sub
 
 		Public sub MakeSystemLog (log_title as string, log_text as string)
 		
 			dim sql as string
 			dim cmd as SQLCommand
-			dim con as SQLConnection
 			dim parm1 as SQLParameter
 
 			dim connstring as string
 			connstring = myconnstring
 			
-			con = new SQLConnection(connstring)
-			con.open()
 
 			sql = "create table fb_journal_entries (id int identity primary key, username varchar(50), journal_type varchar(20), entry_tsp datetime default current_timestamp, entry_title varchar(200), entry_text nvarchar(max))" 	
 			cmd = new SqlCommand(sql, con)
@@ -97,8 +100,17 @@ Namespace Rasputin
 		end function
 
 		public function authenticate(username as string, password as string) as string
+			dim function_name as string = "authenticate"
 			dim res as string = ""
 			try
+				dim sql as string
+				dim cmd as SQLCommand
+				dim oda as SQLDataAdapter
+				dim parm1 as SQLParameter
+				
+				
+				con = new SQLConnection(myconnstring)
+				con.open()
 				'Encrypt the password
 				Dim md5Hasher as New MD5CryptoServiceProvider()
 				
@@ -109,7 +121,7 @@ Namespace Rasputin
 				
 				sql = "select username from fb_users where upper(username) = @username and password= @password and validated='Y'"
 				
-				cmd = new SQLCommand(sql,cn)
+				cmd = new SQLCommand(sql,con)
 				
 				parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
 				parm1.value = username.toupper()
@@ -128,7 +140,7 @@ Namespace Rasputin
 					res = user_ds.tables(0).rows(0)("username")
 					sql = "update fb_users set login_count=login_count + 1, last_seen = current timestamp where username=@username"
 					
-					cmd = new SQLCommand(sql,cn)
+					cmd = new SQLCommand(sql,con)
 					
 					parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
 					parm1.value = res
@@ -136,9 +148,8 @@ Namespace Rasputin
 					
 					cmd.executenonquery()
 				end if
-			catch ex exception
-				makesystemlog("error in geterrors", ex.tostring())
-			end try
+			catch ex as exception
+				makesystemlog("error in " & function_name, ex.tostring())
 			end try
 			return res
 
