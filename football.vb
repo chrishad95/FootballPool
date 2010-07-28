@@ -40,10 +40,6 @@ Namespace Rasputin
 			dim cmd as SQLCommand
 			dim parm1 as SQLParameter
 
-			dim connstring as string
-			connstring = myconnstring
-			
-
 			sql = "create table fb_journal_entries (id int identity primary key, username varchar(50), journal_type varchar(20), entry_tsp datetime default current_timestamp, entry_title varchar(200), entry_text nvarchar(max))" 	
 			cmd = new SqlCommand(sql, con)
 			try
@@ -226,11 +222,8 @@ Namespace Rasputin
 		public function CreatePOOL(POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String) as string
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "insert into POOL.POOLS(POOL_OWNER, POOL_NAME, POOL_DESC, POOL_TSP, ELIGIBILITY, POOL_LOGO, POOL_BANNER) values (?, ?, ?, ?, ?, ?, ?)"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_OWNER", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@POOL_NAME", SQLDbType.VARCHAR, 100))
@@ -974,11 +967,8 @@ Namespace Rasputin
 		Public function UpdatePool(POOL_ID as INTEGER, POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String, scorer as string) as string
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update POOL.POOLS set POOL_NAME=?, POOL_DESC=?, POOL_TSP=?, ELIGIBILITY=?, POOL_LOGO=?, POOL_BANNER=? , scorer=? where POOL_ID=? and pool_owner=?"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_NAME", SQLDbType.VARCHAR, 100))
 				cmd.parameters.add(new SQLParameter("@POOL_DESC", SQLDbType.VARCHAR, 3000))
@@ -1001,7 +991,6 @@ Namespace Rasputin
 				cmd.parameters("@POOL_BANNER").value = POOL_BANNER
 				cmd.parameters("scorer").value = scorer
 				cmd.executenonquery()
-				cn.close()
 				res = pool_name
 			catch ex as exception
 				res = ex.toString()
@@ -1013,9 +1002,6 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 
 				dim sql as string = ""
 
@@ -1027,7 +1013,7 @@ Namespace Rasputin
 					if temp_rows.length > 0 then
 
 						sql = "insert into FOOTBALL.TEAMS(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( ?, ?, ?, ?)"
-						dim cmd as SQLCommand = new SQLCommand(sql, cn)
+						dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
 						cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", SQLDbType.VARCHAR, 5))
@@ -1038,7 +1024,6 @@ Namespace Rasputin
 						cmd.parameters("@URL").value = URL
 						cmd.parameters("@POOL_ID").value = POOL_ID
 						cmd.executenonquery()
-						cn.close()
 						res = team_name
 					else
 						res = "invalid pool_id for " & pool_owner
@@ -1047,7 +1032,6 @@ Namespace Rasputin
 					res = "No Pools found for " & pool_owner
 				end if
 
-				cn.close()
 			catch ex as exception
 				if ex.message.tostring().indexof("duplicate rows") >= 0 then
 					res = "Team already exists for this pool."
@@ -1219,11 +1203,8 @@ Namespace Rasputin
 		Public function CreateInvite(POOL_ID as INTEGER, EMAIL as String, INVITE_KEY as String, INVITE_TSP as datetime) as string
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "insert into POOL.INVITES(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (?, ?, ?, ?)"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
@@ -1234,7 +1215,6 @@ Namespace Rasputin
 				cmd.parameters("@INVITE_KEY").value = INVITE_KEY
 				cmd.parameters("@INVITE_TSP").value = INVITE_TSP
 				cmd.executenonquery()
-				cn.close()
 				res = email
 			catch ex as exception
 				res =  ex.toString()
@@ -1245,11 +1225,8 @@ Namespace Rasputin
 		Public function DeleteInvite(POOL_ID as INTEGER, EMAIL as String) as string
 			dim res as string = "FAILURE"
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "delete from POOL.INVITES where pool_id=? and email=?"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
@@ -1257,7 +1234,6 @@ Namespace Rasputin
 				cmd.parameters("@EMAIL").value = EMAIL
 
 				cmd.executenonquery()
-				cn.close()
 				res = "SUCCESS"
 			catch ex as exception
 				res =  ex.toString()
@@ -1269,16 +1245,13 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new SQLConnection()
-					cn.connectionstring = myconnstring
-					cn.open()
 					dim sql as string = ""
 
 					sql = "select a.*, b.team_name as home_team, c.team_name as away_team, b.team_shortname as home_team_shortname, c.team_shortname as away_team_shortname from pool.copy_scheds a left join pool.copy_teams b on a.home_id=b.team_id left join pool.copy_teams c on a.away_id=c.team_id where a.game_id=?"
 
 					makesystemlog("debug", sql)
 
-					dim cmd as SQLCommand = new SQLCommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
 
 					cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int))
@@ -1304,7 +1277,7 @@ Namespace Rasputin
 						away_team_id = game_ds.tables(0).rows(0)("away_id")
 						week_id = 		game_ds.tables(0).rows(0)("week_id")
 						sql = "select * from football.teams where pool_id=? and team_name in (?,?)"
-						cmd = new SQLCommand(sql, cn)
+						cmd = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@away", SQLDbType.varchar))
@@ -1351,7 +1324,7 @@ Namespace Rasputin
 						end if
 
 						sql = "insert into football.sched (pool_id, week_id, home_id, away_id, game_tsp) values (?,?,?,?,?)"
-						cmd = new SQLCommand(sql, cn)
+						cmd = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
@@ -1396,21 +1369,17 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new SQLConnection()
-					cn.connectionstring = myconnstring
-					cn.open()
 					dim sql as string = ""
 
 					sql = "insert into football.teams (pool_id, team_name, team_shortname) select " & pool_id & ", team_name, team_shortname from pool.copy_teams where team_id=?"
 					makesystemlog("debug", sql)
 
-					dim cmd as SQLCommand = new SQLCommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
 
 					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
 					cmd.parameters("@TEAM_ID").value = TEAM_ID
 					rowsupdated = cmd.executenonquery()
-					cn.close()
 
 					if rowsupdated > 0 then
 					else
@@ -1436,13 +1405,10 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new SQLConnection()
-					cn.connectionstring = myconnstring
-					cn.open()
 					dim sql as string = ""
 
 					sql = "update FOOTBALL.TEAMS set TEAM_NAME=?, TEAM_SHORTNAME=?, URL=? where POOL_ID=? and TEAM_ID=?"
-					dim cmd as SQLCommand = new SQLCommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
 
 					cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
@@ -1456,7 +1422,6 @@ Namespace Rasputin
 					cmd.parameters("@URL").value = URL
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					rowsupdated = cmd.executenonquery()
-					cn.close()
 
 					if rowsupdated > 0 then
 						res = team_name
@@ -1623,9 +1588,6 @@ Namespace Rasputin
 		Public function AddGames(POOL_ID as INTEGER, pool_owner as string, games_text as string) as string
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim lines as string()
@@ -1662,7 +1624,6 @@ Namespace Rasputin
 				else
 					res = "invalid pool_id for " & pool_owner
 				end if
-				cn.close()
 			
 			catch ex as exception
 				res = ex.message
@@ -1675,14 +1636,12 @@ Namespace Rasputin
 			dim res as string = "NO TEAM FOUND"
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 
 				dim sql as string = "select team_id from football.teams where (team_name=? or ucase(team_shortname)=?) and pool_id=?"
 
 
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
+
 
 
 				cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
@@ -1704,7 +1663,6 @@ Namespace Rasputin
 					end if
 				end if
 
-				cn.close()
 			
 			catch ex as exception
 				res = ex.message
@@ -1716,16 +1674,13 @@ Namespace Rasputin
 		Public function CreateGame(WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 
 
 				if isowner(pool_owner:=pool_owner, pool_id:=pool_id) then
 
 						dim sql as string = "insert into FOOTBALL.SCHED(WEEK_ID, HOME_ID, AWAY_ID, GAME_TSP, GAME_URL, POOL_ID) values (?, ?, ?, ?, ?, ?)"
 
-						dim cmd as SQLCommand = new SQLCommand(sql, cn)
+						dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@HOME_ID", SQLDbType.int))
@@ -1740,7 +1695,6 @@ Namespace Rasputin
 						cmd.parameters("@GAME_URL").value = GAME_URL
 						cmd.parameters("@POOL_ID").value = POOL_ID
 						cmd.executenonquery()
-						cn.close()
 						res = pool_owner
 				else
 					res = "invalid pool_id for " & pool_owner
@@ -1758,9 +1712,6 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1768,7 +1719,7 @@ Namespace Rasputin
 
 				sql = "insert into POOL.COMMENTS(POOL_ID, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, views) values (?, ?, ?, ?, ?, 0)"
 				
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
@@ -1781,7 +1732,6 @@ Namespace Rasputin
 				cmd.parameters("@COMMENT_TSP").value = system.datetime.now
 				cmd.parameters("@COMMENT_TITLE").value = COMMENT_TITLE
 				cmd.executenonquery()
-				cn.close()
 				res = username
 
 			catch ex as exception
@@ -1797,9 +1747,6 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1807,7 +1754,7 @@ Namespace Rasputin
 
 				sql = "insert into POOL.COMMENTS(POOL_ID, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, ref_id, views) values (?, ?, ?, ?, ?, ?, 0)"
 				
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
@@ -1822,7 +1769,6 @@ Namespace Rasputin
 				cmd.parameters("@COMMENT_TITLE").value = COMMENT_TITLE
 				cmd.parameters("@ref_id").value = ref_id
 				cmd.executenonquery()
-				cn.close()
 				res = username
 
 			catch ex as exception
@@ -1836,9 +1782,6 @@ Namespace Rasputin
 			
 			dim res as string = ""
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1846,7 +1789,7 @@ Namespace Rasputin
 
 				sql = "update POOL.COMMENTS set comment_title=?, comment_text=? where pool_id=? and comment_id=?"
 				
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
@@ -1857,7 +1800,6 @@ Namespace Rasputin
 				cmd.parameters("@COMMENT_TITLE").value = COMMENT_TITLE
 				cmd.parameters("@comment_id").value = comment_id
 				cmd.executenonquery()
-				cn.close()
 				res = comment_id
 
 			catch ex as exception
@@ -1872,11 +1814,8 @@ Namespace Rasputin
 			dim res as string
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new SQLConnection()
-					cn.connectionstring = myconnstring
-					cn.open()
 					dim sql as string = "update FOOTBALL.SCHED set WEEK_ID=?, HOME_ID=?, AWAY_ID=?, GAME_TSP=?, GAME_URL=? where GAME_ID=? and pool_id=?"
-					dim cmd as SQLCommand = new SQLCommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@HOME_ID", SQLDbType.int))
@@ -1894,7 +1833,6 @@ Namespace Rasputin
 					cmd.parameters("@POOL_ID").value = POOL_ID
 
 					cmd.executenonquery()
-					cn.close()
 					res = pool_owner
 				else
 					res = "Invalid pool_id."
@@ -1991,12 +1929,9 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update POOL.pools set feed_ID=? where pool_id=?"
 
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@FEED_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -2012,7 +1947,6 @@ Namespace Rasputin
 					res = "Feed was not set"
 				end if
 
-				cn.close()
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in SetFeed", ex.toString())
@@ -2025,12 +1959,9 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update POOL.options set optionvalue=? where pool_id=? and optionname=?"
 
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@OPTIONVALUE", SQLDbType.varchar, 255))
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -2048,7 +1979,7 @@ Namespace Rasputin
 					sql = "insert into POOL.options (optionvalue, pool_id, optionname) values (?,?,?)"
 					
 	
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@OPTIONVALUE", SQLDbType.varchar, 255))
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -2066,7 +1997,7 @@ Namespace Rasputin
 				if optionname = "AUTOHOMEPICKS" then
 					sql = "update pool.pools set updatescore_tsp = current timestamp where pool_id=?"
 
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = POOL_ID
@@ -2074,7 +2005,6 @@ Namespace Rasputin
 
 				end if
 
-				cn.close()
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in SetOption", ex.toString())
@@ -2170,12 +2100,9 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim cn as new SQLConnection()
-					cn.connectionstring = myconnstring
-					cn.open()
 					dim sql as string = "update POOL.TIEBREAKERS set GAME_ID=?, tb_tsp=? where pool_id=? and week_id=?"
 
-					dim cmd as SQLCommand = new SQLCommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@TB_TSP", SQLDbType.datetime))
@@ -2192,7 +2119,7 @@ Namespace Rasputin
 					if rowsaffected = 0 then
 
 						sql = "insert into POOL.TIEBREAKERS(POOL_ID, WEEK_ID, GAME_ID, TB_TSP) values (?, ?, ?, ?)"
-						cmd = new SQLCommand(sql, cn)
+						cmd = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
@@ -2210,7 +2137,6 @@ Namespace Rasputin
 						res = "Tie breaker was not set"
 					end if
 
-					cn.close()
 				else
 					res = "invalid pool_id"
 				end if
@@ -2272,19 +2198,15 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "select username from admin.users where ucase(email)=?"
 
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = email.toupper()
 
 				res = cmd.executescalar()
 
-				cn.close()
 			catch ex as exception
 				res = ""
 				makesystemlog("error getting username", ex.toString())
@@ -2298,19 +2220,15 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "select email from admin.users where username=?"
 
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
 
 				res = cmd.executescalar()
 
-				cn.close()
 			catch ex as exception
 				res = ""
 				makesystemlog("error getting email address", ex.toString())
@@ -2324,12 +2242,9 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "select email from admin.users where username=?"
 
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
@@ -2339,14 +2254,13 @@ Namespace Rasputin
 
 				dim pool_name as string
 				sql = "select pool_name from pool.pools where pool_id=?"
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 				cmd.parameters("@pool_id").value = pool_id
 				pool_name = cmd.executescalar()
 
 
-				cn.close()
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2359,15 +2273,12 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string 
 				dim cmd as SQLCommand
 				dim updatetime as datetime = datetime.now
 
 				sql = "insert into POOL.PICKS_history (POOL_ID, GAME_ID, USERNAME, TEAM_ID, MOD_USER, MOD_TSP) values (?, ?, ?, ?,?,?)"
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
@@ -2386,7 +2297,7 @@ Namespace Rasputin
 				cmd.executenonquery()
 
 				sql = "update POOL.PICKS set TEAM_ID=?, mod_user=?, mod_tsp=? where POOL_ID=? and GAME_ID=? and USERNAME=? and team_id <> ?"
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
@@ -2408,7 +2319,7 @@ Namespace Rasputin
 
 
 				sql = "select count(*) from pool.picks where POOL_ID=? and GAME_ID=? and USERNAME=?"
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
@@ -2423,7 +2334,7 @@ Namespace Rasputin
 				If rowsaffected = 0 and picksfound = 0 Then
 
 					sql = "insert into POOL.PICKS(POOL_ID, GAME_ID, USERNAME, TEAM_ID, MOD_USER, MOD_TSP) values (?, ?, ?, ?,?,?)"
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
@@ -2446,7 +2357,6 @@ Namespace Rasputin
 					res = "Failed to update pick."
 				End if
 
-				cn.close()
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2555,11 +2465,8 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update POOL.PLAYERS set NICKNAME=? WHERE POOL_ID=? AND USERNAME=?"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@NICKNAME", SQLDbType.VARCHAR, 100))
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -2580,7 +2487,7 @@ Namespace Rasputin
 					res = "Failed to update nickname."
 				End if
 
-				cn.close()
+				
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in ChangeNickname", ex.toString())
@@ -2753,11 +2660,8 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update FOOTBALL.TIEBREAKER set SCORE=? where USERNAME=? and WEEK_ID=? and  POOL_ID=? "
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
@@ -2774,7 +2678,7 @@ Namespace Rasputin
 				If rowsaffected = 0 Then
 
 					sql = "insert into FOOTBALL.TIEBREAKER(USERNAME, WEEK_ID, SCORE, POOL_ID) values (?, ?, ?, ?)"
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 
 					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
@@ -2794,7 +2698,7 @@ Namespace Rasputin
 					res = "Failed to update tiebreaker."
 				End if
 
-				cn.close()
+				
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2807,11 +2711,8 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update FOOTBALL.TIEBREAKER set SCORE=? , mod_user=? where USERNAME=? and WEEK_ID=? and  POOL_ID=? "
-				Dim cmd As SQLCommand = New SQLCommand(sql, cn)
+				Dim cmd As SQLCommand = New SQLCommand(sql, con)
 				
 				cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
@@ -2830,7 +2731,7 @@ Namespace Rasputin
 				If rowsaffected = 0 Then
 
 					sql = "insert into FOOTBALL.TIEBREAKER(USERNAME, WEEK_ID, SCORE, POOL_ID, mod_user) values (?, ?, ?, ?, ?)"
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 
 					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
@@ -2852,7 +2753,7 @@ Namespace Rasputin
 					res = "Failed to update tiebreaker."
 				End if
 
-				cn.close()
+				
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2864,14 +2765,11 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = ""
 				dim cmd as SQLCommand
 
 				sql = "select count(*) from football.scores where away_score=? and home_score=? and game_id=? and pool_id=?"
-				cmd = new SQLCommand(sql, cn)
+				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
@@ -2889,7 +2787,7 @@ Namespace Rasputin
 				if rowcount <> 1 then
 
 					sql = "insert into football.scores_history (away_score, home_score, game_id, pool_id, mod_user, mod_tsp) values (?,?,?,?,?, current timestamp)"
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
@@ -2909,7 +2807,7 @@ Namespace Rasputin
 					rowsupdated = cmd.executenonquery()
 	
 					sql = "update FOOTBALL.SCORES set AWAY_SCORE=?, HOME_SCORE=? where GAME_ID=? and pool_id=?"
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
@@ -2932,7 +2830,7 @@ Namespace Rasputin
 						res = "SUCCESS"
 					else
 						sql = "insert into FOOTBALL.SCORES(GAME_ID, AWAY_SCORE, HOME_SCORE, pool_id) values (?, ?, ?, ?)"
-						cmd = new SQLCommand(sql, cn)
+						cmd = new SQLCommand(sql, con)
 	
 						cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
@@ -2953,7 +2851,7 @@ Namespace Rasputin
 					end if
 	
 					sql = "update pool.pools set updatescore_tsp = ? where pool_id=?"
-					cmd = new SQLCommand(sql, cn)
+					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@UPDATESCORE_TSP", SQLDbType.datetime))
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -2965,7 +2863,7 @@ Namespace Rasputin
 				else
 					res = "SUCCESS" 
 				end if
-				cn.close()
+				
 			catch ex as exception
 				res = ex.message
 				makesystemlog("Error in UpdateGameScore", ex.tostring())
@@ -5230,11 +5128,8 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "select avatar from pool.players WHERE POOL_ID=? AND USERNAME=?"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
@@ -5254,7 +5149,7 @@ Namespace Rasputin
 					makesystemlog("error in GetAvatar", ex.toString())
 				end try
 
-				cn.close()
+				
 			catch ex as exception
 				makesystemlog("error in GetAvatar", ex.toString())
 			end try
@@ -5266,11 +5161,8 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim cn as new SQLConnection()
-				cn.connectionstring = myconnstring
-				cn.open()
 				dim sql as string = "update POOL.PLAYERS set avatar=? WHERE POOL_ID=? AND USERNAME=?"
-				dim cmd as SQLCommand = new SQLCommand(sql, cn)
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@avatar", SQLDbType.VARCHAR, 255))
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -5291,7 +5183,6 @@ Namespace Rasputin
 					res = "Failed to change avatar."
 				End if
 
-				cn.close()
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in ChangeAvatar", ex.toString())
