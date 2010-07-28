@@ -25,10 +25,10 @@ dim week_id as integer
 dim sql as string
 
 dim con as SQLConnection
-dim cmd as odbccommand
+dim cmd as SQLCommand
 dim dr as odbcdatareader
 dim oda as odbcdataadapter
-dim parm1 as odbcparameter
+dim parm1 as SQLParameter
 
 dim ds as dataset
 dim drow as datarow
@@ -38,7 +38,7 @@ con = new SQLConnection(System.Configuration.ConfigurationSettings.AppSettings("
 con.open()
 
 sql = "select max(week_id) as max_week_id from football.sched "
-cmd = new odbccommand(sql,con)
+cmd = new SQLCommand(sql,con)
 
 dr = cmd.executereader()
 if dr.read() then
@@ -72,8 +72,8 @@ end if
 ' get the games for the week
 sql = "select a.game_id, d.away_score, d.home_score,  b.team_id as home_id, b.team_name as home_name, b.team_shortname as home_shortname, b.team_alias as home_alias, c.team_id as away_id, c.team_name as away_name, c.team_shortname as away_shortname, c.team_alias as away_alias , a.game_url, year(a.game_tsp) as game_year, month(a.game_tsp) as game_month, day(a.game_tsp) as game_day from football.sched a full outer join football.teams b on b.team_id=a.home_id full outer join football.teams c on c.team_id=a.away_id full outer join football.scores d on d.game_id=a.game_id where a.week_id=? order by a.game_tsp, a.game_id"
 
-cmd = new odbccommand(sql,con)
-parm1 = new odbcparameter("week_id", odbctype.int)
+cmd = new SQLCommand(sql,con)
+parm1 = new SQLParameter("week_id", odbctype.int)
 parm1.value = week_id
 cmd.parameters.add(parm1)
 

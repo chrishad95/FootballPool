@@ -37,11 +37,11 @@ end function
 
 Dim cn As SQLConnection
 Dim cn2 As SQLConnection
-dim cmd2 as odbccommand
+dim cmd2 as SQLCommand
 
 Dim sConnString As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
 dim dr as odbcdatareader
-dim cmd as odbccommand
+dim cmd as SQLCommand
 dim oda as odbcdataadapter
 dim ds as dataset
 
@@ -63,7 +63,7 @@ cn = New System.Data.SQLClient.SQLConnection(sConnString)
 cn.Open()
 
 
-cmd = new odbccommand
+cmd = new SQLCommand
 cmd.connection = cn
 
 sql = "select distinct username,email from chadley.users where not username is null and username='chadley'"
@@ -77,7 +77,7 @@ dim fastkey as string
 cn2 = New System.Data.SQLClient.SQLConnection(sConnString)
 cn2.Open()
 
-cmd2 = new odbccommand()
+cmd2 = new SQLCommand()
 cmd2.connection = cn2
 
 While dr.Read

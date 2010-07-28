@@ -50,14 +50,14 @@ end if
 
 Dim cn As SQLConnection
 Dim cn2 As SQLConnection
-dim cmd2 as odbccommand
+dim cmd2 as SQLCommand
 
 Dim sConnString As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
 dim dr as odbcdatareader
-dim cmd as odbccommand
+dim cmd as SQLCommand
 dim oda as odbcdataadapter
 dim ds as dataset
-dim parm1 as odbcparameter
+dim parm1 as SQLParameter
 
 
 if request("week_id") = "" then
@@ -97,17 +97,17 @@ cn.Open()
 if username = "ALL" then
 
 	sql = "select distinct a.username,b.email from football.picks2 a full outer join chadley.users b on a.username=b.username where not a.username is null"
-	cmd = new odbccommand(sql,cn)
+	cmd = new SQLCommand(sql,cn)
 else if username = "TEST" then
 
 	sql = "select distinct username,email from chadley.users where username='chadley'"
-	cmd = new odbccommand(sql,cn)
+	cmd = new SQLCommand(sql,cn)
 else
 	sql = "select distinct username,email from chadley.users where username=?"
 	
-	cmd = new odbccommand(sql,cn)
+	cmd = new SQLCommand(sql,cn)
 	
-	parm1 = new odbcparameter("username", odbctype.varchar, 30)
+	parm1 = new SQLParameter("username", odbctype.varchar, 30)
 	parm1.value = username
 	cmd.parameters.add(parm1)
 	
@@ -119,7 +119,7 @@ dim fastkey as string
 cn2 = New System.Data.SQLClient.SQLConnection(sConnString)
 cn2.Open()
 
-cmd2 = new odbccommand()
+cmd2 = new SQLCommand()
 cmd2.connection = cn2
 
 While dr.Read

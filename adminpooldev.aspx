@@ -10,9 +10,9 @@
 	private sub MakeSystemLog (log_title as string, log_text as string)
 	
 		dim sql as string
-		dim cmd as odbccommand
+		dim cmd as SQLCommand
 		dim con as SQLConnection
-		dim parm1 as odbcparameter
+		dim parm1 as SQLParameter
 		
 		sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
 		
@@ -21,18 +21,18 @@
 		
 		con = new SQLConnection(connstring)
 		con.open()
-		cmd = new odbccommand(sql,con)
+		cmd = new SQLCommand(sql,con)
 	
-		parm1 = new odbcparameter("username", odbctype.varchar, 50)
+		parm1 = new SQLParameter("username", odbctype.varchar, 50)
 		parm1.value = "chadley"
 		cmd.parameters.add(parm1)
-		parm1 = new odbcparameter("journal_type", odbctype.varchar, 20)
+		parm1 = new SQLParameter("journal_type", odbctype.varchar, 20)
 		parm1.value = "SYSTEM"
 		cmd.parameters.add(parm1)
-		parm1 = new odbcparameter("entry_title", odbctype.varchar, 200)
+		parm1 = new SQLParameter("entry_title", odbctype.varchar, 200)
 		parm1.value = log_title
 		cmd.parameters.add(parm1)
-		parm1 = new odbcparameter("entry_text", odbctype.text, 32700)
+		parm1 = new SQLParameter("entry_text", odbctype.text, 32700)
 		parm1.value = log_text
 		cmd.parameters.add(parm1)
 		
@@ -44,9 +44,9 @@
 		dim res as new system.data.dataset()
 		try
 			dim sql as string
-			dim cmd as odbccommand
+			dim cmd as SQLCommand
 			dim con as SQLConnection
-			dim parm1 as odbcparameter
+			dim parm1 as SQLParameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
@@ -56,9 +56,9 @@
 
 			sql = "select * from pool.pools where pool_owner=?"
 
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 
-			parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+			parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
 			parm1.value = pool_owner
 			cmd.parameters.add(parm1)
 
@@ -79,9 +79,9 @@
 		dim res as new system.data.dataset()
 		try
 			dim sql as string
-			dim cmd as odbccommand
+			dim cmd as SQLCommand
 			dim con as SQLConnection
-			dim parm1 as odbcparameter
+			dim parm1 as SQLParameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
@@ -91,13 +91,13 @@
 
 			sql = "select * from pool.pools where pool_owner=? and pool_id=?"
 
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 
-			parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+			parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
 			parm1.value = pool_owner
 			cmd.parameters.add(parm1)
 
-			parm1 = new odbcparameter("@pool_id", odbctype.int)
+			parm1 = new SQLParameter("@pool_id", odbctype.int)
 			parm1.value = pool_id
 			cmd.parameters.add(parm1)
 
@@ -119,9 +119,9 @@
 		dim res as new system.data.dataset()
 		try
 			dim sql as string
-			dim cmd as odbccommand
+			dim cmd as SQLCommand
 			dim con as SQLConnection
-			dim parm1 as odbcparameter
+			dim parm1 as SQLParameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
@@ -131,13 +131,13 @@
 
 			sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by sched.game_tsp"
 
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 
-			parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+			parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
 			parm1.value = pool_owner
 			cmd.parameters.add(parm1)
 
-			parm1 = new odbcparameter("@pool_id", odbctype.int)
+			parm1 = new SQLParameter("@pool_id", odbctype.int)
 			parm1.value = pool_id
 			cmd.parameters.add(parm1)
 
@@ -159,9 +159,9 @@
 		dim res as new system.data.dataset()
 		try
 			dim sql as string
-			dim cmd as odbccommand
+			dim cmd as SQLCommand
 			dim con as SQLConnection
-			dim parm1 as odbcparameter
+			dim parm1 as SQLParameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
@@ -171,13 +171,13 @@
 
 			sql = "select * from football.teams where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by team_name"
 
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 
-			parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+			parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
 			parm1.value = pool_owner
 			cmd.parameters.add(parm1)
 
-			parm1 = new odbcparameter("@pool_id", odbctype.int)
+			parm1 = new SQLParameter("@pool_id", odbctype.int)
 			parm1.value = pool_id
 			cmd.parameters.add(parm1)
 
@@ -198,9 +198,9 @@
 		dim res as new system.data.dataset()
 		try
 			dim sql as string
-			dim cmd as odbccommand
+			dim cmd as SQLCommand
 			dim con as SQLConnection
-			dim parm1 as odbcparameter
+			dim parm1 as SQLParameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
@@ -210,13 +210,13 @@
 
 			sql = "select * from pool.invites where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by email"
 
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 
-			parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+			parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
 			parm1.value = pool_owner
 			cmd.parameters.add(parm1)
 
-			parm1 = new odbcparameter("@pool_id", odbctype.int)
+			parm1 = new SQLParameter("@pool_id", odbctype.int)
 			parm1.value = pool_id
 			cmd.parameters.add(parm1)
 
@@ -238,9 +238,9 @@
 		dim res as new system.data.dataset()
 		try
 			dim sql as string
-			dim cmd as odbccommand
+			dim cmd as SQLCommand
 			dim con as SQLConnection
-			dim parm1 as odbcparameter
+			dim parm1 as SQLParameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
@@ -250,13 +250,13 @@
 
 			sql = "select * from pool.players where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by username"
 
-			cmd = new odbccommand(sql,con)
+			cmd = new SQLCommand(sql,con)
 
-			parm1 = new odbcparameter("@pool_owner", odbctype.varchar, 50)
+			parm1 = new SQLParameter("@pool_owner", odbctype.varchar, 50)
 			parm1.value = pool_owner
 			cmd.parameters.add(parm1)
 
-			parm1 = new odbcparameter("@pool_id", odbctype.int)
+			parm1 = new SQLParameter("@pool_id", odbctype.int)
 			parm1.value = pool_id
 			cmd.parameters.add(parm1)
 
@@ -280,16 +280,16 @@
 			cn.connectionstring = myconnstring
 			cn.open()
 			dim sql as string = "update POOL.POOLS set POOL_NAME=?, POOL_DESC=?, POOL_TSP=?, ELIGIBILITY=?, POOL_LOGO=?, POOL_BANNER=? where POOL_ID=? and pool_owner=?"
-			dim cmd as odbccommand = new odbccommand(sql, cn)
+			dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-			cmd.parameters.add(new odbcparameter("@POOL_NAME", odbctype.VARCHAR, 100))
-			cmd.parameters.add(new odbcparameter("@POOL_DESC", odbctype.VARCHAR, 500))
-			cmd.parameters.add(new odbcparameter("@POOL_TSP", odbctype.datetime))
-			cmd.parameters.add(new odbcparameter("@ELIGIBILITY", odbctype.VARCHAR, 10))
-			cmd.parameters.add(new odbcparameter("@POOL_LOGO", odbctype.VARCHAR, 255))
-			cmd.parameters.add(new odbcparameter("@POOL_BANNER", odbctype.VARCHAR, 255))
-			cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-			cmd.parameters.add(new odbcparameter("@POOL_OWNER", odbctype.VARCHAR, 50))
+			cmd.parameters.add(new SQLParameter("@POOL_NAME", odbctype.VARCHAR, 100))
+			cmd.parameters.add(new SQLParameter("@POOL_DESC", odbctype.VARCHAR, 500))
+			cmd.parameters.add(new SQLParameter("@POOL_TSP", odbctype.datetime))
+			cmd.parameters.add(new SQLParameter("@ELIGIBILITY", odbctype.VARCHAR, 10))
+			cmd.parameters.add(new SQLParameter("@POOL_LOGO", odbctype.VARCHAR, 255))
+			cmd.parameters.add(new SQLParameter("@POOL_BANNER", odbctype.VARCHAR, 255))
+			cmd.parameters.add(new SQLParameter("@POOL_ID", odbctype.int))
+			cmd.parameters.add(new SQLParameter("@POOL_OWNER", odbctype.VARCHAR, 50))
 			cmd.parameters("@POOL_ID").value = POOL_ID
 			cmd.parameters("@POOL_OWNER").value = POOL_OWNER
 			cmd.parameters("@POOL_NAME").value = POOL_NAME
@@ -325,12 +325,12 @@
 				if temp_rows.length > 0 then
 
 					sql = "insert into FOOTBALL.TEAMS(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( ?, ?, ?, ?)"
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@TEAM_NAME", odbctype.VARCHAR, 20))
-					cmd.parameters.add(new odbcparameter("@TEAM_SHORTNAME", odbctype.CHAR, 3))
-					cmd.parameters.add(new odbcparameter("@URL", odbctype.VARCHAR, 200))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@TEAM_NAME", odbctype.VARCHAR, 20))
+					cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", odbctype.CHAR, 3))
+					cmd.parameters.add(new SQLParameter("@URL", odbctype.VARCHAR, 200))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", odbctype.int))
 					cmd.parameters("@TEAM_NAME").value = TEAM_NAME
 					cmd.parameters("@TEAM_SHORTNAME").value = TEAM_SHORTNAME
 					cmd.parameters("@URL").value = URL
@@ -479,12 +479,12 @@
 			cn.connectionstring = myconnstring
 			cn.open()
 			dim sql as string = "insert into POOL.INVITES(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (?, ?, ?, ?)"
-			dim cmd as odbccommand = new odbccommand(sql, cn)
+			dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-			cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-			cmd.parameters.add(new odbcparameter("@EMAIL", odbctype.VARCHAR, 255))
-			cmd.parameters.add(new odbcparameter("@INVITE_KEY", odbctype.VARCHAR, 40))
-			cmd.parameters.add(new odbcparameter("@INVITE_TSP", odbctype.datetime))
+			cmd.parameters.add(new SQLParameter("@POOL_ID", odbctype.int))
+			cmd.parameters.add(new SQLParameter("@EMAIL", odbctype.VARCHAR, 255))
+			cmd.parameters.add(new SQLParameter("@INVITE_KEY", odbctype.VARCHAR, 40))
+			cmd.parameters.add(new SQLParameter("@INVITE_TSP", odbctype.datetime))
 			cmd.parameters("@POOL_ID").value = POOL_ID
 			cmd.parameters("@EMAIL").value = EMAIL
 			cmd.parameters("@INVITE_KEY").value = INVITE_KEY
@@ -514,14 +514,14 @@
 				if temp_rows.length > 0 then
 
 					sql = "update FOOTBALL.TEAMS set TEAM_NAME=?, TEAM_SHORTNAME=?, URL=? where POOL_ID=? and TEAM_ID=?"
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 					dim rowsupdated as integer
 
-					cmd.parameters.add(new odbcparameter("@TEAM_NAME", odbctype.VARCHAR, 20))
-					cmd.parameters.add(new odbcparameter("@TEAM_SHORTNAME", odbctype.char, 3))
-					cmd.parameters.add(new odbcparameter("@URL", odbctype.VARCHAR, 200))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@TEAM_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@TEAM_NAME", odbctype.VARCHAR, 20))
+					cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", odbctype.char, 3))
+					cmd.parameters.add(new SQLParameter("@URL", odbctype.VARCHAR, 200))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@TEAM_ID", odbctype.int))
 					cmd.parameters("@TEAM_ID").value = TEAM_ID
 					cmd.parameters("@TEAM_NAME").value = TEAM_NAME
 					cmd.parameters("@TEAM_SHORTNAME").value = TEAM_SHORTNAME
@@ -579,14 +579,14 @@
 					dim sql as string = "insert into FOOTBALL.SCHED(WEEK_ID, HOME_ID, AWAY_ID, GAME_TSP, GAME_URL, POOL_ID) values (?, ?, ?, ?, ?, ?)"
 
 
-					dim cmd as odbccommand = new odbccommand(sql, cn)
+					dim cmd as SQLCommand = new SQLCommand(sql, cn)
 
-					cmd.parameters.add(new odbcparameter("@WEEK_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@HOME_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@AWAY_ID", odbctype.int))
-					cmd.parameters.add(new odbcparameter("@GAME_TSP", odbctype.datetime))
-					cmd.parameters.add(new odbcparameter("@GAME_URL", odbctype.VARCHAR, 300))
-					cmd.parameters.add(new odbcparameter("@POOL_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@WEEK_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@HOME_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@AWAY_ID", odbctype.int))
+					cmd.parameters.add(new SQLParameter("@GAME_TSP", odbctype.datetime))
+					cmd.parameters.add(new SQLParameter("@GAME_URL", odbctype.VARCHAR, 300))
+					cmd.parameters.add(new SQLParameter("@POOL_ID", odbctype.int))
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
 					cmd.parameters("@HOME_ID").value = HOME_ID
 					cmd.parameters("@AWAY_ID").value = AWAY_ID
