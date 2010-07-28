@@ -1,0 +1,147 @@
+/* xx-small | x-small | small | medium | large | x-large | xx-large */
+
+body {
+	margin: 0px 0px 20px 0px;
+	color: #333333;
+	font-family: Georgia, "Times New Roman", Times, serif;
+	background-image: url("images/corrugated_metal.gif");
+	border-top: 20px solid #000000;
+}
+
+h1{
+	font-weight: normal;
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+	padding-top: 1pt;
+}
+
+h2{
+	font-weight: normal;
+	margin-top: 0pt;
+	margin-bottom: 5pt;
+	padding-top: 0pt;
+	border-style: none none dashed none;
+	border-color: #CCCCCC;
+	border-width: 0 0 1px 0;
+}
+
+h3{
+	font-weight: normal;
+	color: #808080;
+	margin-top: 0pt;
+	padding-top: 0pt;
+}
+
+h4{
+	margin-top: 0pt;
+	margin-bottom: 0pt;
+	padding-top: 0pt;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+ul {
+	margin-top: 0pt;
+	margin-bottom: 5pt;
+}
+
+li{
+ list-style-type: circle;
+}
+
+pre {
+	width: 90%;
+	height: 200px;
+	background: #fff;
+	border: 1px #000 solid;
+	overflow: scroll;
+}
+
+
+/* Classes for items used more than once */
+
+.post{
+	background-color: #FFFFFF;
+	border-left:1px solid #808080;
+	border-right:1px solid #808080;
+	border-bottom:1px solid #808080;
+	border-top:1px solid #808080;
+	padding:15px;
+}
+
+.comment{
+	background-color: #EEEEEE;
+	border-left:1px solid #808080;
+	border-right:1px solid #808080;
+	border-bottom:1px solid #808080;
+	border-top:1px solid #808080;
+	padding:15px;
+}
+
+
+.postlinks{
+	text-align: right;
+	font-size:90%;
+}
+
+.time{
+	font-family: Courier, monospace;
+}
+
+
+/* IDs only occur once per page */
+
+#sidebar{
+	float:right;
+	width : 200px;
+	background-color: #FFFFFF;
+	border-left:1px solid #000000;
+	border-right:1px solid #000000;
+	border-bottom:1px solid #000000;
+	border-top:1px solid #000000;
+	padding:15px;
+	margin-top:60px;
+	margin-left:25px;
+}
+
+#header{
+	padding-top: 5px;
+}
+
+#topnav{
+	font-size: 90%;
+}
+
+#myPic{
+	padding-right:12px;
+	float:left;
+	margin-left: 12pt;
+	margin-bottom: 6pt;
+}
+
+#body{
+	margin-top: 24pt;
+	margin-bottom: 36pt;
+	margin-left: 72pt;
+	margin-right: 72pt;
+}
+
+#copyright{
+	text-align: center;
+	font-weight: bold;
+	border-top:1px solid #CCCCCC;
+	padding:10px;
+
+}
+
+#edit{
+	text-align: center;
+}
+
+

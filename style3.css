@@ -1,0 +1,75 @@
+
+body {margin: 0px; color: black; background: white;}
+
+a:hover {
+	text-decoration: underline;
+}
+a:link  { 
+	text-decoration: none; 
+	color: blue 
+}
+a:visited  { 
+	text-decoration: none; 
+	color: blue 
+}
+
+table {width: 100%; margin: 0;}
+table td {padding: 0; border-width: 0; vertical-align: top;}
+td#title {
+	vertical-align: bottom; 
+	color: fff;
+	font: 200% Eurostar, Arial, Helvetica, Verdana, sans-serif; 
+	background: black; 
+	padding: 10px 5 5 5}
+td#title a {text-decoration: none;}
+td#title a:link {color: white}
+td#title a:visited {color: white}
+td#date_block {
+	width: 300px; 
+	text-align: right; 	
+	vertical-align: bottom; 
+	color: fff;
+	font: 85% Eurostar, Arial, Helvetica, Verdana, sans-serif; 
+	background: black; 
+	padding: 5 5 5 5;
+}
+td#kailden_block {
+	border: 1px solid black;
+	width: 200px; 
+	text-align: left; 
+	vertical-align: center; 
+	font: 85% Arial, Helvetica, Verdana, sans-serif; 
+	padding: 5;
+	background: #330033;
+}
+td#kailden_block a:link {color: #BB8BFF}
+td#kailden_block a:visited {color: #BB8BFF}
+td#leftside {vertical-align: top; width: 120px; background: #B5B9BB}
+td#leftside td {padding: 2px; border-bottom: 1px solid black; font-size: 85%;}
+td#content {vertical-align: top; padding: 5px;  font: 100% Arial, Helvetica, Verdana, sans-serif;}
+td#content a:hover {
+	text-decoration: underline;
+}
+
+td#rightside {width: 200px;}
+p {margin: 2px;}
+div.article {
+	padding: 5px;
+	border: 1px dashed #888;
+	margin: 0 0 10 0;
+}
+
+div.postlinks{
+	text-align: center;
+	font-size:90%;
+}
+
+h2{
+	font-weight: normal;
+	margin-top: 0pt;
+	margin-bottom: 5pt;
+	padding-top: 0pt;
+	border-style: none none dashed none;
+	border-color: #CCCCCC;
+	border-width: 0 0 1px 0;
+}
