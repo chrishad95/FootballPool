@@ -183,7 +183,7 @@ application("football_year") = "2005"
 			end if
 			
 	
-			sql = "insert into admin.pagecount (page_url, page_count, page_tsp, username, http_referer,remote_addr,http_user_agent) values (?,1,current timestamp,?,?,?,?)"
+			sql = "insert into fb_admin_pagecount (page_url, page_count, page_tsp, username, http_referer,remote_addr,http_user_agent) values (?,1,current timestamp,?,?,?,?)"
 	
 			cmd = new SQLCommand(sql,cn)
 		

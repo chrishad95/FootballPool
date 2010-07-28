@@ -65,6 +65,37 @@ Namespace Rasputin
 
 		end sub 
 
+		public function GetErrors() as dataset
+			dim res as new dataset()
+			try
+
+				dim sql as string
+				dim cmd as SQLCommand
+				dim dr as SQLDataReader
+				dim oda as SQLDataAdapter
+				dim parm1 as SQLParameter
+				
+				dim ds as dataset
+				dim drow as datarow
+				dim dt as datatable
+				
+				con = new SQLConnection(myconnstring)
+				con.open()
+
+				sql = "select top 50 * from fb_journal_entries where journal_type='FOOTBALL' order by entry_tsp desc"
+				cmd = new SQLCommand(sql,con)
+				oda = new SQLDataAdapter()
+				oda.SelectCommand = cmd
+				oda.Fill(res)
+			catch ex as exception
+				makesystemlog("error in geterrors", ex.tostring())
+			end try
+
+			return res
+
+
+		end function
+
 		public function GetCommentsFeed(username as string) as dataset
 			dim res as new dataset()
 			try
