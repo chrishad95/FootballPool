@@ -105,7 +105,7 @@
 <html>
 <head>
 	<title>Login</title>
-	<style type="text/css" media="all">@import "/football/style2.css";</football/style> 
+	<style type="text/css" media="all">@import "/football/style2.css";</style> 
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="cmxform.js"></script>
 	<style>
@@ -162,7 +162,7 @@
 			padding: 3px;
 		}
 
-	</football/style>
+	</style>
 </head>
 
 <body>

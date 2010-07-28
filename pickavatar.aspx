@@ -120,14 +120,14 @@
 <html>
 <head>
 	<title>Change Avatar - <% = http_host %></title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	<style>
 		.content {
 			border: none;
 			padding: 1px;
 			margin:0px 0px 20px 170px;
 		}
-	</football/style>
+	</style>
 	<link rel="stylesheet" href='hoverbox.css' type="text/css" media="screen, projection" />
 	<!--[if IE]>
 	<link rel="stylesheet" href='ie_fixes.css' type="text/css" media="screen, projection" />

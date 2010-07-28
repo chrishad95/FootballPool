@@ -126,7 +126,7 @@ end if
 <html>
 <head>
 	<title>Make Comment - <% = pool_name %> - [<% = myname %>]</title>
-	<style type="text/css" media="all">@import "/football/style4.css";</football/style> 
+	<style type="text/css" media="all">@import "/football/style4.css";</style> 
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="cmxform.js"></script>
 	<style>
@@ -181,7 +181,7 @@ end if
 			padding: 1px;
 			margin:0px 0px 20px 170px;
 		}
-	</football/style>
+	</style>
 </head>
 
 <body>

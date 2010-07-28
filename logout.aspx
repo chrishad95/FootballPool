@@ -11,6 +11,6 @@ objCookie = new HttpCookie("password")
 objCookie.Expires = DateTime.Today.AddYears(-1)
 Response.AppendCookie(objCookie)
 
-response.redirect ("/")
+response.redirect ("/football")
 
 %>

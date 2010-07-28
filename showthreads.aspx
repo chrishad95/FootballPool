@@ -92,7 +92,7 @@ end if
 <html>
 <head>
 	<title>Trash Talk - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="all">@import "/football/style4.css";</football/style> 
+	<style type="text/css" media="all">@import "/football/style4.css";</style> 
 	<style>
 	.thread_title {	
 		background: #F5F5FF;
@@ -186,7 +186,7 @@ end if
 		color: #000000;
 		border: 1px solid #0B198C;
 	}
-	</football/style>
+	</style>
 </head>
 
 <body>

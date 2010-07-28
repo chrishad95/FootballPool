@@ -145,7 +145,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 <html>
 <head>
 	<title>Make Picks - <% = pool_name %> - [<% = player_name %>]</title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	<style type="text/css">
 	.winner {
 		background-color: #00FF00;
@@ -225,7 +225,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 		padding: 1px;
 		margin:0px 0px 20px 170px;
 	}
-	</football/style>
+	</style>
 	<script>
 
 		function doallgamerows() {

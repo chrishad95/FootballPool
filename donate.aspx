@@ -23,7 +23,7 @@ end try
 <html>
 <head>
 	<title>Donate - <% = http_host %></title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	
 </head>
 

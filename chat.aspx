@@ -21,7 +21,7 @@
 <html>
 <head>
 	<title>Chat - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/football/style2.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style2.css";</style>
 	
 </head>
 

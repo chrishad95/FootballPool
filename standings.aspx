@@ -128,7 +128,7 @@ end if
 <html>
 <head>
 	<title>Pool Standings - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	<style type="text/css">
 	.winner {
 		background-color: #00FF00;
@@ -202,7 +202,7 @@ end if
 		padding: 1px;
 		margin:0px 0px 20px 170px;
 	}
-	</football/style>
+	</style>
 </head>
 
 <body>

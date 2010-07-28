@@ -93,7 +93,7 @@ end try
 <html>
 <head>
 	<title>Upload File - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	
 </head>
 

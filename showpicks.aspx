@@ -147,7 +147,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 <html>
 <head>
 	<title>Show Picks - <% = pool_name %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	<style type="text/css">
 	.winner {
 		text-align: center;
@@ -219,7 +219,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 	   		margin: 0 0 0 0;
 		}
 	}
-	</football/style>
+	</style>
 </head>
 
 <body>

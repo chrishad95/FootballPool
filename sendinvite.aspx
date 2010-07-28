@@ -98,15 +98,15 @@
 <html>
 <head>
 	<title>Send Invitation - <% = http_host %></title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</football/style>
-	<style type="text/css" media="all">@import "cmxform.css";</football/style>
+	<style type="text/css" media="screen">@import "/football/style4.css";</style>
+	<style type="text/css" media="all">@import "cmxform.css";</style>
 	<style>
 		.content {
 			border: none;
 			padding: 1px;
 			margin:0px 0px 20px 170px;
 		}
-	</football/style>
+	</style>
 	
 </head>
 

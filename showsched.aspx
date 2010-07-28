@@ -59,8 +59,8 @@
 <html>
 <head>
 <title>Schedule</title>
-<style type="text/css" media="all">@import "/football/style4.css";</football/style>
-<style type="text/css" media="all">@import "like-adw.css";</football/style>
+<style type="text/css" media="all">@import "/football/style4.css";</style>
+<style type="text/css" media="all">@import "like-adw.css";</style>
 <style>
 
 	.content {
@@ -68,7 +68,7 @@
 		padding: 1px;
 		margin:0px 0px 20px 170px;
 	}
-</football/style>
+</style>
 
 </head>
 
