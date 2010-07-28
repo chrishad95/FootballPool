@@ -1,6 +1,6 @@
 <%@ Page language="VB" runat="server" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Collections" %>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Web.Mail" %>
@@ -11,7 +11,7 @@
 	
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
@@ -19,7 +19,7 @@
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 		cmd = new odbccommand(sql,con)
 	
@@ -45,13 +45,13 @@
 		try
 			dim sql as string
 			dim cmd as odbccommand
-			dim con as odbcconnection
+			dim con as SQLConnection
 			dim parm1 as odbcparameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
 
 			sql = "select * from pool.pools where pool_owner=?"
@@ -80,13 +80,13 @@
 		try
 			dim sql as string
 			dim cmd as odbccommand
-			dim con as odbcconnection
+			dim con as SQLConnection
 			dim parm1 as odbcparameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
 
 			sql = "select * from pool.pools where pool_owner=? and pool_id=?"
@@ -120,13 +120,13 @@
 		try
 			dim sql as string
 			dim cmd as odbccommand
-			dim con as odbcconnection
+			dim con as SQLConnection
 			dim parm1 as odbcparameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
 
 			sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by sched.game_tsp"
@@ -160,13 +160,13 @@
 		try
 			dim sql as string
 			dim cmd as odbccommand
-			dim con as odbcconnection
+			dim con as SQLConnection
 			dim parm1 as odbcparameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
 
 			sql = "select * from football.teams where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by team_name"
@@ -199,13 +199,13 @@
 		try
 			dim sql as string
 			dim cmd as odbccommand
-			dim con as odbcconnection
+			dim con as SQLConnection
 			dim parm1 as odbcparameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
 
 			sql = "select * from pool.invites where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by email"
@@ -239,13 +239,13 @@
 		try
 			dim sql as string
 			dim cmd as odbccommand
-			dim con as odbcconnection
+			dim con as SQLConnection
 			dim parm1 as odbcparameter
 			
 			dim connstring as string
 			connstring = ConfigurationSettings.AppSettings("connString")
 			
-			con = new odbcconnection(connstring)
+			con = new SQLConnection(connstring)
 			con.open()
 
 			sql = "select * from pool.players where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by username"
@@ -276,7 +276,7 @@
 	private function UpdatePool(POOL_ID as INTEGER, POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String) as string
 		dim res as string = ""
 		try
-			dim cn as new odbcconnection()
+			dim cn as new SQLConnection()
 			cn.connectionstring = myconnstring
 			cn.open()
 			dim sql as string = "update POOL.POOLS set POOL_NAME=?, POOL_DESC=?, POOL_TSP=?, ELIGIBILITY=?, POOL_LOGO=?, POOL_BANNER=? where POOL_ID=? and pool_owner=?"
@@ -311,7 +311,7 @@
 		dim res as string = ""
 
 		try
-			dim cn as new odbcconnection()
+			dim cn as new SQLConnection()
 			cn.connectionstring = myconnstring
 			cn.open()
 
@@ -475,7 +475,7 @@
 	private function CreateInvite(POOL_ID as INTEGER, EMAIL as String, INVITE_KEY as String, INVITE_TSP as datetime) as string
 		dim res as string = ""
 		try
-			dim cn as new odbcconnection()
+			dim cn as new SQLConnection()
 			cn.connectionstring = myconnstring
 			cn.open()
 			dim sql as string = "insert into POOL.INVITES(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (?, ?, ?, ?)"
@@ -501,7 +501,7 @@
 	private function UpdateTeam(TEAM_ID as INTEGER, TEAM_NAME as String, TEAM_SHORTNAME as String, URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 		dim res as string = ""
 		try
-			dim cn as new odbcconnection()
+			dim cn as new SQLConnection()
 			cn.connectionstring = myconnstring
 			cn.open()
 			dim sql as string = ""
@@ -563,7 +563,7 @@
 	private function CreateGame(WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 		dim res as string = ""
 		try
-			dim cn as new odbcconnection()
+			dim cn as new SQLConnection()
 			cn.connectionstring = myconnstring
 			cn.open()
 

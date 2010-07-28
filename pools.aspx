@@ -1,7 +1,7 @@
 <%@ Page language="VB" src="/football/dev.vb" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Text" %>

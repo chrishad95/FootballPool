@@ -1,6 +1,6 @@
 <%@ Page language="VB" runat="server" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Collections" %>
 <script runat="server" language="VB">
 
@@ -8,7 +8,7 @@
 	
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
@@ -16,7 +16,7 @@
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 		cmd = new odbccommand(sql,con)
 	
@@ -41,13 +41,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 		sql = "create table pool.pools (pool_id int NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 100, INCREMENT BY 5),  pool_owner varchar(50), pool_name varchar(100), pool_desc varchar(500), pool_tsp timestamp)"
@@ -95,13 +95,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 		
@@ -148,13 +148,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 
@@ -205,13 +205,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 
@@ -254,13 +254,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 
@@ -304,13 +304,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 
@@ -364,13 +364,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 
@@ -416,13 +416,13 @@
 
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		dim connstring as string
 		connstring = ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 
 

@@ -1,7 +1,7 @@
 <%@ Page language="VB" runat="server" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <%
 server.execute("/cookiecheck.aspx")
@@ -24,7 +24,7 @@ dim default_week_id as integer
 dim week_id as integer
 dim sql as string
 
-dim con as odbcconnection
+dim con as SQLConnection
 dim cmd as odbccommand
 dim dr as odbcdatareader
 dim oda as odbcdataadapter
@@ -34,7 +34,7 @@ dim ds as dataset
 dim drow as datarow
 dim dt as datatable
 
-con = new odbcconnection(System.Configuration.ConfigurationSettings.AppSettings("connString"))
+con = new SQLConnection(System.Configuration.ConfigurationSettings.AppSettings("connString"))
 con.open()
 
 sql = "select max(week_id) as max_week_id from football.sched "

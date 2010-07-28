@@ -1,7 +1,7 @@
 <%@ Page language="VB" runat="server" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <script runat="server" language="VB">
 function getrandomstring()
@@ -35,8 +35,8 @@ end function
 <%
 
 
-Dim cn As OdbcConnection
-Dim cn2 As OdbcConnection
+Dim cn As SQLConnection
+Dim cn2 As SQLConnection
 dim cmd2 as odbccommand
 
 Dim sConnString As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
@@ -54,7 +54,7 @@ Dim myMessage As New MailMessage
 
 dim sql as string
 
-cn = New Odbc.OdbcConnection(sConnString)
+cn = New System.Data.SQLClient.SQLConnection(sConnString)
 cn.Open()
 
 cmd = new odbccommand()
@@ -166,7 +166,7 @@ cmd.commandtext = sql
 dr = cmd.ExecuteReader()
 dim fastkey as string
 
-cn2 = New Odbc.OdbcConnection(sConnString)
+cn2 = New System.Data.SQLClient.SQLConnection(sConnString)
 cn2.Open()
 
 cmd2 = new odbccommand()

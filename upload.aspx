@@ -1,7 +1,7 @@
 <%@ Page language="VB" src="football.vb" Debug="true" %>
 <%@ Import Namespace="System.IO" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <script runat="server">
   function gettimestamp() as string
 

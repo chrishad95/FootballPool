@@ -1,7 +1,7 @@
 <%@ Page Language="vb" Debug="true" %>
 <%@ import namespace="system.io" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Threading" %>
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Text" %>
@@ -9,7 +9,7 @@
 	private sub MakeSystemLog (log_title as string, log_text as string)
 		dim sql as string
 		dim cmd as odbccommand
-		dim con as odbcconnection
+		dim con as SQLConnection
 		dim parm1 as odbcparameter
 		
 		sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
@@ -17,7 +17,7 @@
 		
 		dim connstring as string = System.Configuration.ConfigurationSettings.AppSettings("connString")
 		
-		con = new odbcconnection(connstring)
+		con = new SQLConnection(connstring)
 		con.open()
 		cmd = new odbccommand(sql,con)
 	
@@ -76,7 +76,7 @@ application("football_year") = "2005"
 		session("username") = ""
 	end if
 
-	Dim cn As OdbcConnection
+	Dim cn As SQLConnection
 		
 	dim sConnString as string = ConfigurationSettings.AppSettings("connString")
 	
@@ -89,7 +89,7 @@ application("football_year") = "2005"
 	dim sql as string
 	dim count 
 	
-	cn = New Odbc.OdbcConnection(sConnString)
+	cn = New System.Data.SQLClient.SQLConnection(sConnString)
 	cn.Open()
 	
 	if myname = "" then
@@ -127,7 +127,7 @@ application("football_year") = "2005"
 				cmd.parameters.add(parm1)
 				
 				dim user_ds as system.data.dataset = new dataset()
-				oda = new system.data.odbc.odbcdataadapter()
+				oda = new System.Data.SQLClient.odbcdataadapter()
 				oda.selectcommand = cmd
 				oda.fill(user_ds)
 				

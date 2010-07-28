@@ -1,7 +1,7 @@
 <%@ Page language="VB" src="/football/football.vb" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <script runat="server" language="VB">
 	private myname as string = ""

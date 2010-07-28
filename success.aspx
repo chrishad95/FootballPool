@@ -1,6 +1,6 @@
 <%@ Page language="VB" runat="server" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.ODBC" %>
+<%@ Import Namespace="System.Data.SQLClient" %>
 <%
 server.execute("/cookiecheck.aspx")
 
