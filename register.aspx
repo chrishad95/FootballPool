@@ -5,15 +5,10 @@
 <%@ Import Namespace="System.Web.Mail" %>
 <%@ Import Namespace="System.Security.Cryptography" %>
 <%@ Import Namespace="System.Text" %>
-<script runat="server" language="VB">
-	
-	
-</script>
 <%
-
+	server.execute ("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
 	fb.initialize()
-	server.execute ("/football/cookiecheck.aspx")
 	dim http_host as string = ""
 	try
 		http_host = request.servervariables("HTTP_HOST")
@@ -90,8 +85,6 @@
 				http_referer = request.servervariables("HTTP_REFERER")
 			catch
 			end try
-
-
 			dim sb as new system.text.stringbuilder()
 			sb.append("Username: " & username & system.environment.newline)
 			sb.append("Email: " & email & system.environment.newline)
@@ -100,6 +93,10 @@
 			sb.append("System Time: " & system.datetime.now & system.environment.newline)
 
 			fb.makesystemlog("A new user has registered", sb.tostring())
+
+			session("page_message") = "Your registration was successful.  You will get an email with a validation code that will allow you to validate your account."
+			response.redirect("default.aspx", true)
+
 		end if
 
 	end if

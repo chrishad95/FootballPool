@@ -150,13 +150,6 @@
 		  margin-left: 123px; /* Width plus 3 (html space) */
 		}
 
-		.message {
-			background: Maroon;
-			color: white;
-			font-size: 1.1em;
-			padding: 3px;
-		}
-
 	</style>
 </head>
 

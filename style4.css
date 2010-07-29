@@ -70,6 +70,13 @@ a.incomment:link, a.incomment:visited 	{ border-bottom:1px dotted #333333; color
 a.incomment:visited 			{ border-bottom-color:#333333; color:#333333; }
 a.incomment:hover 			{ border-bottom:1px solid #CD3700; color:#f00; }
 
+.message {
+	background: DarkGreen;
+	color: white;
+	font-size: 1.1em;
+	padding: 3px;
+}
+
 table {
 	width: 100%;
 }

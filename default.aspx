@@ -12,10 +12,9 @@
 
 </script>
 <%
-
+	server.execute ("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
 	fb.initialize()
-	server.execute ("/football/cookiecheck.aspx")
 	try
 		myname = session("username")
 	catch
@@ -332,7 +331,31 @@
 <body>
 
 <div class="content">
-    <%
+	<%
+	try
+		if session("page_message") <> "" then
+			%>
+			<div class="message">
+			<% = session("page_message") %><br />
+			</div>
+			<%
+			session("page_message") = ""
+		end if
+	catch
+	end try
+	try
+		if session("error_message") <> "" then
+			%>
+			<div class="error_message">
+			<% = session("error_message") %><br />
+			</div>
+			<%
+			session("error_message") = ""
+		end if
+	catch
+	end try
+
+
 	if myname = "" then
 		response.write("You are not logged in.<br />")
 	else

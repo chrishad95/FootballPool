@@ -703,9 +703,9 @@ Namespace Rasputin
 						
 
 						Dim sb As New stringbuilder()
-						sb.append("This is just a friendly reminder from <a href=""http://superpools.gotdns.com"">http://superpools.gotdns.com</a> to make your football picks for Week #" & week_id & ".  <br><br>" & system.environment.newline)
+						sb.append("This is just a friendly reminder from <a href=""http://www.smackpools.com"">http://www.smackpools.com</a> to make your football picks for Week #" & week_id & ".  <br><br>" & system.environment.newline)
 						sb.append("Here is your fastpick link.<br><br>" & system.environment.newline)
-						sb.append("Go to:<br /> <a href=""http://superpools.gotdns.com/football/makepicks.aspx?pool_id=" & pool_id & "&week_id=" & week_id & "&player_name=" & username & "&fastkey=" & fastkey & """>http://superpools.gotdns.com/football/makepicks.aspx?pool_id=" & pool_id & "&week_id=" & week_id & "&player_name=" & username & "&fastkey=" & fastkey & "</a> <br />to make your picks.<br /><br />" & system.environment.newline & system.environment.newline  )
+						sb.append("Go to:<br /> <a href=""http://www.smackpools.com/football/makepicks.aspx?pool_id=" & pool_id & "&week_id=" & week_id & "&player_name=" & username & "&fastkey=" & fastkey & """>http://www.smackpools.com/football/makepicks.aspx?pool_id=" & pool_id & "&week_id=" & week_id & "&player_name=" & username & "&fastkey=" & fastkey & "</a> <br />to make your picks.<br /><br />" & system.environment.newline & system.environment.newline  )
 						sb.append ("<br/><b>DO NOT FORWARD THIS EMAIL</b></BR> If you forward this email to someone else they will be able to use the fastpick link to change your picks for this week.  <br><br>" & system.environment.newline)
 						sb.append("<br>Message from the pool administrator:<br>" & system.environment.newline)
 						sb.append(bbencode(message))
@@ -1114,7 +1114,7 @@ Namespace Rasputin
 
 					if not pool_ds.tables(0).rows(0)("pool_banner") is dbnull.value then
 						dim banner_image as string = ""
-						banner_image = "http://superpools.gotdns.com/users/"  &  pool_ds.tables(0).rows(0)("pool_owner") & "/" & pool_ds.tables(0).rows(0)("pool_banner")
+						banner_image = "http://www.smackpools.com/users/"  &  pool_ds.tables(0).rows(0)("pool_owner") & "/" & pool_ds.tables(0).rows(0)("pool_banner")
 						sb.append("<img src=""" & banner_image & """><br />"  & system.environment.newline)
 
 					end if
@@ -1146,9 +1146,9 @@ Namespace Rasputin
 						& "<br><br>"  & system.environment.newline)
 					
 					sb.append("To accept the invitation please visit the following link.<br><br>" & system.environment.newline)
-					sb.append("Go to:<br /> <a href=""http://superpools.gotdns.com/football/acceptinvite.aspx?pool_id=" & pool_id & "&email=" & email & "&invite_key=" & invite_key & """>http://superpools.gotdns.com/football/acceptinvite.aspx?pool_id=" & pool_id & "&email=" & email & "&invite_key=" & invite_key & "</a> <br /><br /><br />" & system.environment.newline & system.environment.newline  )
+					sb.append("Go to:<br /> <a href=""http://www.smackpools.com/football/acceptinvite.aspx?pool_id=" & pool_id & "&email=" & email & "&invite_key=" & invite_key & """>http://www.smackpools.com/football/acceptinvite.aspx?pool_id=" & pool_id & "&email=" & email & "&invite_key=" & invite_key & "</a> <br /><br /><br />" & system.environment.newline & system.environment.newline  )
 					
-					sb.append("You will need an account with this site (and be logged in) to accept the invitation.  If you don't have an account you should get one <a href=""http://superpools.gotdns.com/football/register.aspx"">here</a> first.<br /><br />" & system.environment.newline)
+					sb.append("You will need an account with this site (and be logged in) to accept the invitation.  If you don't have an account you should get one <a href=""http://www.smackpools.com/football/register.aspx"">here</a> first.<br /><br />" & system.environment.newline)
 
 					sb.append("Note: If you already have an account on rasputin.dnsalias.com, you can user your username and password from that site.<br /><br />" & system.environment.newline)
 					
@@ -1623,7 +1623,7 @@ Namespace Rasputin
 
 			try
 
-				dim sql as string = "select team_id from football.teams where (team_name=? or ucase(team_shortname)=?) and pool_id=?"
+				dim sql as string = "select team_id from football.teams where (team_name=? or UPPER(team_shortname)=?) and pool_id=?"
 
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1830,21 +1830,14 @@ Namespace Rasputin
 			return res
 		end function
 
-		Public function isscorer(pool_id as integer, username as string) as boolean
+		Public function isScorer(pool_id as integer, username as string) as boolean
 			dim res as boolean = false
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
-				sql = "select count(*)  from pool.pools where scorer=? and pool_id=?"
+				sql = "select count(*)  from fb_pools where scorer=@scorer and pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -1863,28 +1856,22 @@ Namespace Rasputin
 			
 				
 			catch ex as exception
-				makesystemlog("Error in isowner", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
 
 		end function
 
-		Public function isowner(pool_id as integer, pool_owner as string) as boolean
+		Public function isOwner(pool_id as integer, pool_owner as string) as boolean
 			dim res as boolean = false
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
-				sql = "select count(*)  from pool.pools where pool_owner=? and pool_id=?"
+				sql = "select count(*)  from fb_pools where pool_owner=@pool_owner and pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -1903,7 +1890,8 @@ Namespace Rasputin
 			
 				
 			catch ex as exception
-				makesystemlog("Error in isowner", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -2184,7 +2172,7 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
-				dim sql as string = "select username from admin.users where ucase(email)=?"
+				dim sql as string = "select username from admin.users where UPPER(email)=?"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2345,7 +2333,8 @@ Namespace Rasputin
 
 			catch ex as exception
 				res = ex.message
-				makesystemlog("error updating pick", ex.toString())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function
@@ -2402,29 +2391,23 @@ Namespace Rasputin
 
 				
 			Catch ex As exception
-				makesystemlog("error in PicksCanBeSeen", ex.toString())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function
-		public function isplayer(pool_id as integer, player_name as string) as boolean
+
+		public function isPlayer(pool_id as integer, player_name as string) as boolean
 			dim res as boolean = false
 			try
 
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
-				
-				sql = "select count(*) from pool.players where pool_id=? and username=?"
 
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
+				sql = "select count(*) from fb_players where pool_id=@pool_id and username=@username"
+
 				cmd = new SQLCommand(sql,con)
-			
-
 
 				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
@@ -2438,10 +2421,10 @@ Namespace Rasputin
 				if playercount > 0 then
 					res = true
 				end if
-				
 
 			catch ex as exception
-				makesystemlog("error in isplayer", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -4658,7 +4641,7 @@ Namespace Rasputin
 				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				sql = "select * from final table (update admin.users set temp_password=? where ucase(username)=? or ucase(email)=?)"
+				sql = "select * from final table (update admin.users set temp_password=? where UPPER(username)=? or UPPER(email)=?)"
 								
 				'con = new SQLConnection(myconnstring)
 				
@@ -4731,23 +4714,24 @@ Namespace Rasputin
 				myMessage = New MailMessage
 				
 				myMessage.BodyFormat = MailFormat.Html
-				myMessage.From = "chrishad95@yahoo.com"
+				myMessage.From = "support@smackpools.com"
 				myMessage.To = emailaddress
 				myMessage.Subject = subject
 				myMessage.Body = body
 				
-				myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserver", "smtp.mail.yahoo.com")
-				myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserverport", 25)
-				myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusing", 2)
-				myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate", 1)
-				myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusername", "chrishad95")
-				myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", "househorse89")
+				'myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserver", "smtp.mail.yahoo.com")
+				'myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserverport", 25)
+				'myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusing", 2)
+				'myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate", 1)
+				'myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusername", "chrishad95")
+				'myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", "househorse89")
 				
 				' Doesn't have to be local... just enter your
 				' SMTP server's name or ip address!
 				
 				
 				SmtpMail.SmtpServer = "smtp.mail.yahoo.com"
+				SmtpMail.SmtpServer = "mrelay.perfora.net"
 				SmtpMail.Send(myMessage)
 				res = emailaddress
 
@@ -4802,15 +4786,15 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 				
-				sql = "select count(*) from admin.users where ucase(username) = ? or ucase(email) = ?"
+				sql = "select count(*) from fb_users where UPPER(username) = @username or UPPER(email) = @email"
 				
 				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+				parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
 				parm1.value = username.toupper()
 				cmd.parameters.add(parm1)
 				
-				parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
+				parm1 = new SQLParameter("@email", SQLDbType.varchar, 50)
 				parm1.value = email.toupper()
 				cmd.parameters.add(parm1)
 				
@@ -4844,28 +4828,24 @@ Namespace Rasputin
 					next
 					validate_key = randomstring.ToString()
 								
-					sql = "insert into admin.users (username,email,password,login_count,validated,validate_key, last_seen) values (?,?,?,0,'N',?, ?)"
+					sql = "insert into fb_users (username,email,password,validate_key) values (@username, @email, @password,@validate_key)"
 					
 					cmd = new SQLCommand(sql,con)
 					
-					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+					parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
 					parm1.value = username
 					cmd.parameters.add(parm1)
 					
-					parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
+					parm1 = new SQLParameter("@email", SQLDbType.varchar, 50)
 					parm1.value = email
 					cmd.parameters.add(parm1)
 					
-					parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
+					parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
 					parm1.value = hashedbytes
 					cmd.parameters.add(parm1)
 					
-					parm1 = new SQLParameter("validate_key", SQLDbType.varchar, 40)
+					parm1 = new SQLParameter("@validate_key", SQLDbType.varchar, 40)
 					parm1.value = validate_key
-					cmd.parameters.add(parm1)
-
-					parm1 = new SQLParameter("last_seen", SQLDbType.datetime)
-					parm1.value = system.datetime.now
 					cmd.parameters.add(parm1)
 					
 					cmd.executenonquery()
@@ -4873,20 +4853,15 @@ Namespace Rasputin
 					
 					dim sb as new stringbuilder()
 					
-					sb.append("You have registered to use the superpools.gotdns.com website.  <br><br>" & system.environment.newline)
-					
+					sb.append("You have registered to use the www.smackpools.com website.  <br><br>" & system.environment.newline)
 					sb.append ("Username: " & username & " <br><br>" & system.environment.newline)
-					
 					sb.append ("Password: " & password & " <br><br>" & system.environment.newline)
-					
 					sb.append ("To verify that this is a valid email address you must go to the URL below before you can login using your username and password. <br><br>" & system.environment.newline)
-					
-					
 					sb.append("Here is your validation link.<br><br>" & system.environment.newline)
-					sb.append("<a href=""http://superpools.gotdns.com/validate_registration.aspx?username=" & username & "&validate_key=" & validate_key & """>http://superpools.gotdns.com/validate_registration.aspx?username=" & username & "&validate_key=" & validate_key & "</a> <br /><br /><br />" & system.environment.newline & system.environment.newline & "Thanks,<br />" & system.environment.newline & "Chris")
+					sb.append("<a href=""http://www.smackpools.com/football/validate_registration.aspx?username=" & username & "&validate_key=" & validate_key & """>http://www.smackpools.com/football/validate_registration.aspx?username=" & username & "&validate_key=" & validate_key & "</a> <br /><br /><br />" & system.environment.newline & system.environment.newline & "Thanks,<br />" & system.environment.newline & "Chris")
 					
 					
-					sendemail(emailaddress:=email, subject:="superpools.gotdns.com registration verification" , body:=sb.tostring())
+					sendemail(emailaddress:=email, subject:="www.smackpools.com registration verification" , body:=sb.tostring())
 					res = email
 				end if
 			catch ex as exception
@@ -5017,7 +4992,7 @@ Namespace Rasputin
 				
 				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
 				
-				sql = "select username from admin.users where ucase(username) = ? and password=? and validated='Y'"
+				sql = "select username from admin.users where UPPER(username) = ? and password=? and validated='Y'"
 				
 				cmd = new SQLCommand(sql,con)
 				
@@ -5037,7 +5012,7 @@ Namespace Rasputin
 				if user_ds.tables(0).rows.count <= 0 then
 					'makesystemlog("Failed Login First Try", "Username:" & username & " - Password:" & password)
 					
-					sql = "select username from admin.users where ucase(username) = ? and temp_password=? and validated='Y'"
+					sql = "select username from admin.users where UPPER(username) = ? and temp_password=? and validated='Y'"
 					
 					cmd = new SQLCommand(sql,con)
 					
@@ -5069,7 +5044,7 @@ Namespace Rasputin
 		
 						' refill user_ds dataset so the rest of the code will work normally 
 		
-						sql = "select username from admin.users where ucase(username) = ? and password=? and validated='Y'"
+						sql = "select username from admin.users where UPPER(username) = ? and password=? and validated='Y'"
 				
 						cmd = new SQLCommand(sql,con)
 						
