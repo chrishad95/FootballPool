@@ -12,7 +12,6 @@
 </script>
 <%
 	dim fb as new Rasputin.FootballUtility()
-	fb.initialize()
 
 	dim http_host as string = ""
 	try
@@ -53,7 +52,7 @@
 		end if
 	catch
 	end try
-	'CreateTeam(TEAM_NAME as String, TEAM_SHORTNAME as String, URL as String, POOL_ID as INTEGER)
+
 	try
 		if request("submit") = "Add Team" then
 			dim res as string = ""
