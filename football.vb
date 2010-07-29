@@ -4481,6 +4481,42 @@ Namespace Rasputin
 			return res
 		end function
 
+		public function validateEmail (key as string, username as string) as boolean
+			dim res as boolean = false
+			try
+				dim sql as string
+				dim cmd as SQLCommand
+				dim parm1 as SQLParameter
+				
+				sql = "select * from fb_users where username=@username and validate_key=@validate_key"
+
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@username", SQLDbType.VARCHAR, 50))
+				cmd.parameters.add(new SQLParameter("@validate_key", SQLDbType.VARCHAR, 50))
+
+				cmd.parameters("@username").value = username
+				cmd.parameters("@validate_key").value = validate_key 
+
+				dim invites_ds as new dataset()
+				dim oda as new SQLDataAdapter()
+				oda.selectcommand = cmd
+				oda.fill(invites_ds)
+				if invites_ds.tables(0).rows.count > 0 then
+					sql = "update fb_users set validated='Y', validate_key='' where username=@username"
+					cmd = new SQLCommand(sql,con)
+					cmd.parameters.add(new SQLParameter("@username", SQLDbType.VARCHAR, 50)).value = username
+					cmd.executenonQuery()
+
+					res = true
+				end if 
+				
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+
+			return res 
+		end function
 		
 		public function validatekey (invite_key as string, email as string, pool_id as integer) as boolean
 			dim res as boolean = false
@@ -4488,15 +4524,8 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
 				sql = "select * from pool.invites where email=? and pool_id=? and invite_key=?"
 
 				cmd = new SQLCommand(sql,con)
@@ -4506,11 +4535,7 @@ Namespace Rasputin
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@EMAIL").value = EMAIL
-				cmd.parameters("@INVITE_KEY").value = INVITE_KEY
-				
-				'makesystemlog("debug", "pool_id=" &  cmd.parameters("@POOL_ID").value & ".")
-				'makesystemlog("debug", "email=" &  cmd.parameters("@EMAIL").value & ".")
-				'makesystemlog("debug", "invite_key=" &  cmd.parameters("@INVITE_KEY").value & ".")
+				cmd.parameters("@INVITE_KEY").value = INVITE_KEY 
 
 				dim invites_ds as new dataset()
 				dim oda as new SQLDataAdapter()
@@ -4518,11 +4543,11 @@ Namespace Rasputin
 				oda.fill(invites_ds)
 				if invites_ds.tables(0).rows.count > 0 then
 					res = true
-				end if
-
+				end if 
 				
 			catch ex as exception
-				makesystemlog("Error in validatekey", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res

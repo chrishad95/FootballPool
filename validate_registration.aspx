@@ -1,7 +1,6 @@
-<%@ Page language="VB" runat="server" %>
+<%@ Page language="VB" src="/football/football.vb" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.ODBC" %>
 <%@ Import Namespace="System.Web.Mail" %>
 <script runat="server" language="VB">
 function validusername(u as string)
@@ -54,80 +53,74 @@ end function
 
 </script>
 <%
-server.execute("connstring.aspx")
 
+dim fb as new Rasputin.FootballUtility()
+fb.initialize()
 
-if request("username") = "" or request("validate_key") = "" then
-	session("page_message") = "Invalid input information."
-	response.redirect("/error",true)
-end if
 
 dim username as string
 dim validate_key as string
+username = ""
+validate_key = ""
 
-username = request("username")
-validate_key = request("validate_key")
+try
+	username = request("username")
+catch ex as exception
+end try
 
+try
+	validate_key = request("validate_key")
+catch ex as exception
+end try
 
-dim con as odbcconnection
-dim cmd as odbccommand
-dim dr as odbcdatareader
-dim parm1 as odbcparameter
+if username = "" or validate_key = "" then
+	session("page_message") = "Invalid input information."
+	response.redirect("error.aspx",true)
+end if
 
-dim connstring as string = System.Configuration.ConfigurationSettings.AppSettings("connString")
+dim res as boolean
+res = false
+try 
+	res = fb.validateEmail(validate_key, username)
+catch ex as exception
+end try
 
-dim sql as string
-
-con = new odbcconnection(connstring)
-con.open()
-
-
-sql = "update admin.users set validated='Y' where ucase(username)=? and validate_key=?"
-
-cmd = new odbccommand(sql,con)
-
-parm1 = new odbcparameter("username", odbctype.varchar, 30)
-parm1.value = username.toupper()
-cmd.parameters.add(parm1)
-
-parm1 = new odbcparameter("validate_key", odbctype.varchar, 40)
-parm1.value = validate_key
-cmd.parameters.add(parm1)
-
-cmd.executenonquery()
-
+if not res then
+	session("error_message") = "Invalid validation information. Account was not validated."
+	response.redirect("default.aspx", true)
+end if
 %>
-
 <html>
 <head>
-	<title>Registration Validated - rasputin.dnsalias.com</title>
-	<style type="text/css" media="screen">@import "/style4.css";</style>
-	
+	<title>www.smackpools.com | Registration Validated</title>
+	<style type="text/css" media="all">@import "/football/style4.css";</style> 
+	<style>
+	.content {
+		border: none;
+		padding: 1px;
+		margin:0px 0px 20px 170px;
+	}
+	</style>
 </head>
 
 <body>
 
 
 	<div class="content">
-		<h1>rasputin.dnsalias.com</h1>
+		<h1>www.smackpools.com</h1>
 		<h2>Registration Validated</h2>
 
 		
 	Your account/email has been validated.<br>
 	Thanks for registering!<br>
 	<br>
-	Please visit the <a href="/login.aspx">login</a> page to use your account.<br>
+	Please visit the <a href="/football/login.aspx">login</a> page to use your account.<br>
 
 	</div>
 
 <div id="navAlpha">
-<% server.execute ("/nav.aspx") %>
+<% server.execute ("nav.aspx") %>
 </div>
-
-
-<div id="navBeta"><%
-	server.execute ("/quotes/getrandomquote.aspx")
-%></div>
 
 <!-- BlueRobot was here. -->
 
