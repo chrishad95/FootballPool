@@ -38,26 +38,12 @@ Namespace Rasputin
 		
 			dim sql as string
 			dim cmd as SQLCommand
-			dim parm1 as SQLParameter
-
-			sql = "create table fb_journal_entries (id int identity primary key, username varchar(50), journal_type varchar(20), entry_tsp datetime default current_timestamp, entry_title varchar(200), entry_text nvarchar(max))" 	
-			cmd = new SqlCommand(sql, con)
-			try
-				cmd.executenonquery()
-			catch ex as exception
-			end try
 
 			sql = "insert into fb_journal_entries (username,journal_type,entry_title,entry_text) values ('', 'FOOTBALL', @entry_title, @entry_text)"
 			
 			cmd = new SQLCommand(sql,con)
-		
-			parm1 = new SQLParameter("entry_title", SQLDbType.varchar, 200)
-			parm1.value = log_title & " - " & system.datetime.now
-			cmd.parameters.add(parm1)
-			parm1 = new SQLParameter("entry_text", SQLDbType.text, 32700)
-			parm1.value = log_text
-			cmd.parameters.add(parm1)
-			
+			cmd.parameters.add(new SQLParameter("entry_title", SQLDbType.varchar, 200)).value = log_title & " - " & system.datetime.now
+			cmd.parameters.add(new SQLParameter("entry_text", SQLDbType.text, 32700)).value = log_text
 			cmd.executenonquery()
 
 		end sub 
@@ -132,7 +118,7 @@ Namespace Rasputin
 				
 				if user_ds.tables(0).rows.count > 0 then
 					res = user_ds.tables(0).rows(0)("username")
-					sql = "update fb_users set login_count=login_count + 1, last_seen = current timestamp where username=@username"
+					sql = "update fb_users set login_count=login_count + 1, last_seen = CURRENT_TIMESTAMP where username=@username"
 					
 					cmd = new SQLCommand(sql,con)
 					
@@ -166,7 +152,7 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 
-				sql = "select  * from pool.comments where ref_id is null and pool_id in (select pool_id from pool.players where username=?)  order by comment_tsp DESC"
+				sql = "select  * from fb_comments where ref_id is null and pool_id in (select pool_id from fb_players where username=?)  order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = username
@@ -199,7 +185,7 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 
-				sql = "select  * from pool.comments where ref_id is null and pool_id=? and pool_id in (select pool_id from pool.players where username=?) order by comment_tsp DESC"
+				sql = "select  * from fb_comments where ref_id is null and pool_id=@pool_id and pool_id in (select pool_id from fb_players where username=?) order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
@@ -287,7 +273,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from pool.pools where pool_owner=?"
+				sql = "select * from fb_pools where pool_owner=?"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -347,7 +333,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "update pool.comments set views=views + 1 where pool_id=? and comment_id=?"
+				sql = "update fb_comments set views=views + 1 where pool_id=@pool_id and comment_id=?"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -388,7 +374,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from pool.comments where pool_id=? and comment_id=?"
+				sql = "select * from fb_comments where pool_id=@pool_id and comment_id=?"
 				
 				cmd = new SQLCommand(sql,con)
 
@@ -490,7 +476,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.game_id=? and sched.pool_id=?"
+				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from fb_sched sched full outer join fb_teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join fb_teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.game_id=? and sched.pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -514,43 +500,28 @@ Namespace Rasputin
 
 			return res
 		end function
+
 		Public function GetPoolGames(pool_owner as string, pool_id as integer) as dataset
 
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
-				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by sched.game_tsp"
+				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from fb_sched sched full outer join fb_teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join fb_teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from fb_pools where pool_owner=@pool_owner and pool_id=@pool_id) order by sched.game_tsp"
 
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
-				parm1.value = pool_owner
-				cmd.parameters.add(parm1)
-
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = pool_owner
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
-			
-				
 				
 			catch ex as exception
-				makesystemlog("Error getting pool games", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
-
 			return res
 		end function
 
@@ -570,7 +541,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from football.teams where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by team_name"
+				sql = "select * from fb_teams where pool_id in (select pool_id from fb_pools where pool_owner=? and pool_id=@pool_id) order by team_name"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -604,7 +575,7 @@ Namespace Rasputin
 				dim parm1 as SQLParameter
 				
 
-				sql = "select * from pool.invites where pool_id in (select pool_id from pool.pools where pool_owner=? and pool_id=?) order by email"
+				sql = "select * from pool.invites where pool_id in (select pool_id from fb_pools where pool_owner=? and pool_id=@pool_id) order by email"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -644,8 +615,8 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from pool.players a full outer join admin.users b " _
-				& " on a.username=b.username where a.pool_id=? and a.player_id=?"
+				sql = "select * from fb_players a full outer join admin.users b " _
+				& " on a.username=b.username where a.pool_id=@pool_id and a.player_id=?"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -778,7 +749,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from pool.players where pool_id=? order by username"
+				sql = "select * from fb_players where pool_id=@pool_id order by username"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -869,7 +840,7 @@ Namespace Rasputin
 				Dim cmd as SQLCommand
 				Dim sql as String
 
-				sql = "select a.game_id, b.away_score, b.home_score, c.team_id as away_id, d.team_id as home_id from football.sched a full outer join football.scores b on a.pool_id=b.pool_id and a.game_id=b.game_id full outer join football.teams c on a.pool_id=c.pool_id and a.away_id=c.team_id full outer join football.teams d on a.pool_id=d.pool_id and a.home_id=d.team_id where a.pool_id=? and (d.team_id=? or c.team_id=?)"
+				sql = "select a.game_id, b.away_score, b.home_score, c.team_id as away_id, d.team_id as home_id from fb_sched a full outer join football.scores b on a.pool_id=b.pool_id and a.game_id=b.game_id full outer join fb_teams c on a.pool_id=c.pool_id and a.away_id=c.team_id full outer join fb_teams d on a.pool_id=d.pool_id and a.home_id=d.team_id where a.pool_id=@pool_id and (d.team_id=? or c.team_id=?)"
 
 				cmd = new SQLCommand(sql, con)
 
@@ -976,7 +947,7 @@ Namespace Rasputin
 					temp_rows = pools_ds.tables(0).select("pool_id=" & pool_id)
 					if temp_rows.length > 0 then
 
-						sql = "insert into FOOTBALL.TEAMS(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( ?, ?, ?, ?)"
+						sql = "insert into fb_teams(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( ?, ?, ?, ?)"
 						dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
@@ -1189,7 +1160,7 @@ Namespace Rasputin
 		Public function DeleteInvite(POOL_ID as INTEGER, EMAIL as String) as string
 			dim res as string = "FAILURE"
 			try
-				dim sql as string = "delete from POOL.INVITES where pool_id=? and email=?"
+				dim sql as string = "delete from POOL.INVITES where pool_id=@pool_id and email=?"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -1240,7 +1211,7 @@ Namespace Rasputin
 						home_team_id = game_ds.tables(0).rows(0)("home_id")
 						away_team_id = game_ds.tables(0).rows(0)("away_id")
 						week_id = 		game_ds.tables(0).rows(0)("week_id")
-						sql = "select * from football.teams where pool_id=? and team_name in (?,?)"
+						sql = "select * from fb_teams where pool_id=@pool_id and team_name in (?,?)"
 						cmd = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
@@ -1287,7 +1258,7 @@ Namespace Rasputin
 							pool_away_id = temprows(0)("team_id")
 						end if
 
-						sql = "insert into football.sched (pool_id, week_id, home_id, away_id, game_tsp) values (?,?,?,?,?)"
+						sql = "insert into fb_sched (pool_id, week_id, home_id, away_id, game_tsp) values (?,?,?,?,?)"
 						cmd = new SQLCommand(sql, con)
 
 						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
@@ -1335,7 +1306,7 @@ Namespace Rasputin
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
-					sql = "insert into football.teams (pool_id, team_name, team_shortname) select " & pool_id & ", team_name, team_shortname from pool.copy_teams where team_id=?"
+					sql = "insert into fb_teams (pool_id, team_name, team_shortname) select " & pool_id & ", team_name, team_shortname from pool.copy_teams where team_id=?"
 					makesystemlog("debug", sql)
 
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1371,7 +1342,7 @@ Namespace Rasputin
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
-					sql = "update FOOTBALL.TEAMS set TEAM_NAME=?, TEAM_SHORTNAME=?, URL=? where POOL_ID=? and TEAM_ID=?"
+					sql = "update fb_teams set TEAM_NAME=?, TEAM_SHORTNAME=?, URL=? where POOL_ID=? and TEAM_ID=?"
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
 
@@ -1407,37 +1378,27 @@ Namespace Rasputin
 			end try
 			return res
 		end function
+
 		Public function GetTiebreakers(pool_id as integer, pool_owner as string) as dataset
 			dim res as new system.data.dataset()
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string
 					dim cmd as SQLCommand
-					'dim con as SQLConnection
-					dim parm1 as SQLParameter
 					
-					dim connstring as string
-					connstring = myconnstring
-					
-					'con = new SQLConnection(connstring)
-					
-
-					sql = "select * from pool.tiebreakers where pool_id=?"
+					sql = "select * from fb_tiebreakers where pool_id=@pool_id"
 
 					cmd = new SQLCommand(sql,con)
-
-					parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-					parm1.value = pool_id
-					cmd.parameters.add(parm1)
+					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 					dim oda as new SQLDataAdapter()
 					oda.selectcommand = cmd
-					oda.fill(res)
-				
+					oda.fill(res) 
 					
 				end if
 			catch ex as exception
-				makesystemlog("Error getting tie breakers", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -1449,22 +1410,11 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
-				sql = "select distinct week_id from football.sched where pool_id=?"
+				sql = "select distinct week_id from fb_sched where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -1472,7 +1422,8 @@ Namespace Rasputin
 			
 				
 			catch ex as exception
-				makesystemlog("Error getting pool weeks", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -1493,7 +1444,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select distinct username from pool.players a where a.pool_id in (select pool_id from pool.pools where pool_owner=?)"
+				sql = "select distinct username from fb_players a where a.pool_id in (select pool_id from fb_pools where pool_owner=?)"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -1529,7 +1480,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from pool.players where pool_id=?"
+				sql = "select * from fb_players where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -1601,7 +1552,7 @@ Namespace Rasputin
 
 			try
 
-				dim sql as string = "select team_id from football.teams where (team_name=? or UPPER(team_shortname)=?) and pool_id=?"
+				dim sql as string = "select team_id from fb_teams where (team_name=? or UPPER(team_shortname)=?) and pool_id=@pool_id"
 
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1751,7 +1702,7 @@ Namespace Rasputin
 				dim cmd as SQLCommand 
 
 
-				sql = "update POOL.COMMENTS set comment_title=?, comment_text=? where pool_id=? and comment_id=?"
+				sql = "update POOL.COMMENTS set comment_title=?, comment_text=? where pool_id=@pool_id and comment_id=?"
 				
 				cmd = new SQLCommand(sql, con)
 
@@ -1778,7 +1729,7 @@ Namespace Rasputin
 			dim res as string
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim sql as string = "update FOOTBALL.SCHED set WEEK_ID=?, HOME_ID=?, AWAY_ID=?, GAME_TSP=?, GAME_URL=? where GAME_ID=? and pool_id=?"
+					dim sql as string = "update FOOTBALL.SCHED set WEEK_ID=?, HOME_ID=?, AWAY_ID=?, GAME_TSP=?, GAME_URL=? where GAME_ID=? and pool_id=@pool_id"
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
@@ -1881,7 +1832,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim sql as string = "update POOL.pools set feed_ID=? where pool_id=?"
+				dim sql as string = "update POOL.pools set feed_ID=? where pool_id=@pool_id"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1911,7 +1862,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
-				dim sql as string = "update POOL.options set optionvalue=? where pool_id=? and optionname=?"
+				dim sql as string = "update fb_options set optionvalue=? where pool_id=@pool_id and optionname=?"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1928,7 +1879,7 @@ Namespace Rasputin
 				if rowsaffected > 0 then
 					res = pool_id
 				else
-					sql = "insert into POOL.options (optionvalue, pool_id, optionname) values (?,?,?)"
+					sql = "insert into fb_options (optionvalue, pool_id, optionname) values (?,?,?)"
 					
 	
 					cmd = new SQLCommand(sql, con)
@@ -1947,7 +1898,7 @@ Namespace Rasputin
 					End If
 				end if
 				if optionname = "AUTOHOMEPICKS" then
-					sql = "update pool.pools set updatescore_tsp = current timestamp where pool_id=?"
+					sql = "update fb_pools set updatescore_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
 
 					cmd = new SQLCommand(sql, con)
 	
@@ -1974,7 +1925,7 @@ Namespace Rasputin
 				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				sql = "select * from pool.rss_feeds where feed_id=(select feed_id from pool.pools where pool_id=?)"
+				sql = "select * from pool.rss_feeds where feed_id=(select feed_id from fb_pools where pool_id=@pool_id)"
 
 				dim connstring as string
 				connstring = myconnstring
@@ -2052,7 +2003,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
-					dim sql as string = "update POOL.TIEBREAKERS set GAME_ID=?, tb_tsp=? where pool_id=? and week_id=?"
+					dim sql as string = "update POOL.TIEBREAKERS set GAME_ID=?, tb_tsp=? where pool_id=@pool_id and week_id=@week_id"
 
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2114,7 +2065,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select count(*) from football.fastkeys where username=? and week_id=? and fastkey=? and pool_id=?"
+				sql = "select count(*) from football.fastkeys where username=? and week_id=@week_id and fastkey=? and pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -2205,7 +2156,7 @@ Namespace Rasputin
 				email = cmd.executescalar()
 
 				dim pool_name as string
-				sql = "select pool_name from pool.pools where pool_id=?"
+				sql = "select pool_name from fb_pools where pool_id=@pool_id"
 				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
@@ -2316,32 +2267,20 @@ Namespace Rasputin
 			end try
 			return res
 		end function
+
 		public function PicksCanBeSeen(pool_id as integer, week_id as integer) as boolean
 			dim res as boolean = false
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
-				sql = "select min(game_tsp) as game_tsp from football.sched a where a.pool_id=? and a.week_id=? "
+				sql = "select min(game_tsp) as game_tsp from fb_sched a where a.pool_id=@pool_id and a.week_id=@week_id "
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
-				parm1 = new SQLParameter("week_id", SQLDbType.int)
-				parm1.value = week_id
-				cmd.parameters.add(parm1)
-	
 				dim checkdate as datetime = system.datetime.now
 				checkdate = checkdate.addminutes(30) 
 
@@ -2412,7 +2351,7 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim sql as string = "update POOL.PLAYERS set NICKNAME=? WHERE POOL_ID=? AND USERNAME=?"
+				dim sql as string = "update fb_players set NICKNAME=? WHERE POOL_ID=? AND USERNAME=?"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@NICKNAME", SQLDbType.VARCHAR, 100))
@@ -2457,7 +2396,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select a.game_id,a.week_id,a.away_id,a.home_id,a.game_tsp,b.team_name as away_team, b.team_shortname as away_shortname, b.url as away_url, c.team_name as home_team, c.team_shortname as home_shortname, c.url as home_url from football.sched a full outer join football.teams b on a.pool_id=b.pool_id and a.away_id=b.team_id full outer join football.teams c on a.pool_id=c.pool_id and a.home_id=c.team_id  where a.pool_id=? and a.week_id=? order by  a.game_tsp"
+				sql = "select a.game_id,a.week_id,a.away_id,a.home_id,a.game_tsp,b.team_name as away_team, b.team_shortname as away_shortname, b.url as away_url, c.team_name as home_team, c.team_shortname as home_shortname, c.url as home_url from fb_sched a full outer join fb_teams b on a.pool_id=b.pool_id and a.away_id=b.team_id full outer join fb_teams c on a.pool_id=c.pool_id and a.home_id=c.team_id  where a.pool_id=@pool_id and a.week_id=@week_id order by  a.game_tsp"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -2488,22 +2427,11 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
-				sql = "select min(week_id) as week_id from (select week_id from football.sched where pool_id=? and  game_tsp > current timestamp - 1 days ) as t"
+				sql = "select min(week_id) as week_id from fb_sched where pool_id=@pool_id and  game_tsp > dateadd(day,-1, current_timestamp)"
 
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				dim ds as new dataset()
 				dim oda as new SQLDataAdapter()
@@ -2517,15 +2445,12 @@ Namespace Rasputin
 							res = ds.tables(0).rows(0)("week_id")
 						end if
 					end if
-				end if
-
-				
+				end if 
 			catch ex as exception
-				makesystemlog("Error getting pool weeks", ex.tostring())
-			end try
-
-			return res
-
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try 
+			return res 
 		end function
 
 		public function GetTiebreakertext(pool_id as integer, week_id as integer) as string
@@ -2538,7 +2463,7 @@ Namespace Rasputin
 				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				sql = "select tb.*, sched.*, away.team_name as away_team, home.team_name as home_team from pool.tiebreakers tb full outer join football.sched sched on tb.pool_id=sched.pool_id and tb.game_id=sched.game_id full outer join football.teams away on away.pool_id=sched.pool_id and away.team_id=sched.away_id full outer join football.teams home on home.pool_id=sched.pool_id and home.team_id=sched.home_id where tb.pool_id=? and tb.week_id=?"
+				sql = "select tb.*, sched.*, away.team_name as away_team, home.team_name as home_team from pool.tiebreakers tb full outer join fb_sched sched on tb.pool_id=sched.pool_id and tb.game_id=sched.game_id full outer join fb_teams away on away.pool_id=sched.pool_id and away.team_id=sched.away_id full outer join fb_teams home on home.pool_id=sched.pool_id and home.team_id=sched.home_id where tb.pool_id=@pool_id and tb.week_id=@week_id"
 
 				dim connstring as string
 				connstring = myconnstring
@@ -2715,7 +2640,7 @@ Namespace Rasputin
 				dim sql as string = ""
 				dim cmd as SQLCommand
 
-				sql = "select count(*) from football.scores where away_score=? and home_score=? and game_id=? and pool_id=?"
+				sql = "select count(*) from football.scores where away_score=? and home_score=? and game_id=? and pool_id=@pool_id"
 				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
@@ -2733,7 +2658,7 @@ Namespace Rasputin
 				
 				if rowcount <> 1 then
 
-					sql = "insert into football.scores_history (away_score, home_score, game_id, pool_id, mod_user, mod_tsp) values (?,?,?,?,?, current timestamp)"
+					sql = "insert into football.scores_history (away_score, home_score, game_id, pool_id, mod_user, mod_tsp) values (?,?,?,?,?, CURRENT_TIMESTAMP)"
 					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
@@ -2753,7 +2678,7 @@ Namespace Rasputin
 	
 					rowsupdated = cmd.executenonquery()
 	
-					sql = "update FOOTBALL.SCORES set AWAY_SCORE=?, HOME_SCORE=? where GAME_ID=? and pool_id=?"
+					sql = "update FOOTBALL.SCORES set AWAY_SCORE=?, HOME_SCORE=? where GAME_ID=? and pool_id=@pool_id"
 					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
@@ -2797,7 +2722,7 @@ Namespace Rasputin
 						end if
 					end if
 	
-					sql = "update pool.pools set updatescore_tsp = ? where pool_id=?"
+					sql = "update fb_pools set updatescore_tsp = ? where pool_id=@pool_id"
 					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@UPDATESCORE_TSP", SQLDbType.datetime))
@@ -2833,7 +2758,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select a.pool_id, a.game_id, a.username, a.team_id, b.team_shortname as pick_name, c.game_tsp from pool.picks a full outer join football.teams b on a.team_id=b.team_id and a.pool_id=b.pool_id full outer join football.sched c on a.game_id=c.game_id and a.pool_id=c.pool_id where a.pool_id=? and a.game_id in (select game_id from football.sched where pool_id=? and week_id=?)"
+				sql = "select a.pool_id, a.game_id, a.username, a.team_id, b.team_shortname as pick_name, c.game_tsp from pool.picks a full outer join fb_teams b on a.team_id=b.team_id and a.pool_id=b.pool_id full outer join fb_sched c on a.game_id=c.game_id and a.pool_id=c.pool_id where a.pool_id=@pool_id and a.game_id in (select game_id from fb_sched where pool_id=@pool_id and week_id=@week_id)"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -2878,7 +2803,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select game_id from pool.tiebreakers where pool_id=? and week_id=?"
+				sql = "select game_id from pool.tiebreakers where pool_id=@pool_id and week_id=@week_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -2920,7 +2845,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from football.tiebreaker where pool_id=? and week_id=?"
+				sql = "select * from football.tiebreaker where pool_id=@pool_id and week_id=@week_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -2951,7 +2876,6 @@ Namespace Rasputin
 		end function
 	
 		public function ShowThreads(pool_id as integer, count as integer) as dataset
-
 
 			dim res as new system.data.dataset()
 			try
@@ -3005,27 +2929,19 @@ Namespace Rasputin
 
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-				sql = "select comment_id as thread_id, comment_title as thread_title, username as thread_author, " _
-					& " comment_tsp as thread_tsp, username as last_poster, 0 as replies, views " _
-					& " from pool.comments where ref_id is null and pool_id=?"
 				
 				if count > 0 then
-					sql = sql & " fetch first " & count & " rows only"
+					sql = "select top " & count 
+				else
+					sql = "select "
 				end if
-
+				
+				sql = sql & " comment_id as thread_id, comment_title as thread_title, username as thread_author, " _
+					& " comment_tsp as thread_tsp, username as last_poster, 0 as replies, views " _
+					& " from fb_comments where ref_id is null and pool_id=@pool_id"
+				
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				dim dr as SQLDataReader
 				dr = cmd.executereader()
@@ -3048,24 +2964,17 @@ Namespace Rasputin
 
 				if temp_table.rows.count > 0 then
 					for i as integer = 0 to temp_table.rows.count -1
-						sql = "select count(*) from pool.comments where ref_id=? and pool_id=?"
+						sql = "select count(*) from fb_comments where ref_id=@ref_id and pool_id=@pool_id"
 						cmd = new SQLCommand(sql,con)
-						cmd.parameters.add(new SQLParameter("ref_id", SQLDbType.int))
-						cmd.parameters("ref_id").value = temp_table.rows(i)("thread_id")
-
-						cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
-						cmd.parameters("pool_id").value = pool_id
+						cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int)).value = temp_table.rows(i)("thread_id")
+						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 						
 						temp_table.rows(i)("replies") = cmd.executescalar()
 
-						sql = "select * from pool.comments where pool_id=? and (comment_id=? or ref_id=?) order by comment_tsp desc"
+						sql = "select * from fb_comments where pool_id=@pool_id and (comment_id=@ref_id or ref_id=@ref_id) order by comment_tsp desc"
 						cmd = new SQLCommand(sql,con)
-						cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
-						cmd.parameters("pool_id").value = pool_id
-						cmd.parameters.add(new SQLParameter("comment_id", SQLDbType.int))
-						cmd.parameters.add(new SQLParameter("ref_id", SQLDbType.int))
-						cmd.parameters("comment_id").value = temp_table.rows(i)("thread_id")
-						cmd.parameters("ref_id").value = temp_table.rows(i)("thread_id")
+						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int)).value = temp_table.rows(i)("thread_id")
 
 						dr = cmd.executereader()
 						if dr.read() then
@@ -3079,7 +2988,8 @@ Namespace Rasputin
 				res.tables.add(temp_table)
 				
 			catch ex as exception
-				makesystemlog("Error in ShowThreads", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -3101,7 +3011,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select a.pool_id, a.username, a.comment_text, a.comment_tsp, a.comment_id, a.ref_id, a.comment_title, a.views, b.nickname from pool.comments a full outer join pool.players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=? and (a.comment_id=? or a.ref_id=?) order by comment_tsp asc"
+				sql = "select a.pool_id, a.username, a.comment_text, a.comment_tsp, a.comment_id, a.ref_id, a.comment_title, a.views, b.nickname from fb_comments a full outer join fb_players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=@pool_id and (a.comment_id=? or a.ref_id=?) order by comment_tsp asc"
 
 				if count > 0 then
 					sql = sql & " fetch first " & count & " rows only"
@@ -3147,7 +3057,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select a.game_id, a.away_score, a.home_score from football.scores a full outer join football.sched b on a.pool_id=b.pool_id where a.pool_id=? and b.week_id=?"
+				sql = "select a.game_id, a.away_score, a.home_score from football.scores a full outer join fb_sched b on a.pool_id=b.pool_id where a.pool_id=@pool_id and b.week_id=@week_id"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -3182,7 +3092,7 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 
-				sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and a.pool_id =b.pool_id and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not t.away_score is null order by t.username, d.week_id"
+				sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , football.scores b where a.pool_id=@pool_id and a.pool_id =b.pool_id and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not t.away_score is null order by t.username, d.week_id"
 				cmd = New SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
@@ -3435,7 +3345,7 @@ Namespace Rasputin
 
 					Dim picks_ds As New dataset()
 					
-					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and b.pool_id=? and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not d.away_id is null and d.week_id <=? and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
+					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , football.scores b where a.pool_id=@pool_id and b.pool_id=@pool_id and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not d.away_id is null and d.week_id <=? and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
 					cmd = New SQLCommand(sql,con)
 					
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -3693,16 +3603,12 @@ Namespace Rasputin
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				'con = new SQLConnection(myconnstring)
-				
-				
-				sql = "select count(*) from pool.pools where pool_id=? and (updatescore_tsp > standings_tsp or standings_tsp is null)"
+				sql = "select count(*) from fb_pools where pool_id=@pool_id and (updatescore_tsp > standings_tsp or standings_tsp is null)"
 				cmd = New SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-				cmd.parameters("@POOL_ID").value = pool_id
-				dim c as integer = 0
-				c = cmd.executescalar()
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
+				dim c as integer = 0
+				c = cmd.executescalar() 
 
 				if c > 0 then
 
@@ -3800,15 +3706,9 @@ Namespace Rasputin
 
 					Dim picks_ds As New dataset()
 					
-					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from pool.players a , football.scores b where a.pool_id=? and b.pool_id=? and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join football.sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=? or c.pool_id is null) and not d.away_id is null and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
+					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , football.scores b where a.pool_id=@pool_id and b.pool_id=@pool_id and not b.away_score is null) as t full outer join pool.picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not d.away_id is null and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
 					cmd = New SQLCommand(sql,con)
-					
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID3", SQLDbType.int))
-					cmd.parameters("@POOL_ID").value = pool_id
-					cmd.parameters("@POOL_ID2").value = pool_id
-					cmd.parameters("@POOL_ID3").value = pool_id
+					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 					
 					oda = New SQLDataAdapter()
 					oda.SelectCommand = cmd
@@ -4018,7 +3918,7 @@ Namespace Rasputin
 
 					
 					temp_ds.tables.add(temp_table)
-					sql = "delete from pool.standings where pool_id=?"
+					sql = "delete from pool.standings where pool_id=@pool_id"
 					cmd = New SQLCommand(sql,con)
 					cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 					cmd.parameters("pool_id").value = pool_id
@@ -4066,17 +3966,16 @@ Namespace Rasputin
 
 					next
 
-					sql = "update pool.pools set standings_tsp = current timestamp where pool_id=?"
+					sql = "update fb_pools set standings_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
 					cmd = New SQLCommand(sql,con)
 					cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
 					cmd.parameters("pool_id").value = pool_id
 					cmd.executenonquery()
 
 				end if
-				sql = "select a.*, b.nickname from pool.standings a full outer join pool.players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=?"
+				sql = "select a.*, b.nickname from fb_standings a full outer join fb_players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=@pool_id"
 				cmd = New SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int))
-				cmd.parameters("pool_id").value = pool_id
+				cmd.parameters.add(new SQLParameter("pool_id", SQLDbType.int)).value = pool_id
 
 				oda = new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -4198,7 +4097,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from pool.picks  where pool_id=? and username=? and game_id in (select game_id from football.sched where pool_id=? and week_id=?)"
+				sql = "select * from pool.picks  where pool_id=@pool_id and username=? and game_id in (select game_id from fb_sched where pool_id=@pool_id and week_id=@week_id)"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -4246,7 +4145,7 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select team_id from pool.picks  where pool_id=? and username=? and game_id=?"
+				sql = "select team_id from pool.picks  where pool_id=@pool_id and username=? and game_id=?"
 
 				cmd = new SQLCommand(sql,con)
 
@@ -4284,7 +4183,7 @@ Namespace Rasputin
 				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				sql = "select score from football.tiebreaker  where pool_id=? and week_id=? and username=?"
+				sql = "select score from football.tiebreaker  where pool_id=@pool_id and week_id=@week_id and username=?"
 
 				dim connstring as string
 				connstring = myconnstring
@@ -4388,26 +4287,15 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
-				sql = "select * from pool.copy_teams order by team_name"
-
+				sql = "select * from fb_copy_teams order by team_name"
 				cmd = new SQLCommand(sql,con)
-
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
-				oda.fill(res)
-			
+				oda.fill(res) 
 				
 			catch ex as exception
-				makesystemlog("Error in GetImportTeams", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -4415,35 +4303,24 @@ Namespace Rasputin
 		
 		public function GetSchedule(pool_id as integer) as dataset
 
-
 			dim res as new system.data.dataset()
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
-				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
-				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from football.sched sched full outer join football.teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join football.teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from pool.pools where pool_id=?) order by sched.game_tsp"
+				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from fb_sched sched full outer join fb_teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join fb_teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from fb_pools where pool_id=@pool_id) order by sched.game_tsp"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
-				oda.fill(res)
-			
+				oda.fill(res) 
 				
 			catch ex as exception
-				makesystemlog("Error getting schedule", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -4494,7 +4371,7 @@ Namespace Rasputin
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
 				
-				sql = "select * from pool.invites where email=? and pool_id=? and invite_key=?"
+				sql = "select * from pool.invites where email=? and pool_id=@pool_id and invite_key=?"
 
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
@@ -4535,7 +4412,7 @@ Namespace Rasputin
 				
 				'con = new SQLConnection(connstring)
 				
-				sql = "select * from pool.pools a full outer join admin.users b on a.pool_owner=b.username where pool_id=?"
+				sql = "select * from fb_pools a full outer join admin.users b on a.pool_owner=b.username where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -4558,7 +4435,7 @@ Namespace Rasputin
 				end try
 
 
-				sql = "insert into pool.players (pool_id, username, player_tsp) values (?,?,?)"
+				sql = "insert into fb_players (pool_id, username, player_tsp) values (?,?,?)"
 
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -4572,7 +4449,7 @@ Namespace Rasputin
 				rowsaffected = cmd.executenonquery()
 				if rowsaffected > 0 then
 
-					sql = "delete from pool.invites where email=? and pool_id=? and invite_key=?"
+					sql = "delete from pool.invites where email=? and pool_id=@pool_id and invite_key=?"
 
 					cmd = new SQLCommand(sql,con)
 					cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
@@ -4584,7 +4461,7 @@ Namespace Rasputin
 					cmd.parameters("@INVITE_KEY").value = INVITE_KEY
 					cmd.executenonquery()
 
-					sql = "update pool.pools set updatescore_tsp = current timestamp where pool_id=?"
+					sql = "update fb_pools set updatescore_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
 
 					cmd = new SQLCommand(sql,con)
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -4869,24 +4746,16 @@ Namespace Rasputin
 
 				dim cmd as SQLCommand
 				dim dr as SQLDataReader
-				dim parm1 as SQLParameter
-							
 				dim sql as string
-				'con = new SQLConnection(myconnstring)
 				
 				
-				sql = "select a.pool_id, a.email, a.invite_key, b.pool_owner, b.pool_name, b.pool_desc from pool.invites a full outer join pool.pools b on a.pool_id=b.pool_id where a.pool_id=? and a.email=?"
+				sql = "select a.pool_id, a.email, a.invite_key, b.pool_owner, b.pool_name, b.pool_desc from fb_invites a full outer join fb_pools b on a.pool_id=b.pool_id where a.pool_id=@pool_id and a.email=@email"
 				
 				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@email", SQLDbType.varchar, 50)).value = email
 				
-				parm1 = new SQLParameter("email", SQLDbType.varchar, 50)
-				parm1.value = email
-				cmd.parameters.add(parm1)
-
 				dim oda as new SQLDataAdapter()
 				dim invite_ds as new dataset()
 				oda.selectcommand = cmd
@@ -5080,7 +4949,7 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim sql as string = "select avatar from pool.players WHERE POOL_ID=? AND USERNAME=?"
+				dim sql as string = "select avatar from fb_players WHERE POOL_ID=? AND USERNAME=?"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
@@ -5113,7 +4982,7 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
-				dim sql as string = "update POOL.PLAYERS set avatar=? WHERE POOL_ID=? AND USERNAME=?"
+				dim sql as string = "update fb_players set avatar=? WHERE POOL_ID=? AND USERNAME=?"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@avatar", SQLDbType.VARCHAR, 255))
