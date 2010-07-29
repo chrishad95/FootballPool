@@ -41,6 +41,13 @@ p {
 	padding: 3px;
 }
 
+.error_message {
+	background: Maroon;
+	color: white;
+	font-size: 1.1em;
+	padding: 3px;
+}
+
 a {
 	color:#09c;
 	font-size:11px;

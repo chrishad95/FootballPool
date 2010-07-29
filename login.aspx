@@ -199,6 +199,17 @@
 		end if
 	catch
 	end try
+	try
+		if session("error_message") <> "" then
+			%>
+			<div class="error_message">
+			<% = session("error_message") %><br />
+			</div>
+			<%
+			session("error_message") = ""
+		end if
+	catch
+	end try
 	%>
 	<br />
 	Forgot your password?  You can <a href="resetpassword.aspx">reset</a> it.  If you don't have an account you can register <a href="register.aspx">here</a><BR />

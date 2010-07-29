@@ -211,37 +211,32 @@ Namespace Rasputin
 				oda.Fill(res)
 
 			catch ex as exception
-				makesystemlog("error in getfeedcomments", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 
 		end function
 
-		public function CreatePOOL(POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String) as string
+		public function createPool(POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String) as string
 			dim res as string = ""
 			try
-				dim sql as string = "insert into POOL.POOLS(POOL_OWNER, POOL_NAME, POOL_DESC, POOL_TSP, ELIGIBILITY, POOL_LOGO, POOL_BANNER) values (?, ?, ?, ?, ?, ?, ?)"
+				dim sql as string = "insert into fb_POOLS (POOL_OWNER, POOL_NAME, POOL_DESC, ELIGIBILITY, POOL_LOGO, POOL_BANNER) values (@pool_owner, @pool_name, @pool_desc, @eligibility, @pool_logo, @pool_banner)"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_OWNER", SQLDbType.VARCHAR, 50))
-				cmd.parameters.add(new SQLParameter("@POOL_NAME", SQLDbType.VARCHAR, 100))
-				cmd.parameters.add(new SQLParameter("@POOL_DESC", SQLDbType.VARCHAR, 500))
-				cmd.parameters.add(new SQLParameter("@POOL_TSP", SQLDbType.datetime))
-				cmd.parameters.add(new SQLParameter("@ELIGIBILITY", SQLDbType.VARCHAR, 10))
-				cmd.parameters.add(new SQLParameter("@POOL_LOGO", SQLDbType.VARCHAR, 255))
-				cmd.parameters.add(new SQLParameter("@POOL_BANNER", SQLDbType.VARCHAR, 255))
-				cmd.parameters("@POOL_OWNER").value = POOL_OWNER
-				cmd.parameters("@POOL_NAME").value = POOL_NAME
-				cmd.parameters("@POOL_DESC").value = POOL_DESC
-				cmd.parameters("@POOL_TSP").value = system.datetime.now
-				cmd.parameters("@ELIGIBILITY").value = ELIGIBILITY
-				cmd.parameters("@POOL_LOGO").value = POOL_LOGO
-				cmd.parameters("@POOL_BANNER").value = POOL_BANNER
+				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.VARCHAR, 50)).value = pool_owner
+				cmd.parameters.add(new SQLParameter("@pool_name", SQLDbType.VARCHAR, 100)).value = pool_name
+				cmd.parameters.add(new SQLParameter("@pool_desc", SQLDbType.VARCHAR, 500)).value = pool_desc
+				cmd.parameters.add(new SQLParameter("@eligibility", SQLDbType.VARCHAR, 10)).value = eligibility
+				cmd.parameters.add(new SQLParameter("@pool_logo", SQLDbType.VARCHAR, 255)).value = pool_logo
+				cmd.parameters.add(new SQLParameter("@pool_banner", SQLDbType.VARCHAR, 255)).value = pool_banner
+
 				cmd.executenonquery()
 
 				res = pool_name
 			catch ex as exception
-				makesystemlog("newpool broke", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 				res = ex.toString()
 			end try
 			return res
@@ -305,7 +300,8 @@ Namespace Rasputin
 				oda.fill(res)
 			
 			catch ex as exception
-				makesystemlog("Error getting pool list", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -317,29 +313,20 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
-				sql = "select * from pool.pools where pool_id=?"
+				sql = "select * from fb_pools where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
 			catch ex as exception
-				makesystemlog("Error getting pool details", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -821,8 +808,8 @@ Namespace Rasputin
 					res.add(f)
 				next
 			catch ex as exception
-				makesystemlog("Error in Getfiles", ex.tostring())
-
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			End try
 			return res
 		End Function
@@ -834,22 +821,13 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
-				sql = "select * from pool.options where pool_id=?"
+				sql = "select * from fb_options where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				dim ds as new DataSet()
 				dim oda as new SQLDataAdapter()
@@ -871,11 +849,11 @@ Namespace Rasputin
 							res(option_row("OPTIONNAME")) = option_row("OPTIONVALUE")
 						next
 					end if
-				end if
-
+				end if 
 				
 			catch ex as exception
-				makesystemlog("Error in GetPoolOptions", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -3692,7 +3670,8 @@ Namespace Rasputin
 
 		        
 			catch ex as exception
-				makesystemlog("Error in GetStandings", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			Return temp_ds
@@ -4106,7 +4085,8 @@ Namespace Rasputin
 
 		        
 			catch ex as exception
-				makesystemlog("Error in GetStandings", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			Return temp_ds
@@ -4338,7 +4318,8 @@ Namespace Rasputin
 				
 
 			catch ex as exception
-				makesystemlog("error in gettiebreakervalue", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -4352,34 +4333,21 @@ Namespace Rasputin
 			try
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
-				sql = "select * from pool.pools where pool_owner=? or pool_id in (select pool_id from pool.players where username=?)"
+				sql = "select * from fb_pools where pool_owner=@pool_owner or pool_id in (select pool_id from fb_players where username=@player_name)"
 
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar, 50)
-				parm1.value = player_name
-				cmd.parameters.add(parm1)
-
-				parm1 = new SQLParameter("@player_name", SQLDbType.varchar, 50)
-				parm1.value = player_name
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = player_name
+				cmd.parameters.add(new SQLParameter("@player_name", SQLDbType.varchar, 50)).value = player_name
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
-				oda.fill(res)
-			
+				oda.fill(res) 
 				
 			catch ex as exception
-				makesystemlog("Error getting pool list", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res

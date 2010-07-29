@@ -29,7 +29,7 @@ catch
 end try
 
 if myname = "" then
-	session("error_message") = "You must login."
+	session("error_message") = "You must login to create a new pool."
 	response.redirect("/football/login.aspx?returnurl=/football/newpool.aspx", true)
 end if
 

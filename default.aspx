@@ -414,9 +414,12 @@
 
 				
 				dim banner_image as string = ""
+				try
 				if not pool_details_ds.tables(0).rows(0)("pool_banner") is dbnull.value then
 					banner_image = "/users/" & pool_details_ds.tables(0).rows(0)("pool_owner") & "/" &  pool_details_ds.tables(0).rows(0)("pool_banner")
 				end if
+				catch ex as exception
+				end try
 
 				dim pool_name as string = ""
 				pool_name = pool_details_ds.tables(0).rows(0)("pool_name")
