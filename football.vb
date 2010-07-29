@@ -28,6 +28,15 @@ Namespace Rasputin
 		private con as SQLConnection
 		private isInitialized as boolean
 
+		overloads overrides sub Finalize(0
+			try
+				con.close()
+				con.dispose()
+			catch
+			end try
+			mybase.Finalize()
+		end sub
+
 		public sub initialize()
 			con = new SQLConnection(myconnstring)
 			con.open()
