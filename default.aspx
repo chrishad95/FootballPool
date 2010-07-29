@@ -44,10 +44,11 @@
 
 	dim mypools as dataset
 	mypools = fb.getmypools(player_name:=myname)
-	if mypools.tables(0).rows.count = 1 and not pool_id_found then
-		response.redirect("default.aspx?pool_id=" & mypools.tables(0).rows(0)("pool_id"), true)
+	if mypools.tables.count > 0 then
+		if mypools.tables(0).rows.count = 1 and not pool_id_found then
+			response.redirect("default.aspx?pool_id=" & mypools.tables(0).rows(0)("pool_id"), true)
+		end if
 	end if
-
 %>
 <html>
 <head>

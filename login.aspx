@@ -62,7 +62,7 @@
 			session("username") = res
 
 			if returnurl = "" then
-				response.redirect("/", true)
+				response.redirect("default.aspx", true)
 			else
 				response.redirect(returnurl, true)
 			end if

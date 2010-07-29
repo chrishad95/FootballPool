@@ -2,7 +2,6 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Collections" %>
 <%
-
 	dim fb as new Rasputin.FootballUtility()
 	fb.initialize()
 
@@ -12,13 +11,16 @@
 	catch
 	end try
 
-dim poolname as string
-dim desc as string
-dim bannerurl as string 
-dim logourl as string
-dim eligibility as string
+dim poolname as string = ""
+dim desc as string = ""
+dim bannerurl as string  = ""
+dim logourl as string = ""
+dim eligibility as string = ""
+dim submit as string = ""
+
 dim myname as string = ""
 dim res as string = ""
+
 try
 	if session("username") <> "" then
 		myname = session("username")
@@ -27,8 +29,7 @@ catch
 end try
 
 if myname = "" then
-	session("username") = ""
-	session("page_message") = "You must login."
+	session("error_message") = "You must login."
 	response.redirect("/football/login.aspx?returnurl=/football/newpool.aspx", true)
 end if
 
@@ -38,18 +39,22 @@ try
 	bannerurl = request("bannerurl")
 	logourl = request("logourl")
 	eligibility = request("eligibility")
-	if request("submit") = "Create Pool" then
-		res = fb.createpool(myname, poolname, desc, eligibility, logourl, bannerurl)
-	end if
-catch ex as exception
+	submit = request("submit")
 
-	session("page_message") = ex.tostring()
-	response.redirect("error.aspx", true)
+catch ex as exception
 end try
-if res <> poolname then
-	session("page_message") = "Pool was not created:" & res & ":" & poolname
-	response.redirect("error.aspx", true)
+
+if submit = "Create Pool" then
+	res = fb.createpool(myname, poolname, desc, eligibility, logourl, bannerurl)
+	if res <> poolname then
+		session("page_message") = "Pool was not created:" & res & ":" & poolname
+		response.redirect("error.aspx", true)
+	else
+		session("page_message") = "Your pool was created."
+		response.redirect("default.aspx", true)
+	end if
 end if
+
 %>
 <html>
 <head>

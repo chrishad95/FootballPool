@@ -4495,7 +4495,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@validate_key", SQLDbType.VARCHAR, 50))
 
 				cmd.parameters("@username").value = username
-				cmd.parameters("@validate_key").value = validate_key 
+				cmd.parameters("@validate_key").value = key 
 
 				dim invites_ds as new dataset()
 				dim oda as new SQLDataAdapter()
@@ -5006,9 +5006,6 @@ Namespace Rasputin
 				
 				dim sql as string
 						
-				'con = new SQLConnection(myconnstring)
-				
-				
 				'Encrypt the password
 				Dim md5Hasher as New MD5CryptoServiceProvider()
 				
@@ -5017,15 +5014,15 @@ Namespace Rasputin
 				
 				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
 				
-				sql = "select username from admin.users where UPPER(username) = ? and password=? and validated='Y'"
+				sql = "select username from fb_users where UPPER(username) = @username and password=@password and validated='Y'"
 				
 				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+				parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 				parm1.value = username.toupper()
 				cmd.parameters.add(parm1)
 				
-				parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
+				parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
 				parm1.value = hashedbytes
 				cmd.parameters.add(parm1)
 				
@@ -5037,15 +5034,15 @@ Namespace Rasputin
 				if user_ds.tables(0).rows.count <= 0 then
 					'makesystemlog("Failed Login First Try", "Username:" & username & " - Password:" & password)
 					
-					sql = "select username from admin.users where UPPER(username) = ? and temp_password=? and validated='Y'"
+					sql = "select username from fb_users where UPPER(username) = @username and temp_password=@password and validated='Y'"
 					
 					cmd = new SQLCommand(sql,con)
 					
-					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+					parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 					parm1.value = username.toupper()
 					cmd.parameters.add(parm1)
 					
-					parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
+					parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
 					parm1.value = hashedbytes
 					cmd.parameters.add(parm1)
 					
@@ -5055,11 +5052,11 @@ Namespace Rasputin
 					oda2.fill(user_ds2)
 				
 					if user_ds2.tables(0).rows.count > 0 then
-						sql = "update admin.users set password=temp_password where username = ?"
+						sql = "update fb_users set password=temp_password where username = @username"
 		
 						cmd = new SQLCommand(sql,con)
 		
-						parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+						parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 						parm1.value = user_ds2.tables(0).rows(0)("username")
 						cmd.parameters.add(parm1)
 						
@@ -5069,15 +5066,15 @@ Namespace Rasputin
 		
 						' refill user_ds dataset so the rest of the code will work normally 
 		
-						sql = "select username from admin.users where UPPER(username) = ? and password=? and validated='Y'"
+						sql = "select username from fb_users where UPPER(username) = @username and password=@password and validated='Y'"
 				
 						cmd = new SQLCommand(sql,con)
 						
-						parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+						parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 						parm1.value = username.toupper()
 						cmd.parameters.add(parm1)
 						
-						parm1 = new SQLParameter("password", SQLDbType.Binary, 16)
+						parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
 						parm1.value = hashedbytes
 						cmd.parameters.add(parm1)
 						
@@ -5093,11 +5090,11 @@ Namespace Rasputin
 				if user_ds.tables(0).rows.count > 0 then
 					res = user_ds.tables(0).rows(0)("username")
 					
-					sql = "update admin.users set login_count=login_count + 1, last_seen = current timestamp, temp_password = NULL  where username=?"
+					sql = "update fb_users set login_count=login_count + 1, last_seen = current_timestamp, temp_password = NULL  where username=@username"
 					
 					cmd = new SQLCommand(sql,con)
 					
-					parm1 = new SQLParameter("username", SQLDbType.varchar, 30)
+					parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
 					parm1.value = res
 					cmd.parameters.add(parm1)
 					
@@ -5105,7 +5102,8 @@ Namespace Rasputin
 				end if
 			catch ex as exception
 				res = ex.message
-				makesystemlog("error in login", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function
