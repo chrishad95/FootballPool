@@ -46,9 +46,21 @@
 		response.redirect("error.aspx", true)
 	end if
 
+	dim parms_ht as new System.Collections.Hashtable()
+	parms_ht.add("bannerurl","")
+
+	for each k as object in parms_ht.keys
+		try
+			if request(k.toString()) <> "" then
+				parms_ht(k) = request(k.toString())
+			end if
+		catch
+		end try
+	next
+
 	try
 		if request("submit") = "Update Pool Details" then
-			fb.updatepool(pool_id:=pool_id, pool_owner:=myname, pool_name:=request("poolname"), pool_desc:=request("desc"), pool_banner:=request("bannerurl"), pool_logo:=request("logourl"), eligibility:=request("eligibility"), scorer:=request("scorer"))
+			fb.updatepool(pool_id:=pool_id, pool_owner:=myname, pool_name:=request("poolname"), pool_desc:=request("desc"), pool_banner:=parms_ht("bannerurl"), pool_logo:=request("logourl"), eligibility:=request("eligibility"), scorer:=request("scorer"))
 		end if
 	catch
 	end try
@@ -58,9 +70,9 @@
 			dim res as string = ""
 			res = fb.createteam(pool_id:=pool_id, pool_owner:=myname, team_name:=request("team_name"), team_shortname:=request("team_shortname"), url:=request("url"))
 			if res <> request("team_name") then
-				message_text = res
+				session("error_message") = res
 			else
-				message_text = "Team was added successfully."
+				session("page_message") = "Team was added successfully."
 			end if
 		end if
 	catch
@@ -73,9 +85,9 @@
 			dim res as string = ""
 			res = fb.creategame(pool_id:=pool_id, pool_owner:=myname, week_id:=request("week_id"), home_id:=request("home_id_select"), away_id:=request("away_id_select"), game_tsp:=request("game_time"), game_url:=request("game_url"))
 			if res <> myname then
-				message_text = res
-			else
-				message_text = "Game was added successfully."
+				session("error_message") = res
+			else 
+				session("page_message") = "Game was added successfully."
 			end if
 		end if
 	catch ex as exception
@@ -89,9 +101,9 @@
 			dim res as string = ""
 			res = fb.updategame(game_id:=request("game_select"), pool_id:=pool_id, pool_owner:=myname, week_id:=request("week_id"), home_id:=request("home_id_select"), away_id:=request("away_id_select"), game_tsp:=request("game_time"), game_url:=request("game_url"))
 			if res <> myname then
-				message_text = res
+				session("error_message") = res
 			else
-				message_text = "Game was updated successfully."
+				session("page_message")  = "Game was updated successfully."
 			end if
 		end if
 	catch ex as exception
@@ -104,9 +116,9 @@
 			dim res as string = ""
 			res = fb.updateteam(team_id:=request("team_select"), pool_id:=pool_id, pool_owner:=myname, team_name:=request("team_name"), team_shortname:=request("team_shortname"), url:=request("url"))
 			if res <> request("team_name") then
-				message_text = res
+				session("error_message") = res
 			else
-				message_text = "Team was updated successfully."
+				session("page_message")  = "Team was updated successfully."
 			end if
 		end if
 	catch
@@ -161,9 +173,9 @@
 			dim res as string = ""
 			res = fb.AddGames(pool_id:=pool_id, pool_owner:=myname, games_text:=request("games_text"))
 			if res <> myname then
-				message_text = res
+				session("error_message") = res
 			else
-				message_text = "Games were added successfully."
+				session("page_message")  = "Games were added successfully."
 			end if
 		end if
 	catch
@@ -174,9 +186,9 @@
 			dim res as string = ""
 			res = fb.UpdateTiebreaker(pool_id:=pool_id, pool_owner:=myname, week_id:=request("tb_weekid_select"), game_id:=request("tb_game_select"))
 			if res <> myname then
-				message_text = res
+				session("error_message") = res
 			else
-				message_text = "Tiebreaker was set successfully."
+				session("page_message")  = "Tiebreaker was set successfully."
 			end if
 		end if
 	catch
@@ -187,9 +199,9 @@
 			dim res as string = ""
 			res = fb.SetFeed(pool_id:=pool_id, feed_id:=request("rssfeed_select"))
 			if res <> pool_id then
-				message_text = res
+				session("error_message") = res
 			else
-				message_text = "Feed was set successfully."
+				session("page_message")  = "Feed was set successfully."
 			end if
 		end if
 	catch
@@ -225,9 +237,9 @@
 			res = fb.InvitePlayer(pool_id:=pool_id, username:=myname, email:=request("invite_player_email"))
 
 			if res = "SUCCESS" then
-				message_text = "The invitation was sent." 
+				session("page_message")  = "The invitation was sent." 
 			else
-				message_text = "There was a problem sending the invitation."
+				session("error_message")  = "There was a problem sending the invitation."
 			end if
 		end if
 	catch
@@ -250,9 +262,9 @@
 			next
 
 			if res = "SUCCESS" then
-				message_text = "The invitation was sent." 
+				session("page_message") = "The invitation was sent." 
 			else
-				message_text = "There was a problem sending the invitation."
+				session("error_message")  = "There was a problem sending the invitation."
 			end if
 
 		end if
@@ -491,9 +503,28 @@
 	<h2><% = pool_drow("pool_name") %></h2>
 
 	<%
-	if message_text <> "" then
-		%><script>window.alert("<% = message_text.replace("""", "\""") %>")</script><%
-	end if
+	try
+		if session("page_message") <> "" then
+			%>
+			<div class="message">
+			<% = session("page_message") %><br />
+			</div>
+			<%
+			session("page_message") = ""
+		end if
+	catch
+	end try
+	try
+		if session("error_message") <> "" then
+			%>
+			<div class="error_message">
+			<% = session("error_message") %><br />
+			</div>
+			<%
+			session("error_message") = ""
+		end if
+	catch
+	end try
 	%>
 	<a href="#details">Details</a> - 
 	<a href="#teams">Teams</a> - 

@@ -7,7 +7,6 @@
 <%
 	server.execute("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
-	fb.initialize()
 
 	dim http_host as string = ""
 	try
@@ -15,7 +14,7 @@
 	catch
 	end try
 
-	dim submit as string
+	dim submit as string = ""
 	try
 		submit = request("submit")
 	catch
@@ -73,9 +72,12 @@
 			res = fb.InvitePlayer(pool_id:=pool_id, username:=myname, email:=email)
 			if res <> "SUCCESS" then
 				message_text = res
+				session("error_message") = "There was a problem sending the invitation."
+			else
+				session("page_message") = "Invitation was sent." 
 			end If
 		Else
-			message_text = "Invalid email address."
+			session("error_message") = "Invalid email address."
 		End If
 	end if
 	
@@ -120,6 +122,28 @@
 			else
 				%><img src="<% = banner_image %>" border="0"><BR><BR><%
 			end if
+			try
+				if session("page_message") <> "" then
+					%>
+					<div class="message">
+					<% = session("page_message") %><br />
+					</div>
+					<%
+					session("page_message") = ""
+				end if
+			catch
+			end try
+			try
+				if session("error_message") <> "" then
+					%>
+					<div class="error_message">
+					<% = session("error_message") %><br />
+					</div>
+					<%
+					session("error_message") = ""
+				end if
+			catch
+			end try
 		%>
 		<form class="cmxform" action="sendinvite.aspx">
 			<input type="hidden" name="pool_id" value="<% = pool_id %>" />

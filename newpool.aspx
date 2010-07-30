@@ -2,21 +2,12 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Collections" %>
 <%
-	dim fb as new Rasputin.FootballUtility()
-	fb.initialize()
-
-	dim http_host as string = ""
-	try
-		http_host = request.servervariables("HTTP_HOST")
-	catch
-	end try
-
-dim poolname as string = ""
-dim desc as string = ""
-dim bannerurl as string  = ""
-dim logourl as string = ""
-dim eligibility as string = ""
-dim submit as string = ""
+dim fb as new Rasputin.FootballUtility()
+dim http_host as string = ""
+try
+	http_host = request.servervariables("HTTP_HOST")
+catch
+end try
 
 dim myname as string = ""
 dim res as string = ""
@@ -33,25 +24,38 @@ if myname = "" then
 	response.redirect("/football/login.aspx?returnurl=/football/newpool.aspx", true)
 end if
 
-try
-	poolname = request("poolname")
-	desc = request("desc")
-	bannerurl = request("bannerurl")
-	logourl = request("logourl")
-	eligibility = request("eligibility")
-	submit = request("submit")
+dim parms as new System.Collections.HashTable()
+dim parmkeys as new system.collections.arraylist()
 
-catch ex as exception
-end try
+parmkeys.add("submit")
+parmkeys.add("poolname")
+parmkeys.add("desc")
+parmkeys.add("bannerurl")
+parmkeys.add("logourl")
+parmkeys.add("eligibility")
+parmkeys.add("participate")
 
-if submit = "Create Pool" then
-	res = fb.createpool(myname, poolname, desc, eligibility, logourl, bannerurl)
-	if res <> poolname then
-		session("page_message") = "Pool was not created:" & res & ":" & poolname
-		response.redirect("error.aspx", true)
+for each k as object in parmkeys
+	try
+		if request(k.toString()) <> "" then
+			parms.add(k.toString(), request(k.toString()))
+		else
+			parms.add(k.tostring(), "")
+		end if
+	catch ex as exception
+	end try
+next
+
+if parms("submit") = "Create Pool" then
+	res = fb.createpool(myname, parms("poolname"), parms("desc"), parms("eligibility"), parms("logourl"), parms("bannerurl"), parms("participate"))
+	if res <> parms("poolname") then
+		session("error_message") = "Pool was not created:" & res 
 	else
 		session("page_message") = "Your pool was created."
-		response.redirect("default.aspx", true)
+		dim pool_id as integer = 0
+		pool_id = fb.getPoolID(parms("poolname"), myname)
+		
+		response.redirect("adminpool.aspx?pool_id=" & pool_id, true)
 	end if
 end if
 
@@ -116,6 +120,30 @@ end if
 
 <div id="Content">
 
+	<%
+	try
+		if session("page_message") <> "" then
+			%>
+			<div class="message">
+			<% = session("page_message") %><br />
+			</div>
+			<%
+			session("page_message") = ""
+		end if
+	catch
+	end try
+	try
+		if session("error_message") <> "" then
+			%>
+			<div class="error_message">
+			<% = session("error_message") %><br />
+			</div>
+			<%
+			session("error_message") = ""
+		end if
+	catch
+	end try
+	%>
 
 	<form class="cmxform">
 		<p>Please complete the form below. Mandatory fields marked <em>*</em></p>
@@ -127,6 +155,7 @@ end if
 				<li><label for="bannerurl">Banner Url </label> <input id="bannerurl" name="bannerurl" /></li>
 				<li><label for="logourl">Logo Url </label> <input id="logourl" name="logourl" /></li>
 				<li><label for="eligibility">Eligibility <em>*</em></label> <select name="eligibility" id="eligibility"><option value="OPEN" SELECTED>OPEN</option><option value="BEFORE">BEFORE</option><option value="AFTER">AFTER</option></select></li>
+				<li><label for="Participate">I am participating.</label> <input id="participate" name="participate" type=checkbox /></li>
 			</ol>
 		</fieldset>
 		<p><input type="submit" name="submit" value="Create Pool" /></p>
