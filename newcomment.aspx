@@ -11,7 +11,6 @@
 <%
 server.execute("/football/cookiecheck.aspx")
 dim fb as new Rasputin.FootballUtility()
-fb.initialize()
 
 dim message_text as string = ""
 
@@ -105,9 +104,10 @@ if submit = "Make Comment" then
 		res = fb.MakeComment(pool_id:=pool_id, username:=myname, comment_text:=request("comment_text"), comment_title:=request("comment_title"))
 	end if
 	if res = myname then
-		message_text = "Comment was added."
+		session("page_message") = "Comment was added."
+		response.redirect ("showthreads.aspx?pool_id=" & pool_id, true)
 	else
-		message_text = "Comment was not added."
+		session("error_message")  = "Comment was not added."
 	end if
 end if
 	
@@ -197,6 +197,30 @@ end if
 			end if
 		%>
 
+	<%
+	try
+		if session("page_message") <> "" then
+			%>
+			<div class="message">
+			<% = session("page_message") %><br />
+			</div>
+			<%
+			session("page_message") = ""
+		end if
+	catch
+	end try
+	try
+		if session("error_message") <> "" then
+			%>
+			<div class="error_message">
+			<% = session("error_message") %><br />
+			</div>
+			<%
+			session("error_message") = ""
+		end if
+	catch
+	end try
+	%>
 		<form class="cmxform">
 			<input type="hidden" name="pool_id" value="<% = pool_id %>">
 			<% 

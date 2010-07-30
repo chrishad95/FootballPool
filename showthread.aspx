@@ -361,8 +361,6 @@ end if
 		feedtext = fb.getfeed(pool_id:=pool_id, xslfile:=server.mappath("football.xsl"))
 		if feedtext <> "" then
 			response.write(feedtext)
-		else
-			server.execute ("/quotes/getrandomquote.aspx")
 		end if
 	catch ex as exception
 		fb.makesystemlog("error in showthread.aspx", ex.tostring())

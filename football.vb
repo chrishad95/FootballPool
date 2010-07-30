@@ -165,16 +165,17 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 
-				sql = "select  * from fb_comments where ref_id is null and pool_id in (select pool_id from fb_players where username=@username)  order by comment_tsp DESC"
+				sql = "select  * from fb_comments where ref_id is null and ( pool_id in (select pool_id from fb_players where username=@username) or pool_id in (select pool_id from fb_pools where pool_owner=@username) ) order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
-				cmd.parameters("@USERNAME").value = username
+
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50)).value = username
 
 				oda = new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 			catch ex as exception
-				makesystemlog("error in getfeedcomments", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
