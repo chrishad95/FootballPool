@@ -27,51 +27,47 @@
 </script>
 <%
 
-dim fb as new Rasputin.FootballUtility()
-fb.initialize()
+dim myname as string
+myname = ""
+try
+	if session("username") <> "" then
+		myname = session("username")
+	end if
+catch
+end try
+if myname = "" then
+	session("username") = ""
+end if
 
-application("football_year") = "2005"
-	
-	
-	dim myname as string
-	myname = ""
+if myname = "" then
+	dim fb as new Rasputin.FootballUtility()
 	try
-		if session("username") <> "" then
-			myname = session("username")
-		end if
-	catch
-	end try
-	if myname = "" then
-		session("username") = ""
-	end if
+	
+		dim mycookies as HttpCookieCollection
+		mycookies = request.cookies
+		dim username as string
+		dim password as string
+		username = ""
+		password = ""
 
-	if myname = "" then
 		try
-			dim mycookies as HttpCookieCollection
-			mycookies = request.cookies
-			dim username as string
-			dim password as string
-			username = ""
-			password = ""
-
-			try
-				username = mycookies("username").value
-				password = mycookies("password").value
-			catch 
-			end try
-			if username <> "" and password <> "" then
-				dim res as string
-				res = fb.authenticate(username, password)
-				if res <> "" then
-					session("username") = res
-					myname = res
-				end if
-			end if
-		catch ex as exception
-			fb.makesystemlog("Error Detected - " & datetime.now, ex.tostring())
+			username = mycookies("username").value
+			password = mycookies("password").value
+		catch 
 		end try
-		
-	end if
+		if username <> "" and password <> "" then
+			dim res as string
+			res = fb.authenticate(username, password)
+			if res <> "" then
+				session("username") = res
+				myname = res
+			end if
+		end if
+	catch ex as exception
+		fb.makesystemlog("Error Detected - " & datetime.now, ex.tostring())
+	end try
+	
+end if
 
 ' not sure what this stuff is for
 

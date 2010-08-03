@@ -25,45 +25,34 @@ Namespace Rasputin
 	public Class FootballUtility
 
 		private myconnstring as string = System.Configuration.ConfigurationSettings.AppSettings("connString")
-		private con as SQLConnection
 		private isInitialized as boolean
 
-
-		public sub New()
-			con = new SQLConnection(myconnstring)
-			con.open()
-		end sub
-
-		Protected Overrides Sub Finalize()
-			try
-				con.close()
-				con.dispose()
-				con = nothing
-			catch
-			end try
-			mybase.Finalize()
-		end sub
 
 		public sub initialize()
 		end sub
 
 		Public sub MakeSystemLog (log_title as string, log_text as string)
-		
-			dim sql as string
-			dim cmd as SQLCommand
+			try
+			using con as new SQLConnection(myconnstring)
+				dim sql as string
+				dim cmd as SQLCommand
 
-			sql = "insert into fb_journal_entries (username,journal_type,entry_title,entry_text) values ('', 'FOOTBALL', @entry_title, @entry_text)"
-			
-			cmd = new SQLCommand(sql,con)
-			cmd.parameters.add(new SQLParameter("entry_title", SQLDbType.varchar, 200)).value = log_title & " - " & system.datetime.now
-			cmd.parameters.add(new SQLParameter("entry_text", SQLDbType.text, 32700)).value = log_text
-			cmd.executenonquery()
-
+				sql = "insert into fb_journal_entries (username,journal_type,entry_title,entry_text) values ('', 'FOOTBALL', @entry_title, @entry_text)"
+				
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("entry_title", SQLDbType.varchar, 200)).value = log_title & " - " & system.datetime.now
+				cmd.parameters.add(new SQLParameter("entry_text", SQLDbType.text, 32700)).value = log_text
+				cmd.executenonquery()
+			end using
+			catch ex as exception
+				throw (ex)
+			end try
 		end sub 
 
 		public function GetErrors() as dataset
 			dim res as new dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -75,27 +64,23 @@ Namespace Rasputin
 				dim drow as datarow
 				dim dt as datatable
 				
-				'con = new SQLConnection(myconnstring)
-				
-
 				sql = "select top 50 * from fb_journal_entries where journal_type='FOOTBALL' order by entry_tsp desc"
 				cmd = new SQLCommand(sql,con)
 				oda = new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
+			end using
 			catch ex as exception
 				makesystemlog("error in geterrors", ex.tostring())
 			end try
 
 			return res
-
-
 		end function
 
 		public function authenticate(username as string, password as string) as string
-			dim function_name as string = "authenticate"
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim oda as SQLDataAdapter
@@ -141,8 +126,10 @@ Namespace Rasputin
 					
 					cmd.executenonquery()
 				end if
+			end using
 			catch ex as exception
-				makesystemlog("error in " & function_name, ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 
@@ -151,6 +138,7 @@ Namespace Rasputin
 		public function GetCommentsFeed(username as string) as dataset
 			dim res as new dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -173,6 +161,7 @@ Namespace Rasputin
 				oda = new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -185,6 +174,7 @@ Namespace Rasputin
 		public function GetCommentsFeed(pool_id as integer, username as string) as dataset
 			dim res as new dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -210,6 +200,7 @@ Namespace Rasputin
 				oda.SelectCommand = cmd
 				oda.Fill(res)
 
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -221,6 +212,7 @@ Namespace Rasputin
 		public function createPool(POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String, participate as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = ""
 				dim cmd as SQLCommand
 
@@ -265,6 +257,7 @@ Namespace Rasputin
 				else
 					res = "The pool could not be created because the pool name already exists."
 				end if
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -277,6 +270,7 @@ Namespace Rasputin
 			
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -296,6 +290,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
+			end using
 			catch ex as exception
 				makesystemlog("Error in ListFeeds", ex.tostring())
 			end try
@@ -307,6 +302,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -330,6 +326,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -342,6 +339,7 @@ Namespace Rasputin
 
 			dim res as integer = -1
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -353,6 +351,7 @@ Namespace Rasputin
 
 				res = cmd.executescalar()
 
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -364,6 +363,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -377,6 +377,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -389,6 +390,7 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -417,12 +419,10 @@ Namespace Rasputin
 				Else
 					res = "views not updated"
 				End If
-				
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error in incrementviewcount", ex.tostring())
 			end try
-
 			return res
 		End Function
 		
@@ -430,6 +430,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -454,9 +455,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
-			
-				
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error in GetCommentDetails", ex.tostring())
 			end try
@@ -532,6 +531,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -546,6 +546,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res) 
 				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -558,6 +559,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -571,6 +573,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -583,6 +586,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -597,6 +601,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -609,6 +614,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -631,6 +637,7 @@ Namespace Rasputin
 				oda.fill(res)
 			
 				
+			end using
 			catch ex as exception
 				makesystemlog("Error getting pool invites", ex.tostring())
 			end try
@@ -642,6 +649,7 @@ Namespace Rasputin
 		Public Function SendNotice(pool_id As Integer, player_id As Integer, message As String, week_id As Integer) As String
 			dim res as string  = ""
 			try
+			using con as new SQLConnection(myconnstring)
 			
 				dim sql as string
 				dim cmd as SQLCommand
@@ -746,10 +754,7 @@ Namespace Rasputin
 				Catch ex As exception
 					makesystemlog("Error sending notice", ex.tostring())
 				end try
-			
-			
-			
-				
+			end using
 			Catch ex As exception
 				makesystemlog("Error in SendNotice", ex.tostring())
 			End Try
@@ -777,6 +782,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+				using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -799,7 +805,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
-			
+				end using
 				
 			catch ex as exception
 				makesystemlog("Error getting pool players", ex.tostring())
@@ -829,8 +835,8 @@ Namespace Rasputin
 		Public function GetPoolOptions(pool_id as integer) as system.Collections.Hashtable 
 
 			Dim res As New system.Collections.Hashtable()
-			
 			try
+				using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -845,7 +851,6 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(ds)
-			
 
 				res.add("LONEWOLFEPICK", "off")
 				res.add("WINWEEKPOINT", "off")
@@ -862,7 +867,7 @@ Namespace Rasputin
 						next
 					end if
 				end if 
-				
+				end using	
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -875,9 +880,7 @@ Namespace Rasputin
 			Dim res as String = ""
 			try
 
-				'con = new SQLConnection(myconnstring)
-				
-
+				using con as new SQLConnection(myconnstring)
 				Dim cmd as SQLCommand
 				Dim sql as String
 
@@ -930,6 +933,7 @@ Namespace Rasputin
 				If ties > 0 Then
 					res = res & "-" & ties
 				End if
+				end using
 			catch ex as exception
 				makesystemlog("Error in getTeamRecord", ex.tostring())
 			End try
@@ -939,6 +943,7 @@ Namespace Rasputin
 		Public function UpdatePool(POOL_ID as INTEGER, POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String, scorer as string) as string
 			dim res as string = ""
 			try
+				using con as new SQLConnection(myconnstring)
 				dim sql as string = "update fb_pools set POOL_NAME=@pool_name, POOL_DESC=@pool_desc, POOL_TSP=@pool_tsp, ELIGIBILITY=@eligibility, POOL_LOGO=@pool_logo, POOL_BANNER=@pool_banner , scorer=@scorer where POOL_ID=@pool_id and pool_owner=@pool_owner"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -964,6 +969,7 @@ Namespace Rasputin
 				cmd.parameters("scorer").value = scorer
 				cmd.executenonquery()
 				res = pool_name
+				end using
 			catch ex as exception
 				res = ex.toString()
 				dim st as new System.Diagnostics.StackTrace() 
@@ -976,6 +982,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = ""
 				dim pools_ds as dataset = listpools(pool_owner)
 
@@ -999,6 +1006,7 @@ Namespace Rasputin
 				else
 					res = "No Pools found for " & pool_owner
 				end if
+			end using
 
 			catch ex as exception
 				if ex.message.tostring().indexof("duplicate rows") >= 0 then
@@ -1169,6 +1177,7 @@ Namespace Rasputin
 		Public function CreateInvite(POOL_ID as INTEGER, EMAIL as String, INVITE_KEY as String, INVITE_TSP as datetime) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "insert into fb_invites(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (@pool_id, @email, @invite_key, @invite_tsp)"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1182,6 +1191,7 @@ Namespace Rasputin
 				cmd.parameters("@INVITE_TSP").value = INVITE_TSP
 				cmd.executenonquery()
 				res = email
+			end using
 			catch ex as exception
 				res =  ex.toString()
 				dim st as new System.Diagnostics.StackTrace() 
@@ -1193,6 +1203,7 @@ Namespace Rasputin
 		Public function DeleteInvite(POOL_ID as INTEGER, EMAIL as String) as string
 			dim res as string = "FAILURE"
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "delete from fb_invites where pool_id=@pool_id and email=@email"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1203,6 +1214,7 @@ Namespace Rasputin
 
 				cmd.executenonquery()
 				res = "SUCCESS"
+			end using
 			catch ex as exception
 				res =  ex.toString()
 				dim st as new System.Diagnostics.StackTrace() 
@@ -1214,6 +1226,7 @@ Namespace Rasputin
 		Public function ImportGame(game_id as INTEGER, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
@@ -1323,6 +1336,7 @@ Namespace Rasputin
 				else
 					res = "No Pools found for " & pool_owner
 				end if
+			end using
 			catch ex as exception
 				if ex.message.tostring().indexof("duplicate rows") >= 0 then
 					res = "Team already exists for this pool."
@@ -1330,7 +1344,6 @@ Namespace Rasputin
 					res = ex.message
 					makesystemlog("Error in Import Team", ex.tostring())
 				end if
-
 			end try
 			return res
 		end function
@@ -1338,6 +1351,7 @@ Namespace Rasputin
 		Public function ImportTeam(TEAM_ID as INTEGER, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
@@ -1359,14 +1373,15 @@ Namespace Rasputin
 				else
 					res = "No Pools found for " & pool_owner
 				end if
+			end using
 			catch ex as exception
 				if ex.message.tostring().indexof("duplicate rows") >= 0 then
 					res = "Team already exists for this pool."
 				else
 					res = ex.message
-					makesystemlog("Error in Import Team", ex.tostring())
+					dim st as new System.Diagnostics.StackTrace() 
+					makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 				end if
-
 			end try
 			return res
 		end function
@@ -1374,6 +1389,7 @@ Namespace Rasputin
 		Public function UpdateTeam(TEAM_ID as INTEGER, TEAM_NAME as String, TEAM_SHORTNAME as String, URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
@@ -1402,6 +1418,7 @@ Namespace Rasputin
 				else
 					res = "No Pools found for " & pool_owner
 				end if
+			end using
 			catch ex as exception
 				if ex.message.tostring().indexof("duplicate rows") >= 0 then
 					res = "Team already exists for this pool."
@@ -1418,6 +1435,7 @@ Namespace Rasputin
 		Public function GetTiebreakers(pool_id as integer, pool_owner as string) as dataset
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string
 					dim cmd as SQLCommand
@@ -1432,6 +1450,7 @@ Namespace Rasputin
 					oda.fill(res) 
 					
 				end if
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -1444,6 +1463,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -1455,8 +1475,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
-			
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -1469,17 +1488,11 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
 				sql = "select distinct username from fb_players a where a.pool_id in (select pool_id from fb_pools where pool_owner=@pool_owner)"
 
 				cmd = new SQLCommand(sql,con)
@@ -1492,9 +1505,10 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				oda.fill(res)
 			
-				
+			end using
 			catch ex as exception
-				makesystemlog("Error in GetPlayers", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -1505,17 +1519,11 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
 				sql = "select * from fb_players where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
@@ -1527,10 +1535,10 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
-			
-				
+			end using
 			catch ex as exception
-				makesystemlog("Error in GetPlayers", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -1539,7 +1547,7 @@ Namespace Rasputin
 		Public function AddGames(POOL_ID as INTEGER, pool_owner as string, games_text as string) as string
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim lines as string()
 					lines = games_text.split(system.environment.newline)
@@ -1575,25 +1583,21 @@ Namespace Rasputin
 				else
 					res = "invalid pool_id for " & pool_owner
 				end if
-			
+			end using
 			catch ex as exception
 				res = ex.message
-				makesystemlog("Error adding game", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function
 
 		Public function lookupteam(pool_id as integer, team_name as string) as string
 			dim res as string = "NO TEAM FOUND"
-
 			try
-
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "select team_id from fb_teams where (team_name=@team_name or UPPER(team_shortname)=@team_shortname) and pool_id=@pool_id"
-
-
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
-
-
 
 				cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
 				cmd.parameters.add(new SQLParameter("@TEAM_shortname", SQLDbType.VARCHAR))
@@ -1613,8 +1617,7 @@ Namespace Rasputin
 						res = ds.tables(0).rows(0)("team_id")
 					end if
 				end if
-
-			
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("Error looking up team", ex.tostring())
@@ -1625,7 +1628,7 @@ Namespace Rasputin
 		Public function CreateGame(WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				if away_id = home_id then
 					res = "The game could not be created because a team cannot play itself."
 				else
@@ -1654,7 +1657,7 @@ Namespace Rasputin
 						res = "invalid pool_id for " & pool_owner
 					end if
 				end if
-			
+			end using
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -1664,10 +1667,9 @@ Namespace Rasputin
 		end function
 
 		public function MakeComment(POOL_ID as INTEGER, USERNAME as String, COMMENT_TEXT as String, COMMENT_TITLE as String) as string
-
-
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1687,6 +1689,7 @@ Namespace Rasputin
 				cmd.parameters("@COMMENT_TITLE").value = COMMENT_TITLE
 				cmd.executenonquery()
 				res = username
+			end using
 
 			catch ex as exception
 				res = ex.message
@@ -1698,10 +1701,9 @@ Namespace Rasputin
 
 
 		public function MakeComment(POOL_ID as INTEGER, USERNAME as String, COMMENT_TEXT as String, COMMENT_TITLE as String, ref_id as integer) as string
-
-
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1725,6 +1727,7 @@ Namespace Rasputin
 				cmd.parameters("@ref_id").value = ref_id
 				cmd.executenonquery()
 				res = username
+			end using
 
 			catch ex as exception
 				res = ex.message
@@ -1737,6 +1740,7 @@ Namespace Rasputin
 			
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1757,6 +1761,7 @@ Namespace Rasputin
 				cmd.executenonquery()
 				res = comment_id
 
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("Error in UpdateComment", ex.tostring())
@@ -1768,6 +1773,7 @@ Namespace Rasputin
 		Public function UpdateGame(GAME_ID as INTEGER, WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string
 			try
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = "update fb_sched set WEEK_ID=@WEEK_ID, HOME_ID=@HOME_ID, AWAY_ID=@AWAY_ID, GAME_TSP=@GAME_TSP, GAME_URL=@GAME_URL where GAME_ID=@GAME_ID and pool_id=@pool_id"
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1792,6 +1798,7 @@ Namespace Rasputin
 				else
 					res = "Invalid pool_id."
 				end if
+			end using
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -1803,6 +1810,7 @@ Namespace Rasputin
 		Public function isScorer(pool_id as integer, username as string) as boolean
 			dim res as boolean = false
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -1823,8 +1831,7 @@ Namespace Rasputin
 				if pool_count > 0 then
 					res = true
 				end if
-			
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -1837,6 +1844,7 @@ Namespace Rasputin
 		Public function isOwner(pool_id as integer, pool_owner as string) as boolean
 			dim res as boolean = false
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -1857,8 +1865,7 @@ Namespace Rasputin
 				if pool_count > 0 then
 					res = true
 				end if
-			
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -1872,7 +1879,7 @@ Namespace Rasputin
 			
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "update fb_pools set feed_ID=@feed_id where pool_id=@pool_id"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1890,7 +1897,7 @@ Namespace Rasputin
 				else
 					res = "Feed was not set"
 				end if
-
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in SetFeed", ex.toString())
@@ -1902,6 +1909,7 @@ Namespace Rasputin
 			
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim sql as string = "update fb_options set optionvalue=@optionvalue where pool_id=@pool_id and optionname=@optionname"
 
@@ -1948,7 +1956,7 @@ Namespace Rasputin
 					rowsaffected = cmd.executenonquery()
 
 				end if
-
+			end using
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -1961,23 +1969,14 @@ Namespace Rasputin
 			
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select * from fb_rss_feeds where feed_id=(select feed_id from fb_pools where pool_id=@pool_id)"
 
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 				cmd = new SQLCommand(sql,con)
-			
-
-
 				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
@@ -1991,8 +1990,7 @@ Namespace Rasputin
 						res = GetRSSFeed(feed_url:=ds.Tables(0).rows(0)("feed_url"), xslfile:=xslfile)
 					End If
 				End If
-				
-				
+			end using
 
 			catch ex as exception
 				makesystemlog("error in GetFeed", ex.tostring())
@@ -2044,6 +2042,7 @@ Namespace Rasputin
 		Public function UpdateTiebreaker(POOL_ID as INTEGER, WEEK_ID as INTEGER, GAME_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = "update fb_tiebreakers set GAME_ID=@GAME_ID, tb_tsp=@tb_tsp where pool_id=@pool_id and week_id=@week_id"
 
@@ -2085,6 +2084,7 @@ Namespace Rasputin
 				else
 					res = "invalid pool_id"
 				end if
+			end using
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -2097,6 +2097,7 @@ Namespace Rasputin
 			dim res as boolean = false
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -2124,6 +2125,7 @@ Namespace Rasputin
 			
 				
 				return res
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -2137,12 +2139,13 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "select username from fb_users where UPPER(email)=@email"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@email", SQLDbType.VARCHAR, 50)).value = email.toupper() 
 				res = cmd.executescalar()
-
+			end using
 			catch ex as exception
 				res = ""
 				dim st as new System.Diagnostics.StackTrace() 
@@ -2155,15 +2158,13 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "select email from fb_users where username=@username"
-
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
-
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = player_name
-
 				res = cmd.executescalar()
-
+			end using
 			catch ex as exception
 				res = ""
 				dim st as new System.Diagnostics.StackTrace() 
@@ -2176,6 +2177,7 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "select email from fb_users where username=@username"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -2193,8 +2195,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
 				cmd.parameters("@pool_id").value = pool_id
 				pool_name = cmd.executescalar()
-
-
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2207,6 +2208,7 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string 
 				dim cmd as SQLCommand
 				dim updatetime as datetime = datetime.now
@@ -2287,6 +2289,7 @@ Namespace Rasputin
 				Else
 					res = "Failed to update pick."
 				End if
+			end using
 
 			catch ex as exception
 				res = ex.message
@@ -2299,6 +2302,7 @@ Namespace Rasputin
 		public function PicksCanBeSeen(pool_id as integer, week_id as integer) as boolean
 			dim res as boolean = false
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -2333,6 +2337,7 @@ Namespace Rasputin
 				else
 					res = true
 				end if
+			end using
 
 				
 			Catch ex As exception
@@ -2345,6 +2350,7 @@ Namespace Rasputin
 		public function isPlayer(pool_id as integer, player_name as string) as boolean
 			dim res as boolean = false
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -2366,6 +2372,7 @@ Namespace Rasputin
 				if playercount > 0 then
 					res = true
 				end if
+			end using
 
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
@@ -2379,6 +2386,7 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "update fb_players set NICKNAME=@nickname WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2400,8 +2408,7 @@ Namespace Rasputin
 				Else
 					res = "Failed to update nickname."
 				End if
-
-				
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in ChangeNickname", ex.toString())
@@ -2413,24 +2420,16 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
 				sql = "select a.game_id,a.week_id,a.away_id,a.home_id,a.game_tsp,b.team_name as away_team, b.team_shortname as away_shortname, b.url as away_url, c.team_name as home_team, c.team_shortname as home_shortname, c.url as home_url from fb_sched a full outer join fb_teams b on a.pool_id=b.pool_id and a.away_id=b.team_id full outer join fb_teams c on a.pool_id=c.pool_id and a.home_id=c.team_id  where a.pool_id=@pool_id and a.week_id=@week_id order by  a.game_tsp"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
 				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
@@ -2439,8 +2438,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
-
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error in GetGamesForWeek", ex.tostring())
 			end try
@@ -2453,6 +2451,7 @@ Namespace Rasputin
 
 			dim res as integer = 0
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -2474,6 +2473,7 @@ Namespace Rasputin
 						end if
 					end if
 				end if 
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -2485,26 +2485,18 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
 				sql = "select tb.*, sched.*, away.team_name as away_team, home.team_name as home_team from fb_tiebreakers tb full outer join fb_sched sched on tb.pool_id=sched.pool_id and tb.game_id=sched.game_id full outer join fb_teams away on away.pool_id=sched.pool_id and away.team_id=sched.away_id full outer join fb_teams home on home.pool_id=sched.pool_id and home.team_id=sched.home_id where tb.pool_id=@pool_id and tb.week_id=@week_id"
 
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 				cmd = new SQLCommand(sql,con)
-			
 
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
 				parm1 = new SQLParameter("@week_id", SQLDbType.int)
 				parm1.value = week_id
 				cmd.parameters.add(parm1)
@@ -2518,7 +2510,7 @@ Namespace Rasputin
 				catch
 					res = "Tie Breaker Game Not Set"
 				end try
-				
+			end using
 
 			catch ex as exception
 				makesystemlog("error in gettiebreakertext", ex.tostring())
@@ -2560,6 +2552,7 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "update fb_tiebreaker set SCORE=@score where username=@username and WEEK_ID=@week_id and  pool_id=@pool_id "
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2597,8 +2590,7 @@ Namespace Rasputin
 				Else
 					res = "Failed to update tiebreaker."
 				End if
-
-				
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2611,6 +2603,7 @@ Namespace Rasputin
 			Dim res as String = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "update fb_tiebreaker set SCORE=@score , mod_user=@mod_user where username=@username and WEEK_ID=@week_id and  pool_id=@pool_id "
 				Dim cmd As SQLCommand = New SQLCommand(sql, con)
 				
@@ -2652,8 +2645,7 @@ Namespace Rasputin
 				Else
 					res = "Failed to update tiebreaker."
 				End if
-
-				
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error updating pick", ex.toString())
@@ -2664,7 +2656,7 @@ Namespace Rasputin
 		public function UpdateGameScore(game_id as integer, away_score as integer, home_score as integer, pool_id as integer, username as string) as string
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = ""
 				dim cmd as SQLCommand
 
@@ -2763,7 +2755,7 @@ Namespace Rasputin
 				else
 					res = "SUCCESS" 
 				end if
-				
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("Error in UpdateGameScore", ex.tostring())
@@ -2775,38 +2767,22 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
 				sql = "select a.pool_id, a.game_id, a.username, a.team_id, b.team_shortname as pick_name, c.game_tsp from fb_picks a full outer join fb_teams b on a.team_id=b.team_id and a.pool_id=b.pool_id full outer join fb_sched c on a.game_id=c.game_id and a.pool_id=c.pool_id where a.pool_id=@pool_id and a.game_id in (select game_id from fb_sched where pool_id=@pool_id and week_id=@week_id)"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
-
-				parm1 = new SQLParameter("pool_id2", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
-
-				parm1 = new SQLParameter("week_id", SQLDbType.int)
-				parm1.value = week_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
-
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error getting pool GetAllPicksForWeek", ex.tostring())
 			end try
@@ -2820,75 +2796,47 @@ Namespace Rasputin
 
 			dim res as string = "NOTSET"
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
 				sql = "select game_id from fb_tiebreakers where pool_id=@pool_id and week_id=@week_id"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
-
-				parm1 = new SQLParameter("week_id", SQLDbType.int)
-				parm1.value = week_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim game_id as integer
 				game_id = cmd.executescalar()
 				res = game_id
-				
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error in GetTiebreaker", ex.tostring())
 			end try
-
 			return res
-
-
 		end function
 		
 		public function GetPlayerTiebreakers(pool_id as integer, week_id as integer) as dataset
-
-
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
-				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
 
 				sql = "select * from fb_tiebreaker where pool_id=@pool_id and week_id=@week_id"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("pool_id", SQLDbType.int)
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
-
-				parm1 = new SQLParameter("week_id", SQLDbType.int)
-				parm1.value = week_id
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
-
+			end using
 				
 			catch ex as exception
 				makesystemlog("Error in GetPlayerTiebreakers", ex.tostring())
@@ -2907,7 +2855,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
-
+			using con as new SQLConnection(myconnstring)
 				Dim temp_table As New system.Data.DataTable("Threads")
 				Dim temp_col As system.Data.DataColumn 
 				dim temp_row as system.Data.DataRow
@@ -3014,6 +2962,7 @@ Namespace Rasputin
 				end if
 
 				res.tables.add(temp_table)
+			end using
 				
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
@@ -3028,6 +2977,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				if count <= 0 then
@@ -3044,8 +2994,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
-
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -3059,6 +3008,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -3072,8 +3022,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
-
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -3086,19 +3035,14 @@ Namespace Rasputin
 		Public Function GetWeeklyStats (pool_id as integer) as dataset
 			Dim temp_ds As New system.Data.DataSet()
 			try
+			using con as new SQLConnection(myconnstring)
 				Dim sql As String = ""
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				'con = new SQLConnection(myconnstring)
-				
-
 				sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , fb_scores b where a.pool_id=@pool_id and a.pool_id =b.pool_id and not b.away_score is null) as t full outer join fb_picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not t.away_score is null order by t.username, d.week_id"
 				cmd = New SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
-				cmd.parameters("@POOL_ID").value = pool_id
-				cmd.parameters("@POOL_ID2").value = pool_id
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 				
 				oda = new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -3235,6 +3179,7 @@ Namespace Rasputin
 					end with
 				next
 				temp_ds.tables.add(temp_table)
+			end using
 			catch ex as exception
 				makesystemlog("error", ex.tostring())
 			end try
@@ -3246,14 +3191,11 @@ Namespace Rasputin
 
 			Dim temp_ds As New system.Data.DataSet()
 			try
+			using con as new SQLConnection(myconnstring)
 				Dim sql As String = ""
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
 				
-				'con = new SQLConnection(myconnstring)
-				
-				
-
 					Dim temp_table As New system.Data.DataTable("Scores")
 					
 					Dim temp_col As system.Data.DataColumn 
@@ -3578,8 +3520,7 @@ Namespace Rasputin
 						temp_table.rows(i)("rank") = top_score - temp_table.rows(i)("totalscore")
 					next
 					temp_ds.tables.add(temp_table)
-
-		        
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -3600,6 +3541,7 @@ Namespace Rasputin
 
 			Dim temp_ds As New system.Data.DataSet()
 			try
+			using con as new SQLConnection(myconnstring)
 				Dim sql As String = ""
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
@@ -3982,8 +3924,7 @@ Namespace Rasputin
 				oda.selectcommand = cmd
 				temp_ds = new dataset()
 				oda.fill(temp_ds)
-
-		        
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -3998,8 +3939,6 @@ Namespace Rasputin
 
 			Dim temp_ds As New system.Data.DataSet()
 			try
-
-
 				Dim temp_table As New system.Data.DataTable("Picks")
 				Dim temp_col As system.Data.DataColumn 
 				dim temp_row as system.Data.DataRow
@@ -4087,6 +4026,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4101,8 +4041,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.SelectCommand = cmd
 				oda.Fill(res)
-
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error getting pool picksforweek", ex.tostring())
 			end try
@@ -4114,28 +4053,18 @@ Namespace Rasputin
 
 			dim res as integer = 0
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
-				'dim con as SQLConnection
 				dim parm1 as SQLParameter
 				
-				dim connstring as string
-				connstring = myconnstring
-				
-				'con = new SQLConnection(connstring)
-				
-
 				sql = "select team_id from fb_picks  where pool_id=@pool_id and username=@username and game_id=@game_id"
-
 				cmd = new SQLCommand(sql,con)
-
 				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 				cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50)).value = player_name
-
 				res = cmd.executescalar()
-
-				
+			end using
 			catch ex as exception
 				makesystemlog("Error in GetPick", ex.tostring())
 			end try
@@ -4148,7 +4077,7 @@ Namespace Rasputin
 
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -4168,8 +4097,7 @@ Namespace Rasputin
 				catch
 					res = ""
 				end try
-				
-
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4184,6 +4112,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4197,7 +4126,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res) 
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4209,6 +4138,7 @@ Namespace Rasputin
 		public function GetImportGames() as dataset
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4218,8 +4148,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res)
-			
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4232,6 +4161,7 @@ Namespace Rasputin
 		public function GetImportTeams() as dataset
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				sql = "select * from fb_copy_teams order by team_name"
@@ -4239,7 +4169,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res) 
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4252,6 +4182,7 @@ Namespace Rasputin
 
 			dim res as new system.data.dataset()
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4264,7 +4195,7 @@ Namespace Rasputin
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(res) 
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4276,6 +4207,7 @@ Namespace Rasputin
 		public function validateEmail (key as string, username as string) as boolean
 			dim res as boolean = false
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4301,7 +4233,7 @@ Namespace Rasputin
 
 					res = true
 				end if 
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4314,6 +4246,7 @@ Namespace Rasputin
 			dim res as boolean = false
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4336,12 +4269,11 @@ Namespace Rasputin
 				if invites_ds.tables(0).rows.count > 0 then
 					res = true
 				end if 
-				
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
-
 			return res
 		end function
 		
@@ -4349,6 +4281,7 @@ Namespace Rasputin
 			dim res as string = ""
 
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -4406,6 +4339,7 @@ Namespace Rasputin
 				else
 					res = "Invalid input info."
 				end if
+			end using
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -4418,6 +4352,7 @@ Namespace Rasputin
 		public function addPlayer(pool_id as integer, username as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4428,6 +4363,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = username
 				cmd.executenonquery()
 				res = username
+			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
@@ -4438,7 +4374,7 @@ Namespace Rasputin
 		public function ResetPassword(username as string) as string
 			dim res as string
 			try
-								
+			using con as new SQLConnection(myconnstring)
 				dim temppassword as string
 				temppassword = CreateTempPassword()
 
@@ -4488,6 +4424,7 @@ Namespace Rasputin
 				end if
 				res = realUsername
 				makesystemlog("Password reset", "Input Username: " & username)
+			end using
 			catch ex as exception
 				res = "An error occurred.  The password may not have been reset."
 				dim st as new System.Diagnostics.StackTrace() 
@@ -4572,6 +4509,7 @@ Namespace Rasputin
 		
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim usercount as integer
 				
@@ -4662,6 +4600,7 @@ Namespace Rasputin
 					sendemail(emailaddress:=email, subject:="www.smackpools.com registration verification" , body:=sb.tostring())
 					res = email
 				end if
+			end using
 			catch ex as exception
 				res = ex.message
 				MakeSystemLog("error in registeruser", ex.tostring())
@@ -4672,6 +4611,7 @@ Namespace Rasputin
 		public function resendinvite(pool_id as integer, email as string) as string
 			dim res as string = ""
 			try
+			using con as new SQLConnection(myconnstring)
 
 				dim cmd as SQLCommand
 				dim dr as SQLDataReader
@@ -4703,7 +4643,7 @@ Namespace Rasputin
 
 					end if
 				end if
-
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in resendinvite", ex.tostring())
@@ -4763,7 +4703,7 @@ Namespace Rasputin
 		public function Login(username as string, password as string) as string
 			dim res as string = ""
 			try
-
+			using con as new SQLConnection(myconnstring)
 				dim usercount as integer = 0		
 				
 				dim cmd as SQLCommand
@@ -4866,6 +4806,7 @@ Namespace Rasputin
 					
 					cmd.executenonquery()
 				end if
+			end using
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -4876,8 +4817,8 @@ Namespace Rasputin
 
 		public function GetAvatar(pool_id as integer, username as string) as string
 			dim res as string = ""
-
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "select avatar from fb_players WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -4898,10 +4839,10 @@ Namespace Rasputin
 				catch ex as exception
 					makesystemlog("error in GetAvatar", ex.toString())
 				end try
-
-				
+			end using
 			catch ex as exception
-				makesystemlog("error in GetAvatar", ex.toString())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 
@@ -4909,16 +4850,16 @@ Namespace Rasputin
 
 		public function ChangeAvatar(pool_id as integer, username as string, avatar as string) as string
 			dim res as string = ""
-
 			try
+			using con as new SQLConnection(myconnstring)
 				dim sql as string = "update fb_players set avatar=@avatar WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+
 				cmd.parameters.add(new SQLParameter("@avatar", SQLDbType.VARCHAR, 255))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
 
-				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@avatar").value = avatar
 				
@@ -4932,15 +4873,13 @@ Namespace Rasputin
 				Else
 					res = "Failed to change avatar."
 				End if
-
+			end using
 			catch ex as exception
 				res = ex.message
 				makesystemlog("error in ChangeAvatar", ex.toString())
 			end try
 			return res
-
 		end function
-
 	end Class
 
 

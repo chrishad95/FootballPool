@@ -6,8 +6,6 @@
 <%@ Import Namespace="System.Text" %>
 <%
 
-	dim fb as new Rasputin.FootballUtility()
-	fb.initialize()
 	dim http_host as string = ""
 	try
 		http_host = request.servervariables("HTTP_HOST")
@@ -40,6 +38,7 @@
 			session("page_message") = "Incorrect username/password.  Please use your BACK button and try again."		
 			response.redirect("error.aspx",true)
 		end if
+		dim fb as new Rasputin.FootballUtility()
 
 		dim res as string = ""
 		res = fb.login(username:=username, password:=password)
