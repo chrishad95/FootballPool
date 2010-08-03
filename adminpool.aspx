@@ -60,7 +60,13 @@
 
 	try
 		if request("submit") = "Update Pool Details" then
-			fb.updatepool(pool_id:=pool_id, pool_owner:=myname, pool_name:=request("poolname"), pool_desc:=request("desc"), pool_banner:=parms_ht("bannerurl"), pool_logo:=request("logourl"), eligibility:=request("eligibility"), scorer:=request("scorer"))
+			dim res as string = ""
+			res = fb.updatepool(pool_id:=pool_id, pool_owner:=myname, pool_name:=request("poolname"), pool_desc:=request("desc"), pool_banner:=parms_ht("bannerurl"), pool_logo:=request("logourl"), eligibility:=request("eligibility"), scorer:=request("scorer"))
+			if res = request("pool_name") then
+				session("page_message") = "The pool details were updated."
+			else
+				session("error_message") = res
+			end if
 		end if
 	catch
 	end try

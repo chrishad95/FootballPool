@@ -962,34 +962,55 @@ Namespace Rasputin
 
 		Public function UpdatePool(POOL_ID as INTEGER, POOL_OWNER as String, POOL_NAME as String, POOL_DESC as String, ELIGIBILITY as String, POOL_LOGO as String, POOL_BANNER as String, scorer as string) as string
 			dim res as string = ""
+			if pool_name.trim() = "" then
+				return "The pool name cannot be blank."	
+			end if
 			try
 				using con as new SQLConnection(myconnstring)
 				con.open()
-				dim sql as string = "update fb_pools set POOL_NAME=@pool_name, POOL_DESC=@pool_desc, POOL_TSP=@pool_tsp, ELIGIBILITY=@eligibility, POOL_LOGO=@pool_logo, POOL_BANNER=@pool_banner , scorer=@scorer where POOL_ID=@pool_id and pool_owner=@pool_owner"
-				dim cmd as SQLCommand = new SQLCommand(sql, con)
+				dim sql as string = ""
+				dim cmd as SQLCommand
+				
+				' find any pools owned by this user that already have this name and are not this pool (pool_id)
+				sql = "select count(*) from fb_pools where pool_name=@pool_name and pool_owner=@pool_owner and pool_id<>@pool_id"
+				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@pool_name", SQLDbType.VARCHAR, 100))
-				cmd.parameters.add(new SQLParameter("@pool_desc", SQLDbType.VARCHAR, 3000))
-				cmd.parameters.add(new SQLParameter("@pool_tsp", SQLDbType.datetime))
-				cmd.parameters.add(new SQLParameter("@eligibility", SQLDbType.VARCHAR, 10))
-				cmd.parameters.add(new SQLParameter("@pool_logo", SQLDbType.VARCHAR, 255))
-				cmd.parameters.add(new SQLParameter("@pool_banner", SQLDbType.VARCHAR, 255))
-				cmd.parameters.add(new SQLParameter("scorer", SQLDbType.VARCHAR, 30))
+				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(new SQLParameter("@pool_name", SQLDbType.varchar, 100)).value = pool_name
+				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = pool_owner
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.VARCHAR, 50))
+				dim count as integer = 0
+				count = cmd.executescalar()
 
-				cmd.parameters("@pool_id").VAlue = POOL_ID
-				cmd.parameters("@pool_owner").value = POOL_OWNER
-				cmd.parameters("@pool_name").value = POOL_NAME
-				cmd.parameters("@pool_desc").value = POOL_DESC
-				cmd.parameters("@pool_tsp").Value = system.datetime.now
-				cmd.parameters("@eligibility").value = ELIGIBILITY
-				cmd.parameters("@pool_logo").value = POOL_LOGO
-				cmd.parameters("@pool_banner").value = POOL_BANNER
-				cmd.parameters("scorer").value = scorer
-				cmd.executenonquery()
-				res = pool_name
+				if count = 0 then	
+					sql = "update fb_pools set POOL_NAME=@pool_name, POOL_DESC=@pool_desc, POOL_TSP=@pool_tsp, ELIGIBILITY=@eligibility, POOL_LOGO=@pool_logo, POOL_BANNER=@pool_banner , scorer=@scorer where POOL_ID=@pool_id and pool_owner=@pool_owner"
+					cmd = new SQLCommand(sql, con)
+
+					cmd.parameters.add(new SQLParameter("@pool_name", SQLDbType.VARCHAR, 100))
+					cmd.parameters.add(new SQLParameter("@pool_desc", SQLDbType.VARCHAR, 3000))
+					cmd.parameters.add(new SQLParameter("@pool_tsp", SQLDbType.datetime))
+					cmd.parameters.add(new SQLParameter("@eligibility", SQLDbType.VARCHAR, 10))
+					cmd.parameters.add(new SQLParameter("@pool_logo", SQLDbType.VARCHAR, 255))
+					cmd.parameters.add(new SQLParameter("@pool_banner", SQLDbType.VARCHAR, 255))
+					cmd.parameters.add(new SQLParameter("scorer", SQLDbType.VARCHAR, 30))
+
+					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+					cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.VARCHAR, 50))
+
+					cmd.parameters("@pool_id").VAlue = POOL_ID
+					cmd.parameters("@pool_owner").value = POOL_OWNER
+					cmd.parameters("@pool_name").value = POOL_NAME
+					cmd.parameters("@pool_desc").value = POOL_DESC
+					cmd.parameters("@pool_tsp").Value = system.datetime.now
+					cmd.parameters("@eligibility").value = ELIGIBILITY
+					cmd.parameters("@pool_logo").value = POOL_LOGO
+					cmd.parameters("@pool_banner").value = POOL_BANNER
+					cmd.parameters("scorer").value = scorer
+					cmd.executenonquery()
+					res = pool_name
+				else
+					res = "The pool details were not changed becuase a pool already exists with this name."
+				end if
 				end using
 			catch ex as exception
 				res = ex.toString()
@@ -2739,18 +2760,11 @@ Namespace Rasputin
 					sql = "insert into fb_scores_history (away_score, home_score, game_id, pool_id, mod_user, mod_tsp) values (@away_score, @home_score, @game_id, @pool_id, @mod_user, CURRENT_TIMESTAMP)"
 					cmd = new SQLCommand(sql, con)
 	
-					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@scorer", SQLDbType.varchar, 30))
-	
-					cmd.parameters("@GAME_ID").value = GAME_ID
-					cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
-					cmd.parameters("@HOME_SCORE").value = HOME_SCORE
-					cmd.parameters("@POOL_ID").value = POOL_ID
-					cmd.parameters("@scorer").value = username
-	
+					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(new SQLParameter("@mod_user", SQLDbType.varchar, 30)).value = username
+					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int)).value = away_score
+					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int)).value = home_score
+					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int)).value = game_id
 					
 					dim rowsupdated as integer = 0
 	
@@ -2764,17 +2778,14 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
 	
-	
 					cmd.parameters("@GAME_ID").value = GAME_ID
 					cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
 					cmd.parameters("@HOME_SCORE").value = HOME_SCORE
 					cmd.parameters("@POOL_ID").value = POOL_ID
-	
 					
 					rowsupdated = 0
 	
 					rowsupdated = cmd.executenonquery()
-	
 	
 					if rowsupdated > 0 then
 						res = "SUCCESS"
@@ -2816,7 +2827,8 @@ Namespace Rasputin
 			end using
 			catch ex as exception
 				res = ex.message
-				makesystemlog("Error in UpdateGameScore", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function

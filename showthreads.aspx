@@ -199,6 +199,28 @@ end if
 	else
 		%><img src=" <% = banner_image %>" border="0"><BR><BR><%
 	end if
+	try
+		if session("page_message") <> "" then
+			%>
+			<div class="message">
+			<% = session("page_message") %><br />
+			</div>
+			<%
+			session("page_message") = ""
+		end if
+	catch
+	end try
+	try
+		if session("error_message") <> "" then
+			%>
+			<div class="error_message">
+			<% = session("error_message") %><br />
+			</div>
+			<%
+			session("error_message") = ""
+		end if
+	catch
+	end try
 %>
 
 <div align="left">
@@ -240,7 +262,7 @@ end if
 				dim thread_id as integer = threadrow("thread_id")
 
 				%>
-				<tr><td class="thread_title"><span class="title_text"><a href="/football/showthread.aspx?pool_id=<% = pool_id %>&thread_id=<% = thread_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
+				<tr><td class="thread_title"><span class="title_text"><a href="/football/showthread.aspx?pool_id=<% = pool_id %>&t=<% = thread_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
 				by&nbsp;<span class="poster_text"><% = last_poster %></span></td><td class="replies"><% = replies %></td><td class="views"><% = views %></td></tr>
 				<%
 			next

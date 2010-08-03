@@ -11,14 +11,10 @@
 <%
 server.execute("/football/cookiecheck.aspx")
 dim fb as new Rasputin.FootballUtility()
-
-dim message_text as string = ""
-
 try
 	myname = session("username")
 catch
 end try
-
 dim http_host as string = ""
 try
 	http_host = request.servervariables("HTTP_HOST")
@@ -371,9 +367,4 @@ end if
 <!-- BlueRobot was here. -->
 
 </body>
-<%
-if message_text <> "" then
-	%><script>window.alert("<% = message_text.replace("""", "\""") %>")</script><%
-end if
-%>
 </html>
