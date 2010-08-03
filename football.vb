@@ -34,6 +34,7 @@ Namespace Rasputin
 		Public sub MakeSystemLog (log_title as string, log_text as string)
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -53,6 +54,7 @@ Namespace Rasputin
 			dim res as new dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -81,6 +83,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim oda as SQLDataAdapter
@@ -139,6 +142,7 @@ Namespace Rasputin
 			dim res as new dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -175,6 +179,7 @@ Namespace Rasputin
 			dim res as new dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -213,6 +218,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = ""
 				dim cmd as SQLCommand
 
@@ -271,6 +277,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -303,6 +310,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -340,6 +348,7 @@ Namespace Rasputin
 			dim res as integer = -1
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -364,6 +373,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -391,6 +401,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -431,6 +442,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -532,6 +544,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -560,6 +573,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -587,6 +601,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -615,6 +630,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -650,6 +666,7 @@ Namespace Rasputin
 			dim res as string  = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 			
 				dim sql as string
 				dim cmd as SQLCommand
@@ -783,6 +800,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 				using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				'dim con as SQLConnection
@@ -837,6 +855,7 @@ Namespace Rasputin
 			Dim res As New system.Collections.Hashtable()
 			try
 				using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -881,6 +900,7 @@ Namespace Rasputin
 			try
 
 				using con as new SQLConnection(myconnstring)
+				con.open()
 				Dim cmd as SQLCommand
 				Dim sql as String
 
@@ -944,6 +964,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 				using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "update fb_pools set POOL_NAME=@pool_name, POOL_DESC=@pool_desc, POOL_TSP=@pool_tsp, ELIGIBILITY=@eligibility, POOL_LOGO=@pool_logo, POOL_BANNER=@pool_banner , scorer=@scorer where POOL_ID=@pool_id and pool_owner=@pool_owner"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -983,6 +1004,7 @@ Namespace Rasputin
 			try
 
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = ""
 				dim pools_ds as dataset = listpools(pool_owner)
 
@@ -1178,6 +1200,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "insert into fb_invites(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (@pool_id, @email, @invite_key, @invite_tsp)"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1204,6 +1227,7 @@ Namespace Rasputin
 			dim res as string = "FAILURE"
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "delete from fb_invites where pool_id=@pool_id and email=@email"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1227,6 +1251,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
@@ -1352,6 +1377,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
@@ -1390,6 +1416,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = ""
 
@@ -1436,6 +1463,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string
 					dim cmd as SQLCommand
@@ -1464,6 +1492,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -1489,6 +1518,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -1520,6 +1550,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -1548,6 +1579,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim lines as string()
 					lines = games_text.split(system.environment.newline)
@@ -1596,6 +1628,7 @@ Namespace Rasputin
 			dim res as string = "NO TEAM FOUND"
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "select team_id from fb_teams where (team_name=@team_name or UPPER(team_shortname)=@team_shortname) and pool_id=@pool_id"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -1629,6 +1662,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if away_id = home_id then
 					res = "The game could not be created because a team cannot play itself."
 				else
@@ -1670,6 +1704,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1704,6 +1739,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1741,6 +1777,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string 
 
 				dim cmd as SQLCommand 
@@ -1774,6 +1811,7 @@ Namespace Rasputin
 			dim res as string
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = "update fb_sched set WEEK_ID=@WEEK_ID, HOME_ID=@HOME_ID, AWAY_ID=@AWAY_ID, GAME_TSP=@GAME_TSP, GAME_URL=@GAME_URL where GAME_ID=@GAME_ID and pool_id=@pool_id"
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1811,6 +1849,7 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -1845,6 +1884,7 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -1880,6 +1920,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "update fb_pools set feed_ID=@feed_id where pool_id=@pool_id"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -1910,6 +1951,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim sql as string = "update fb_options set optionvalue=@optionvalue where pool_id=@pool_id and optionname=@optionname"
 
@@ -1970,6 +2012,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -2043,6 +2086,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
 					dim sql as string = "update fb_tiebreakers set GAME_ID=@GAME_ID, tb_tsp=@tb_tsp where pool_id=@pool_id and week_id=@week_id"
 
@@ -2098,6 +2142,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -2140,6 +2185,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "select username from fb_users where UPPER(email)=@email"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2159,6 +2205,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "select email from fb_users where username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
@@ -2178,6 +2225,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "select email from fb_users where username=@username"
 
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
@@ -2209,6 +2257,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string 
 				dim cmd as SQLCommand
 				dim updatetime as datetime = datetime.now
@@ -2303,6 +2352,7 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -2351,6 +2401,7 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -2387,6 +2438,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "update fb_players set NICKNAME=@nickname WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2421,6 +2473,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -2452,6 +2505,7 @@ Namespace Rasputin
 			dim res as integer = 0
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -2486,6 +2540,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim sql as string
 				dim cmd as SQLCommand
@@ -2553,6 +2608,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "update fb_tiebreaker set SCORE=@score where username=@username and WEEK_ID=@week_id and  pool_id=@pool_id "
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -2604,6 +2660,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "update fb_tiebreaker set SCORE=@score , mod_user=@mod_user where username=@username and WEEK_ID=@week_id and  pool_id=@pool_id "
 				Dim cmd As SQLCommand = New SQLCommand(sql, con)
 				
@@ -2657,6 +2714,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = ""
 				dim cmd as SQLCommand
 
@@ -2768,6 +2826,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -2797,6 +2856,7 @@ Namespace Rasputin
 			dim res as string = "NOTSET"
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -2822,6 +2882,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -2856,6 +2917,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				Dim temp_table As New system.Data.DataTable("Threads")
 				Dim temp_col As system.Data.DataColumn 
 				dim temp_row as system.Data.DataRow
@@ -2978,6 +3040,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				if count <= 0 then
@@ -3009,6 +3072,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -3036,6 +3100,7 @@ Namespace Rasputin
 			Dim temp_ds As New system.Data.DataSet()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				Dim sql As String = ""
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
@@ -3192,6 +3257,7 @@ Namespace Rasputin
 			Dim temp_ds As New system.Data.DataSet()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				Dim sql As String = ""
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
@@ -3542,6 +3608,7 @@ Namespace Rasputin
 			Dim temp_ds As New system.Data.DataSet()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				Dim sql As String = ""
 				dim cmd as SQLCommand
 				Dim oda As System.Data.SQLClient.SQLDataAdapter
@@ -4027,6 +4094,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4054,6 +4122,7 @@ Namespace Rasputin
 			dim res as integer = 0
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4078,6 +4147,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -4113,6 +4183,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4139,6 +4210,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4162,6 +4234,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				sql = "select * from fb_copy_teams order by team_name"
@@ -4183,6 +4256,7 @@ Namespace Rasputin
 			dim res as new system.data.dataset()
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4208,6 +4282,7 @@ Namespace Rasputin
 			dim res as boolean = false
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4247,6 +4322,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				dim parm1 as SQLParameter
@@ -4282,6 +4358,7 @@ Namespace Rasputin
 
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 				
@@ -4353,6 +4430,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4375,6 +4453,7 @@ Namespace Rasputin
 			dim res as string
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim temppassword as string
 				temppassword = CreateTempPassword()
 
@@ -4510,6 +4589,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim usercount as integer
 				
@@ -4612,6 +4692,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 
 				dim cmd as SQLCommand
 				dim dr as SQLDataReader
@@ -4704,6 +4785,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim usercount as integer = 0		
 				
 				dim cmd as SQLCommand
@@ -4819,6 +4901,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "select avatar from fb_players WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
@@ -4852,6 +4935,7 @@ Namespace Rasputin
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
+				con.open()
 				dim sql as string = "update fb_players set avatar=@avatar WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
