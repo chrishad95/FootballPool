@@ -279,7 +279,7 @@ end if
 								%>
 									<ul class="hoverbox">
 									<li>
-									<a href="javascript:void(0)"><img src="/users/<% = comment_username & "/" & avatar %>" alt="description" ><img src="/users/<% = comment_username & "/" & avatar %>" alt="description" class="preview" ></a>
+									<a href="http://www.gravatar.com/<% = avatar %>"><img src="http://www.gravatar.com/avatar.php/<% = avatar %>?s=512" alt="description" ><img src="http://www.gravatar.com/avatar/<% = avatar %>?s=200" alt="description" class="preview" ></a>
 									</li>
 									</ul>	
 								<%

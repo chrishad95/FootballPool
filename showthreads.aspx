@@ -73,14 +73,10 @@ if submit = "Make Comment" and myname <> "" then
 end if
 
 dim threads_ds as new dataset()
-dim banner_image as string = ""
+dim banner_image as string = fb.getbannerimage(pool_id)
 dim pool_name as string = ""
 if pool_id_found then
 	threads_ds = fb.ShowThreads(pool_id:=pool_id, count:=0)
-	
-	if not pool_details_ds.tables(0).rows(0)("pool_banner") is dbnull.value then
-		banner_image = "/users/" & pool_details_ds.tables(0).rows(0)("pool_owner") & "/" &  pool_details_ds.tables(0).rows(0)("pool_banner")
-	end if
 	
 	pool_name = pool_details_ds.tables(0).rows(0)("pool_name")
 else

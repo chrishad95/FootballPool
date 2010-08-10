@@ -54,10 +54,7 @@ end if
 dim pool_details_ds as new dataset()
 pool_details_ds = fb.getpooldetails(pool_id:= pool_id)
 
-dim banner_image as string = ""
-if not pool_details_ds.tables(0).rows(0)("pool_banner") is dbnull.value then
-	banner_image = "/users/" & pool_details_ds.tables(0).rows(0)("pool_owner") & "/" &  pool_details_ds.tables(0).rows(0)("pool_banner")
-end if
+dim banner_image as string = fb.getbannerimage(pool_id)
 
 dim pool_name as string = ""
 pool_name = pool_details_ds.tables(0).rows(0)("pool_name")
@@ -247,7 +244,7 @@ if graph_request = "win_vs_avg_vs_high" then
 					weekly_points(i) = new PointF(i + 1, temprows(i)("wins"))
 					debugmessage &= "Week: " & i & "=" & temprows(i)("wins") & "<br />"
 				next
-				fb.makesystemlog("debug", debugmessage)
+				fb.makesystemlog("graphing code debug", debugmessage)
 			end if
 	
 			dim players_ds as new dataset()

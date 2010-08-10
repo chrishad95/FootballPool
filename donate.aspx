@@ -52,10 +52,6 @@ end try
 <% server.execute ("/football/nav.aspx") %>
 </div>
 
-<div id="navBeta">
-<% 	server.execute ("/quotes/getrandomquote.aspx") %>
-</div>
-
 <!-- BlueRobot was here. -->
 
 </body>

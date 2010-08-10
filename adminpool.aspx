@@ -84,6 +84,31 @@
 	catch
 	end try
 
+	try
+		if request("submit") = "Edit Team" then
+			dim res as string = ""
+			res = fb.updateteam(team_id:=request("team_select"), pool_id:=pool_id, pool_owner:=myname, team_name:=request("team_name"), team_shortname:=request("team_shortname"), url:=request("url"))
+			if res <> request("team_name") then
+				session("error_message") = res
+			else
+				session("page_message")  = "Team was updated successfully."
+			end if
+		end if
+	catch ex as exception
+		fb.makesystemlog("exception in adminpool.aspx edit team", ex.tostring())
+	end try
+
+
+	try
+		if request("submit") = "Delete Team" then
+			dim res as string = ""
+			res = fb.deleteteam(team_id:=request("team_select"), pool_id:=pool_id, pool_owner:=myname)
+			session("page_message") = res
+		end if
+	catch ex as exception
+		fb.makesystemlog("exception in adminpool.aspx delete team", ex.tostring())
+	end try
+
 	'CreateGame(WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER)
 	try
 		if request("submit") = "Add Game" then
@@ -115,40 +140,6 @@
 	catch ex as exception
 		message_text = ex.message
 		fb.makesystemlog("error adding game", ex.tostring())
-	end try
-
-	try
-		if request("submit") = "Edit Team" then
-			dim res as string = ""
-			res = fb.updateteam(team_id:=request("team_select"), pool_id:=pool_id, pool_owner:=myname, team_name:=request("team_name"), team_shortname:=request("team_shortname"), url:=request("url"))
-			if res <> request("team_name") then
-				session("error_message") = res
-			else
-				session("page_message")  = "Team was updated successfully."
-			end if
-		end if
-	catch
-	end try
-
-	try
-		if request("submit") = "Import Team" then
-			dim res as string = ""
-			dim sel as string = ""
-			try
-				if request("team_select") <> "" then
-					sel = request("team_select")
-				end if
-			catch
-			end try
-			dim teams as string()
-			teams = sel.split(",")
-			for each t as string in teams
-				res = res & fb.importteam(team_id:=t, pool_id:=pool_id, pool_owner:=myname)
-			next
-			message_text = res 
-
-		end if
-	catch
 	end try
 
 	try
@@ -277,10 +268,8 @@
 	catch
 	end try
 
-
-
 	try
-		if request("submit") = "Import Team" then
+		if request("submit") = "Import Previous Team" or request("submit") = "Import Team" then
 			dim res as string = ""
 			dim sel as string = ""
 			try
@@ -292,9 +281,11 @@
 			dim teams as string()
 			teams = sel.split(",")
 			for each t as string in teams
-				res = res & fb.importteam(team_id:=t, pool_id:=pool_id, pool_owner:=myname)
+				dim teaminfo as string()
+				teaminfo = t.split(":")
+				res = res & fb.createteam(pool_id:=pool_id, pool_owner:=myname, team_name:=teaminfo(0).tostring(), team_shortname:=teaminfo(1).toString(), url:="")
 			next
-			message_text = res 
+			session("page_message") = res 
 
 		end if
 	catch
@@ -343,6 +334,9 @@
 
 	dim importteams_ds as dataset
 	importteams_ds = fb.getImportTeams()
+	
+	dim importpreviousteams_ds as dataset
+	importpreviousteams_ds = fb.getImportPreviousTeams(myname)
 
 	dim importgames_ds as dataset
 	importgames_ds = fb.getImportGames()
@@ -543,33 +537,14 @@
 	<br />
 
 	<a name="details"></a>
-	<form class="cmxform">
+	<form class="cmxform" method="POST" >
 		<input type="hidden" name="pool_id" value="<% = pool_drow("pool_id") %>" />
 		<fieldset>
 			<legend>Pool Details</legend>
 			<ol>
 				<li><label for="poolname">Name <em>*</em></label> <input type="text" name="poolname" id="poolname" value = "<% = pool_drow("pool_name") %>" /></li>
 				<li><label for="desc">Description </label> <textarea id="desc" name="desc" cols="40" rows="5" /><% = pool_drow("pool_desc") %></textarea></li>
-				<li><label for="bannerurl">Banner Url </label> <select id="bannerurl" name="bannerurl" >
-				<%
-					dim userfiles as new system.collections.arraylist()
-					userfiles = fb.getfiles(server.mappath("/users/" & myname ))
-					dim myenum as system.collections.ienumerator = userfiles.getEnumerator()
-					while myenum.movenext()
-						if not pool_drow("pool_banner") is dbnull.value then
-							if myenum.current.tostring() = pool_drow("pool_banner")
-								%><option value="<% = myenum.current.tostring() %>" SELECTED><% = myenum.current.tostring() %></option><%
-							else
-								%><option value="<% = myenum.current.tostring() %>"><% = myenum.current.tostring() %></option><%
-							end if
-						else
-							%><option value="<% = myenum.current.tostring() %>"><% = myenum.current.tostring() %></option><%
-
-						end if
-					end while
-
-				%>				
-				</select></li>
+				<li><label for="bannerurl">Banner Url </label> <input type="text" id="bannerurl" name="bannerurl" value="<% = pool_drow("pool_banner") %>" ></li>
 				<li><label for="logourl">Logo Url </label> <input id="logourl" name="logourl" value="<% = pool_drow("pool_logo") %>" /></li>
 				<li><label for="eligibility">Eligibility <em>*</em></label> <select name="eligibility" id="eligibility"><%
 					try
@@ -634,7 +609,7 @@
 	<a name="teams"></a>
 		<fieldset>
 			<legend>Teams</legend>
-			<form class="cmxform">
+			<form class="cmxform" method="POST">
 				<input type="hidden" name="pool_id" value="<% = pool_id %>">
 				<%
 					if teams_ds.tables.count > 0 then
@@ -660,21 +635,32 @@
 				</ol>
 				<input type="submit" name="submit" value="Add Team" /> <input type="submit" name="submit" value="Edit Team">
 			</form>
-			<form name="importeams">
+			<form name="importeams" method="post">
 				<input type="hidden" name="pool_id" value="<% = pool_id %>">
 				<select name="team_select" id="importteamselect" multiple>
 				<%
 				for each importteam as datarow in importteams_ds.tables(0).rows
-					%><option value="<% = importteam("team_id") %>"><% = importteam("team_name") %></option><%
+					%><option value="<% = importteam("team_name") & ":" & importteam("team_shortname")  %>"><% = importteam("team_name") %></option><%
 				next
 				%>
 				</select>
 				<input type="submit" name="submit" value="Import Team" />
 			</form>
+			<form name="import_previous_teams" method="post">
+				<input type="hidden" name="pool_id" value="<% = pool_id %>">
+				<select name="team_select" id="importteamselect" multiple>
+				<%
+				for each importteam as datarow in importpreviousteams_ds.tables(0).rows
+					%><option value="<% = importteam("team_name") & ":" & importteam("team_shortname")  %>"><% = importteam("team_name") %></option><%
+				next
+				%>
+				</select>
+				<input type="submit" name="submit" value="Import Previous Team" />
+			</form>
 		</fieldset>
 
 	<a name="players"></a>
-	<form class="cmxform">
+	<form class="cmxform" method="post">
 		<input type="hidden" name="pool_id" value="<% = pool_drow("pool_id") %>" />
 		<fieldset>
 			<legend>Players</legend>

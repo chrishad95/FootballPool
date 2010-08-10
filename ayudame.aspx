@@ -129,6 +129,10 @@
 			<input type="submit" name="submit" value="Send Message" />
 		</fieldset>
 	</form>
+	<br>
+	<hr>
+	Right Click -> Save As... <a href="downloads/ultravnc.exe">UltraVnc Remote Desktop Help</a><br>
+
 </div>
 
 <div id="Menu">

@@ -7,7 +7,7 @@
 <script language="c#" runat="server">
 
 private void mailLogReport(String logtext){
-	
+
 	DateTime rightnow = new DateTime();
 	rightnow = DateTime.Now;
 	logtext = "(processinventory)" + System.Environment.NewLine + logtext;
@@ -257,13 +257,12 @@ private void processxmlinventorystream(System.IO.Stream xmlstream) {
 	}
 }
 	  	
-private void processPool() {
+private void processPool(String p_file) {
 	try {
 	
 		// Create the validating reader and specify DTD validation.
-		insertLogReport(HttpContext.Current.Request.MapPath("output.xml"));
 
-		XmlTextReader txtReader = new XmlTextReader(HttpContext.Current.Request.MapPath("output2.xml"));
+		XmlTextReader txtReader = new XmlTextReader(HttpContext.Current.Request.MapPath(p_file));
 		XmlValidatingReader reader = new XmlValidatingReader(txtReader);
 		reader.ValidationType = ValidationType.DTD;
 		
@@ -518,6 +517,274 @@ private void processPool() {
 				ht.Add("NEW_GAME_ID:" + game_id,  elemlist[i]["GAME_ID"].InnerText);
 			}
 
+			elemlist = doc.GetElementsByTagName("SCORE_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_scores (pool_id, game_id, away_score, home_score)  values (";
+				sql = sql + "@pool_id,";
+				sql = sql + "@game_id,";
+				sql = sql + "@away_score,";
+				sql = sql + "@home_score";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@game_id",System.Data.SqlDbType.Int)).Value = ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@away_score",System.Data.SqlDbType.Int)).Value = elemlist[i]["AWAY_SCORE"].InnerText;
+				cmd.Parameters.Add(new SqlParameter("@home_score",System.Data.SqlDbType.Int)).Value = elemlist[i]["HOME_SCORE"].InnerText;
+				try
+				{
+					cmd.ExecuteNonQuery();
+				
+				} catch (Exception ex)
+				{
+					insertLogReport("failed to load score for old game_id:" + elemlist[i]["GAME_ID"].InnerText + " new game_id:" + ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ]  +  ex.ToString());
+				}
+			}
+
+			elemlist = doc.GetElementsByTagName("HISTORY_SCORE_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_scores_history (pool_id, game_id, away_score, home_score, mod_tsp, mod_user)  values (";
+				sql = sql + "@pool_id,";
+				sql = sql + "@game_id,";
+				sql = sql + "@away_score,";
+				sql = sql + "@home_score,";
+				sql = sql + "@mod_tsp,";
+				sql = sql + "@mod_user";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@game_id",System.Data.SqlDbType.Int)).Value = ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@away_score",System.Data.SqlDbType.Int)).Value = elemlist[i]["AWAY_SCORE"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@home_score",System.Data.SqlDbType.Int)).Value = elemlist[i]["HOME_SCORE"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@mod_tsp",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["MOD_TSP"].InnerText.Substring(0,19) ;
+				cmd.Parameters.Add(new SqlParameter("@mod_user",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["MOD_USER"].InnerText ;
+
+				try
+				{
+					cmd.ExecuteNonQuery();
+				
+				} catch (Exception ex)
+				{
+					insertLogReport("failed to load score for old game_id:" + elemlist[i]["GAME_ID"].InnerText + " new game_id:" + ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ]  +  ex.ToString());
+				}
+			}
+
+			elemlist = doc.GetElementsByTagName("TIEBREAKER_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_tiebreakers (pool_id, game_id, tb_tsp, week_id)  values (";
+				sql = sql + "@pool_id,";
+				sql = sql + "@game_id,";
+				sql = sql + "@tb_tsp,";
+				sql = sql + "@week_id";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@game_id",System.Data.SqlDbType.Int)).Value = ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@tb_tsp",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TB_TSP"].InnerText.Substring(0,19) ;
+				cmd.Parameters.Add(new SqlParameter("@week_id",System.Data.SqlDbType.Int)).Value = elemlist[i]["WEEK_ID"].InnerText ;
+
+				cmd.ExecuteNonQuery();
+			}
+
+			elemlist = doc.GetElementsByTagName("PICK_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_picks (pool_id, game_id, team_id, username, mod_tsp, mod_user)  values (";
+				sql = sql + "@pool_id,";
+				sql = sql + "@game_id,";
+				sql = sql + "@team_id,";
+				sql = sql + "@username,";
+				sql = sql + "@mod_tsp,";
+				sql = sql + "@mod_user";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@game_id",System.Data.SqlDbType.Int)).Value = ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@team_id",System.Data.SqlDbType.Int)).Value = ht["OLD_TEAM_ID:" + elemlist[i]["TEAM_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@mod_tsp",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["MOD_TSP"].InnerText.Substring(0,19) ;
+				cmd.Parameters.Add(new SqlParameter("@mod_user",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["MOD_USER"].InnerText ;
+
+				try
+				{
+					cmd.ExecuteNonQuery();
+				
+				} catch (Exception ex)
+				{
+					insertLogReport("failed to pick for old game_id:" + elemlist[i]["GAME_ID"].InnerText + " new game_id:" + ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ]  +  ex.ToString());
+				}
+			}
+
+			elemlist = doc.GetElementsByTagName("HISTORY_PICK_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_picks_history (pool_id, game_id, team_id, username, mod_tsp, mod_user)  values (";
+				sql = sql + "@pool_id,";
+				sql = sql + "@game_id,";
+				sql = sql + "@team_id,";
+				sql = sql + "@username,";
+				sql = sql + "@mod_tsp,";
+				sql = sql + "@mod_user";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@game_id",System.Data.SqlDbType.Int)).Value = ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@team_id",System.Data.SqlDbType.Int)).Value = ht["OLD_TEAM_ID:" + elemlist[i]["TEAM_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@mod_tsp",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["MOD_TSP"].InnerText.Substring(0,19) ;
+				cmd.Parameters.Add(new SqlParameter("@mod_user",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["MOD_USER"].InnerText ;
+
+				try
+				{
+					cmd.ExecuteNonQuery();
+				
+				} catch (Exception ex)
+				{
+					insertLogReport("failed to pick for old game_id:" + elemlist[i]["GAME_ID"].InnerText + " new game_id:" + ht["OLD_GAME_ID:" + elemlist[i]["GAME_ID"].InnerText ]  +  ex.ToString());
+				}
+			}
+
+			elemlist = doc.GetElementsByTagName("COMMENT_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_comments (comment_text, comment_title, comment_tsp, pool_id, username, views)  values (";
+				sql = sql + "@comment_text,";
+				sql = sql + "@comment_title,";
+				sql = sql + "@comment_tsp,";
+				sql = sql + "@pool_id,";
+				sql = sql + "@username,";
+				sql = sql + "@views";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@comment_text",System.Data.SqlDbType.Text)).Value = elemlist[i]["COMMENT_TEXT"].InnerText;
+				cmd.Parameters.Add(new SqlParameter("@comment_title",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["COMMENT_TITLE"].InnerText;	
+				cmd.Parameters.Add(new SqlParameter("@comment_tsp",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["COMMENT_TSP"].InnerText.Substring(0,19);	
+				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText;	
+				cmd.Parameters.Add(new SqlParameter("@views",System.Data.SqlDbType.Int)).Value = elemlist[i]["VIEWS"].InnerText;
+
+				cmd.ExecuteNonQuery();
+
+				Int32 comment_id = -1;
+
+				sql = "select cast( @@IDENTITY as int)";
+				cmd = new SqlCommand(sql, con);
+
+				comment_id = (Int32) cmd.ExecuteScalar();
+				ht.Add("OLD_COMMENT_ID:" + elemlist[i]["COMMENT_ID"].InnerText, comment_id);
+				ht.Add("NEW_COMMENT_ID:" + comment_id,  elemlist[i]["COMMENT_ID"].InnerText);
+			}
+
+			elemlist = doc.GetElementsByTagName("REPLY_ROW");
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				
+				sql = "insert into fb_comments (comment_text, comment_title, comment_tsp, pool_id, username,ref_id, views)  values (";
+				sql = sql + "@comment_text,";
+				sql = sql + "@comment_title,";
+				sql = sql + "@comment_tsp,";
+				sql = sql + "@pool_id,";
+				sql = sql + "@username,";
+				sql = sql + "@ref_id,";
+				sql = sql + "@views";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@pool_id",System.Data.SqlDbType.Int)).Value = ht["POOL_ID"];
+				cmd.Parameters.Add(new SqlParameter("@ref_id",System.Data.SqlDbType.Int)).Value = ht["OLD_COMMENT_ID:" + elemlist[i]["REF_ID"].InnerText ];
+				cmd.Parameters.Add(new SqlParameter("@comment_text",System.Data.SqlDbType.Text)).Value = elemlist[i]["COMMENT_TEXT"].InnerText;
+				cmd.Parameters.Add(new SqlParameter("@comment_title",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["COMMENT_TITLE"].InnerText;	
+				cmd.Parameters.Add(new SqlParameter("@comment_tsp",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["COMMENT_TSP"].InnerText.Substring(0,19);	
+				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText;	
+				cmd.Parameters.Add(new SqlParameter("@views",System.Data.SqlDbType.Int)).Value = elemlist[i]["VIEWS"].InnerText;
+
+				cmd.ExecuteNonQuery();
+
+				Int32 comment_id = -1;
+
+				sql = "select cast( @@IDENTITY as int)";
+				cmd = new SqlCommand(sql, con);
+
+				comment_id = (Int32) cmd.ExecuteScalar();
+				ht.Add("OLD_COMMENT_ID:" + elemlist[i]["COMMENT_ID"].InnerText, comment_id);
+				ht.Add("NEW_COMMENT_ID:" + comment_id,  elemlist[i]["COMMENT_ID"].InnerText);
+			}
+
+//			elemlist = doc.GetElementsByTagName("USER_ROW");
+//			for (int i=0; i< elemlist.Count; i++) {
+//								
+//				cmd = new SqlCommand();
+//				cmd.Connection = con;
+//				
+//				sql = "insert into fb_users (password, username, created_at, email, last_seen, login_count, validated) values (' ',";
+//				sql = sql + "@username,";
+//				sql = sql + "@created_at,";
+//				sql = sql + "@email,";
+//				sql = sql + "@last_seen,";
+//				sql = sql + "@login_count,";
+//				sql = sql + "@validated";
+//				sql = sql + ")";
+//
+//				cmd.CommandText = sql;
+//				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText ;
+//				cmd.Parameters.Add(new SqlParameter("@created_at",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["CREATED_AT"].InnerText.Substring(0,19) ;
+//				cmd.Parameters.Add(new SqlParameter("@last_seen",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["LAST_SEEN"].InnerText.Substring(0,19) ;
+//				cmd.Parameters.Add(new SqlParameter("@email",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["EMAIL"].InnerText ;
+//				cmd.Parameters.Add(new SqlParameter("@login_count",System.Data.SqlDbType.Int)).Value = elemlist[i]["LOGIN_COUNT"].InnerText;
+//				cmd.Parameters.Add(new SqlParameter("@validated",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["VALIDATED"].InnerText ;
+//
+//
+//				cmd.ExecuteNonQuery();
+//			}
+
+//			elemlist = doc.GetElementsByTagName("COPY_TEAM_ROW");
+//			for (int i=0; i< elemlist.Count; i++) {
+//								
+//				cmd = new SqlCommand();
+//				cmd.Connection = con;
+//				
+//				sql = "insert into fb_copy_teams (division, team_name, team_shortname) values (";
+//				sql = sql + "@division,";
+//				sql = sql + "@team_name,";
+//				sql = sql + "@team_shortname";
+//				sql = sql + ")";
+//
+//				cmd.CommandText = sql;
+//				cmd.Parameters.Add(new SqlParameter("@division",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["DIVISION"].InnerText ;
+//				cmd.Parameters.Add(new SqlParameter("@team_name",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TEAM_NAME"].InnerText ;
+//				cmd.Parameters.Add(new SqlParameter("@team_shortname",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TEAM_SHORTNAME"].InnerText ;
+//
+//				cmd.ExecuteNonQuery();
+//			}
+
 		}
 
 	    Response.StatusCode  = 200;
@@ -530,7 +797,9 @@ private void processPool() {
 </script>
 
 <%
-processPool();
+//processPool("pool.1000.xml");
+//processPool("pool.200.xml");
+//processPool("pool.435.xml");
 
 //processxmlinventorystream(Request.InputStream);
 

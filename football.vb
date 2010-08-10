@@ -88,37 +88,41 @@ Namespace Rasputin
 				dim cmd as SQLCommand
 				dim oda as SQLDataAdapter
 				dim parm1 as SQLParameter
-				
-				
-				'con = new SQLConnection(myconnstring)
-				
-				'Encrypt the password
-				Dim md5Hasher as New MD5CryptoServiceProvider()
-				
-				Dim hashedBytes as Byte()   
-				Dim encoder as New UTF8Encoding()
-				
-				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
-				
-				sql = "select username from fb_users where upper(username) = @username and password= @password and validated='Y'"
+		
+				dim salt as string = ""
+				dim valid_username as string = ""
+
+				' do not bother unless they are validated
+				sql = "select username, salt from fb_users where (upper(username) = @username or upper(email) = @username) and validated='Y'"
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar)).value = username.toupper()
+
+				dim ds as new dataset()	
+				dim da as new sqldataadapter()
+				da.selectcommand = cmd
+				da.fill(ds)
+				if ds.tables.count > 0 then
+					if ds.tables(0).rows.count > 0 then
+						if ds.tables(0).rows(0)("salt") is dbnull.value then
+						else
+							salt = ds.tables(0).rows(0)("salt")
+						end if
+						valid_username = ds.tables(0).rows(0)("username")
+					end if
+				end if
+
+				sql = "select count(*) from fb_users where username=@username and password=@password and validated='Y'"
 				
 				cmd = new SQLCommand(sql,con)
 				
-				parm1 = new SQLParameter("@username", SQLDbType.varchar, 30)
-				parm1.value = username.toupper()
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar)).value = valid_username
+				cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar)).value = hashpassword(salt & password)
 				
-				parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
-				parm1.value = hashedbytes
-				cmd.parameters.add(parm1)
+				dim usercount as integer = 0
+				usercount = cmd.executescalar()
 				
-				dim user_ds as system.data.dataset = new dataset()
-				oda = new System.Data.SQLClient.SQLDataAdapter()
-				oda.selectcommand = cmd
-				oda.fill(user_ds)
-				
-				if user_ds.tables(0).rows.count > 0 then
-					res = user_ds.tables(0).rows(0)("username")
+				if usercount > 0 then
+					res = valid_username
 					sql = "update fb_users set login_count=login_count + 1, last_seen = CURRENT_TIMESTAMP where username=@username"
 					
 					cmd = new SQLCommand(sql,con)
@@ -1023,34 +1027,38 @@ Namespace Rasputin
 		Public function CreateTeam(TEAM_NAME as String, TEAM_SHORTNAME as String, URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
+				if isowner(pool_id, pool_owner) then
+					using con as new SQLConnection(myconnstring)
+						con.open()
+						dim sql as string = ""
+						dim cmd as SQLCommand
 
-			using con as new SQLConnection(myconnstring)
-				con.open()
-				dim sql as string = ""
-				dim pools_ds as dataset = listpools(pool_owner)
+						sql = "select count(*) from fb_teams where pool_id=@pool_id and (upper(team_name) = @team_name or upper(team_shortname) = @team_shortname)"
+						cmd = new SQLCommand(sql, con)
 
-				if pools_ds.tables.count > 0 then
-					dim temp_rows as datarow()
-					temp_rows = pools_ds.tables(0).select("pool_id=" & pool_id)
-					if temp_rows.length > 0 then
-
-						sql = "insert into fb_teams(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( @team_name, @team_shortname, @url, @pool_id)"
-						dim cmd as SQLCommand = new SQLCommand(sql, con)
-
-						cmd.parameters.add(new SQLParameter("@team_name", sqLDbType.VARCHAR, 40)).value = team_name
-						cmd.parameters.add(new SQLParameter("@team_shortname", SQLDbType.VARCHAR, 5)).value = team_shortname
-						cmd.parameters.add(new SQLParameter("@url", sqldBtYPe.VARCHAR, 200)).value = url
 						cmd.parameters.add(new SQLParameter("@pool_id", sqldbType.int)).value = pool_id
-						cmd.executenonquery()
-						res = team_name
-					else
-						res = "invalid pool_id for " & pool_owner
-					end if
-				else
-					res = "No Pools found for " & pool_owner
-				end if
-			end using
+						cmd.parameters.add(new SQLParameter("@team_name", sqLDbType.VARCHAR, 40)).value = team_name.toUpper()
+						cmd.parameters.add(new SQLParameter("@team_shortname", SQLDbType.VARCHAR, 5)).value = team_shortname.toupper()
 
+						dim teamcount as integer = 0
+						teamcount = cmd.executescalar()
+
+						if teamcount = 0 then
+
+							sql = "insert into fb_teams(TEAM_NAME, TEAM_SHORTNAME, URL, POOL_ID) values ( @team_name, @team_shortname, @url, @pool_id)"
+							cmd = new SQLCommand(sql, con)
+
+							cmd.parameters.add(new SQLParameter("@team_name", sqLDbType.VARCHAR, 40)).value = team_name
+							cmd.parameters.add(new SQLParameter("@team_shortname", SQLDbType.VARCHAR, 5)).value = team_shortname
+							cmd.parameters.add(new SQLParameter("@url", sqldBtYPe.VARCHAR, 200)).value = url
+							cmd.parameters.add(new SQLParameter("@pool_id", sqldbType.int)).value = pool_id
+							cmd.executenonquery()
+							res = "Team: " & team_name & " was created."
+						else
+							res = "Team already exists with this name."
+						end if
+					end using
+				end if
 			catch ex as exception
 				if ex.message.tostring().indexof("duplicate rows") >= 0 then
 					res = "Team already exists for this pool."
@@ -1145,8 +1153,7 @@ Namespace Rasputin
 				If pool_ds.tables(0).rows.count > 0 Then
 
 					if not pool_ds.tables(0).rows(0)("pool_banner") is dbnull.value then
-						dim banner_image as string = ""
-						banner_image = "http://www.smackpools.com/users/"  &  pool_ds.tables(0).rows(0)("pool_owner") & "/" & pool_ds.tables(0).rows(0)("pool_banner")
+						dim banner_image as string = getbannerimage(pool_id)
 						sb.append("<img src=""" & banner_image & """><br />"  & system.environment.newline)
 
 					end if
@@ -1278,7 +1285,6 @@ Namespace Rasputin
 
 					sql = "select a.*, b.team_name as home_team, c.team_name as away_team, b.team_shortname as home_team_shortname, c.team_shortname as away_team_shortname from fb_copy_scheds a left join fb_copy_teams b on a.home_id=b.team_id left join fb_copy_teams c on a.away_id=c.team_id where a.game_id=@game_id"
 
-					makesystemlog("debug", sql)
 
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
@@ -1403,7 +1409,6 @@ Namespace Rasputin
 					dim sql as string = ""
 
 					sql = "insert into fb_teams (pool_id, team_name, team_shortname) select " & pool_id & ", team_name, team_shortname from fb_copy_teams where team_id=@team_id"
-					makesystemlog("debug", sql)
 
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
@@ -1433,6 +1438,132 @@ Namespace Rasputin
 			return res
 		end function
 
+		public Function DeleteGame(game_id as integer, pool_id as integer, pool_owner as string) as string
+			dim res as string = "Failed to delete game completely."
+			try
+				using con as new SQLConnection(myconnstring)
+					con.open()
+					if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
+						dim sql as string = ""
+						dim rowsupdated as integer = 0
+						dim cmd as SQLCommand
+
+						sql = "delete from fb_games where pool_id=@pool_id and game_id=@game_id"
+						cmd = new SQLCommand(sql, con)
+
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
+						rowsupdated = cmd.executenonquery()
+
+						if rowsupdated > 0 then
+							res = "Successfully deleted game:" & game_id
+						else
+							res = "Zero games found for game:" & game_id
+						end if
+
+						sql = "delete from fb_picks where pool_id=@pool_id and game_id=@game_id"
+						cmd = new SQLCommand(sql, con)
+
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
+						rowsupdated = cmd.executenonquery()
+
+						if rowsupdated > 0 then
+							res = res & " Successfully deleted " & rowsupdated & " picks for game:" & game_id
+						else
+							res = res & " Zero picks deleted for game:" & game_id
+						end if
+
+						sql = "delete from fb_scores where pool_id=@pool_id and game_id=@game_id"
+						cmd = new SQLCommand(sql, con)
+
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
+						rowsupdated = cmd.executenonquery()
+
+						if rowsupdated > 0 then
+							res = res & " Successfully deleted " & rowsupdated & " scores for game:" & game_id
+						else
+							res = res & " Zero scores deleted for game:" & game_id
+						end if
+
+						sql = "delete from fb_tiebreakers where pool_id=@pool_id and game_id=@game_id"
+						cmd = new SQLCommand(sql, con)
+
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
+						rowsupdated = cmd.executenonquery()
+						if rowsupdated > 0 then
+							res = res & " Successfully deleted " & rowsupdated & " tiebreakers for game:" & game_id
+						else
+							res = res & " Zero tiebreakers deleted for game:" & game_id
+						end if
+					else
+						res = "Invalid pool/owner."
+					end if
+
+				end using
+			catch ex as exception
+				res = ex.message
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
+		Public function DeleteTeam(TEAM_ID as INTEGER, POOL_ID as INTEGER, pool_owner as string) as string
+			dim res as string = ""
+			try
+				using con as new SQLConnection(myconnstring)
+					con.open()
+					if isowner(pool_id:=pool_id, pool_owner:=pool_owner) then
+						dim sql as string = ""
+						dim rowsupdated as integer = 0
+						dim cmd as SQLCommand
+
+						sql = "delete from fb_teams where pool_id=@pool_id and team_id=@team_id"
+						cmd = new SQLCommand(sql, con)
+
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int)).value = team_id
+						rowsupdated = cmd.executenonquery()
+
+						if rowsupdated > 0 then
+							res = "Successfully deleted " & rowsupdated & " teams for team:" & team_id
+						else
+							res = res & "Zero teams deleted for team:" & team_id
+						end if
+
+						sql = "select game_id from fb_games where pool_id=@pool_id and (away_id=@team_id or home_id=@team_id)"
+						cmd = new SQLCommand(sql, con)
+
+						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int)).value = team_id
+
+						dim da as new SQLDataAdapter()
+						da.selectcommand = cmd
+						dim ds as new dataset()
+						da.fill(ds)
+
+						try
+							for each drow as datarow in ds.tables(0).rows
+								res = res & deletegame(drow("game_id"), pool_id, pool_owner)
+							next
+						catch
+						end try
+
+					else
+						res = res & "Invalid pool/owner."
+					end if
+				end using
+			catch ex as exception
+				res = res & ex.message
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
 		Public function UpdateTeam(TEAM_ID as INTEGER, TEAM_NAME as String, TEAM_SHORTNAME as String, URL as String, POOL_ID as INTEGER, pool_owner as string) as string
 			dim res as string = ""
 			try
@@ -1445,16 +1576,11 @@ Namespace Rasputin
 					dim cmd as SQLCommand = new SQLCommand(sql, con)
 					dim rowsupdated as integer
 
-					cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
-					cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", SQLDbType.VARCHAR, 5))
-					cmd.parameters.add(new SQLParameter("@URL", SQLDbType.VARCHAR, 200))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
-					cmd.parameters("@TEAM_ID").value = TEAM_ID
-					cmd.parameters("@TEAM_NAME").value = TEAM_NAME
-					cmd.parameters("@TEAM_SHORTNAME").value = TEAM_SHORTNAME
-					cmd.parameters("@URL").value = URL
-					cmd.parameters("@POOL_ID").value = POOL_ID
+					cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40)).value = team_name
+					cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", SQLDbType.VARCHAR, 5)).value = team_shortname
+					cmd.parameters.add(new SQLParameter("@URL", SQLDbType.VARCHAR, 200)).value = url
+					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int)).value = team_id
 					rowsupdated = cmd.executenonquery()
 
 					if rowsupdated > 0 then
@@ -1468,14 +1594,9 @@ Namespace Rasputin
 				end if
 			end using
 			catch ex as exception
-				if ex.message.tostring().indexof("duplicate rows") >= 0 then
-					res = "Team already exists for this pool."
-				else
-					res = ex.message
-					dim st as new System.Diagnostics.StackTrace() 
-					makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
-				end if
-
+				res = ex.message
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function
@@ -1900,7 +2021,27 @@ Namespace Rasputin
 			return res
 
 		end function
+		public function getBannerImage(pool_id as integer) as string
+			dim res as string = ""
+			try
+				using con as new SQLConnection(myconnstring)
+					con.open()
+					dim sql as string
+					dim cmd as SQLCommand
+					dim parm1 as SQLParameter
 
+					sql = "select pool_banner from fb_pools where pool_id=@pool_id"
+					cmd = new SQLCommand(sql,con)
+					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+					res = cmd.executescalar()
+				end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+
+			return res
+		end function
 		Public function isOwner(pool_id as integer, pool_owner as string) as boolean
 			dim res as boolean = false
 			try
@@ -4241,6 +4382,28 @@ Namespace Rasputin
 			return res
 		end function
 		
+		public function GetImportPreviousTeams(pool_owner as string) as dataset
+			dim res as new system.data.dataset()
+			try
+			using con as new SQLConnection(myconnstring)
+				con.open()
+				dim sql as string
+				dim cmd as SQLCommand
+				sql = "select distinct team_name, team_shortname from fb_teams where pool_id in (select pool_id from fb_pools where pool_owner=@pool_owner) order by team_name"
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = pool_owner
+				dim oda as new SQLDataAdapter()
+				oda.selectcommand = cmd
+				oda.fill(res) 
+			end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+
+			return res
+		end function
+		
 
 		public function GetImportTeams() as dataset
 			dim res as new system.data.dataset()
@@ -4249,7 +4412,7 @@ Namespace Rasputin
 				con.open()
 				dim sql as string
 				dim cmd as SQLCommand
-				sql = "select * from fb_copy_teams order by team_name"
+				sql = "select distinct team_name, team_shortname from fb_copy_teams order by team_name"
 				cmd = new SQLCommand(sql,con)
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -4469,15 +4632,6 @@ Namespace Rasputin
 				dim temppassword as string
 				temppassword = CreateTempPassword()
 
-
-				'Encrypt the password
-				Dim md5Hasher as New MD5CryptoServiceProvider()
-				
-				Dim hashedBytes as Byte()   
-				Dim encoder as New UTF8Encoding()
-				
-				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(temppassword))
-
 				dim sql as string
 				dim cmd as SQLCommand
 
@@ -4502,7 +4656,7 @@ Namespace Rasputin
 					sql = "update fb_users set temp_password=@password where username=@username"
 					cmd = new SQLCommand(sql,con)
 
-					cmd.parameters.add(new SQLParameter("@password", SQLDbType.Binary, 16)).value = hashedbytes
+					cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar, 50)).value = hashpassword(temppassword)
 					cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = realUsername
 
 						
@@ -4632,13 +4786,6 @@ Namespace Rasputin
 					res = "Username and/or email is already registered."
 				else
 
-					'Encrypt the password
-					Dim md5Hasher as New MD5CryptoServiceProvider()
-					
-					Dim hashedBytes as Byte()   
-					Dim encoder as New UTF8Encoding()
-					
-					hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
 					
 					
 					Dim validcharacters as String
@@ -4668,9 +4815,7 @@ Namespace Rasputin
 					parm1.value = email
 					cmd.parameters.add(parm1)
 					
-					parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
-					parm1.value = hashedbytes
-					cmd.parameters.add(parm1)
+					cmd.parameters.add(new SQLParameter("@password", SQLDbType.VarChar, 50)).value = hashpassword(password)
 					
 					parm1 = new SQLParameter("@validate_key", SQLDbType.varchar, 40)
 					parm1.value = validate_key
@@ -4792,65 +4937,57 @@ Namespace Rasputin
 			end try
 			return res
 		end function
-				
+			
+		private function hashpassword(password as string) as string
+			'Encrypt the password
+			Dim md5Hasher as New MD5CryptoServiceProvider()
+			
+			Dim hashedBytes as Byte()   
+			Dim encoder as New UTF8Encoding()
+			
+			hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
+			dim sb as StringBuilder = new StringBuilder(hashedbytes.length * 2)
+			for i as integer = 0 to hashedbytes.length -1
+				sb.append(hashedbytes(i).toString("X2"))
+			next
+
+			return sb.ToString().tolower()
+
+		end function
+
 		public function Login(username as string, password as string) as string
 			dim res as string = ""
 			try
-			using con as new SQLConnection(myconnstring)
-				con.open()
-				dim usercount as integer = 0		
-				
-				dim cmd as SQLCommand
-				dim dr as SQLDataReader
-				dim parm1 as SQLParameter
-				
-				dim sql as string
+			res = authenticate(username, password)
+			if res.toupper() = username.toUpper() then
+				return res
+			else
+				' failed to authenticate with username and normal password, try temp password
+				using con as new SQLConnection(myconnstring)
+					con.open()
+					dim usercount as integer = 0		
+					
+					dim cmd as SQLCommand
+					dim dr as SQLDataReader
+					dim parm1 as SQLParameter
+					
+					dim sql as string
 						
-				'Encrypt the password
-				Dim md5Hasher as New MD5CryptoServiceProvider()
-				
-				Dim hashedBytes as Byte()   
-				Dim encoder as New UTF8Encoding()
-				
-				hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(password))
-				
-				sql = "select username from fb_users where UPPER(username) = @username and password=@password and validated='Y'"
-				
-				cmd = new SQLCommand(sql,con)
-				
-				parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
-				parm1.value = username.toupper()
-				cmd.parameters.add(parm1)
-				
-				parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
-				parm1.value = hashedbytes
-				cmd.parameters.add(parm1)
-				
-				dim user_ds as system.data.dataset = new dataset()
-				dim oda as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
-				oda.selectcommand = cmd
-				oda.fill(user_ds)
-		
-				if user_ds.tables(0).rows.count <= 0 then
-					'makesystemlog("Failed Login First Try", "Username:" & username & " - Password:" & password)
-					
-					sql = "select username from fb_users where UPPER(username) = @username and temp_password=@password and validated='Y'"
-					
+					sql = "select username from fb_users where (UPPER(username) = @username  or upper(email) = @username) and temp_password=@password and validated='Y'"
+						
 					cmd = new SQLCommand(sql,con)
-					
-					parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
-					parm1.value = username.toupper()
-					cmd.parameters.add(parm1)
-					
-					parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
-					parm1.value = hashedbytes
-					cmd.parameters.add(parm1)
-					
+						
+					cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = username.toupper()
+					cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar, 50)).value = hashpassword(password)
+						
 					dim user_ds2 as system.data.dataset = new dataset()
+					dim user_ds as new dataset()
+					dim oda as new SQLDataAdapter()
+
 					dim oda2 as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
 					oda2.selectcommand = cmd
 					oda2.fill(user_ds2)
-				
+					
 					if user_ds2.tables(0).rows.count > 0 then
 						sql = "update fb_users set password=temp_password where username = @username"
 		
@@ -4867,16 +5004,11 @@ Namespace Rasputin
 						' refill user_ds dataset so the rest of the code will work normally 
 		
 						sql = "select username from fb_users where UPPER(username) = @username and password=@password and validated='Y'"
-				
+					
 						cmd = new SQLCommand(sql,con)
 						
-						parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
-						parm1.value = username.toupper()
-						cmd.parameters.add(parm1)
-						
-						parm1 = new SQLParameter("@password", SQLDbType.Binary, 16)
-						parm1.value = hashedbytes
-						cmd.parameters.add(parm1)
+						cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = username.toupper()
+						cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar, 50)).value = hashpassword(password)
 						
 						user_ds = new dataset()
 						oda = new System.Data.SQLClient.SQLDataAdapter()
@@ -4884,23 +5016,22 @@ Namespace Rasputin
 						oda.fill(user_ds)
 					else
 					end if
-				
-				end if
 		
-				if user_ds.tables(0).rows.count > 0 then
-					res = user_ds.tables(0).rows(0)("username")
-					
-					sql = "update fb_users set login_count=login_count + 1, last_seen = current_timestamp, temp_password = NULL  where username=@username"
-					
-					cmd = new SQLCommand(sql,con)
-					
-					parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
-					parm1.value = res
-					cmd.parameters.add(parm1)
-					
-					cmd.executenonquery()
-				end if
-			end using
+					if user_ds.tables(0).rows.count > 0 then
+						res = user_ds.tables(0).rows(0)("username")
+						
+						sql = "update fb_users set login_count=login_count + 1, last_seen = current_timestamp, temp_password = NULL  where username=@username"
+						
+						cmd = new SQLCommand(sql,con)
+						
+						parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
+						parm1.value = res
+						cmd.parameters.add(parm1)
+						
+						cmd.executenonquery()
+					end if
+				end using
+			end if
 			catch ex as exception
 				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
@@ -4909,27 +5040,32 @@ Namespace Rasputin
 			return res
 		end function
 
-		public function GetAvatar(pool_id as integer, username as string) as string
+		public function GetAvatar(username as string) as string
 			dim res as string = ""
 			try
 			using con as new SQLConnection(myconnstring)
 				con.open()
-				dim sql as string = "select avatar from fb_players WHERE pool_id=@pool_id AND username=@username"
+				dim sql as string = "select email from fb_users where username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
-
-				cmd.parameters("@POOL_ID").value = POOL_ID
-				cmd.parameters("@USERNAME").value = USERNAME
+				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30)).value = username
 				
 				dim ds as new system.data.dataset()
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
 				oda.fill(ds)
 				try
-					if not ds.tables(0).rows(0)("avatar") is dbnull.value then
-						res = ds.tables(0).rows(0)("avatar")
+					if not ds.tables(0).rows(0)("email") is dbnull.value then
+						Dim md5Hasher as New MD5CryptoServiceProvider()
+				
+						Dim hashedBytes as Byte()   
+						Dim encoder as New UTF8Encoding()
+						hashedBytes = md5Hasher.ComputeHash(encoder.GetBytes(ds.tables(0).rows(0)("email")))
+						dim sb as StringBuilder = new StringBuilder(hashedbytes.length * 2)
+						for i as integer = 0 to hashedbytes.length -1
+							sb.Append(hashedbytes(i).toString("X2"))
+						next
+						res = sb.ToString().ToLower()
 					end if
 				catch ex as exception
 					makesystemlog("error in GetAvatar", ex.toString())
@@ -4940,7 +5076,10 @@ Namespace Rasputin
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
+		end function
 
+		public function GetAvatar(pool_id as integer, username as string) as string
+			return getavatar(username)
 		end function
 
 		public function ChangeAvatar(pool_id as integer, username as string, avatar as string) as string
