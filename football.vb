@@ -835,7 +835,28 @@ Namespace Rasputin
 
 			return res
 		end function
-		
+
+		public function ds_to_arraylist (ds as dataset) as System.Collections.Arraylist
+			dim res as new System.Collections.Arraylist()
+			try
+				if ds.tables.count > 0 then
+					if ds.tables(0).rows.count > 0 then
+						for each drow as datarow in ds.tables(0).rows
+							dim ht as new System.Collections.Hashtable()
+							for each col as datacolumn in ds.tables(0).columns
+								ht.add(col.ColumnName, drow(col))
+							next
+							res.add(ht)
+						next
+					end if
+				end if
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
 		Public Function Getfiles(path as string) as system.collections.arraylist
 			Dim res as new system.collections.arraylist()
 			try
@@ -1655,9 +1676,9 @@ Namespace Rasputin
 			return res
 		end function
 
-		Public function GetPreviousPlayers(pool_owner as string) as dataset
+		Public function GetPreviousPlayers(pool_owner as string) as System.Collections.Arraylist
 
-			dim res as new system.data.dataset()
+			dim res as new System.Collections.Arraylist()
 			try
 			using con as new SQLConnection(myconnstring)
 				con.open()
@@ -1668,15 +1689,19 @@ Namespace Rasputin
 				sql = "select distinct username from fb_players a where a.pool_id in (select pool_id from fb_pools where pool_owner=@pool_owner)"
 
 				cmd = new SQLCommand(sql,con)
-
-				parm1 = new SQLParameter("@pool_owner", SQLDbType.varchar)
-				parm1.value = pool_owner
-				cmd.parameters.add(parm1)
+				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar)).value = pool_owner
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
-				oda.fill(res)
-			
+				dim ds as new dataset()
+				oda.fill(ds)
+				if ds.tables.count > 0 then
+					if ds.tables(0).rows.count > 0 then
+						for each drow as datarow in ds.tables(0).rows
+							res.add(drow("username"))
+						next
+					end if
+				end if
 			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
@@ -2042,6 +2067,11 @@ Namespace Rasputin
 
 			return res
 		end function
+
+		Public function isNotOwner(pool_id as integer, pool_owner as string) as boolean
+			return (not isowner(pool_id, pool_owner))
+		end function
+
 		Public function isOwner(pool_id as integer, pool_owner as string) as boolean
 			dim res as boolean = false
 			try
@@ -5767,4 +5797,6 @@ Public Class DataSeries
         Return data_series
     End Function
 End Class
+
+
 End Namespace

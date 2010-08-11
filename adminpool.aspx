@@ -109,7 +109,6 @@
 		fb.makesystemlog("exception in adminpool.aspx delete team", ex.tostring())
 	end try
 
-	'CreateGame(WEEK_ID as INTEGER, HOME_ID as INTEGER, AWAY_ID as INTEGER, GAME_TSP as datetime, GAME_URL as String, POOL_ID as INTEGER)
 	try
 		if request("submit") = "Add Game" then
 
@@ -252,9 +251,9 @@
 				end if
 			catch
 			end try
-			dim previous_players as string()
-			previous_players = sel.split(",")
-			for each player_name as string in previous_players
+			dim previousplayers as string()
+			previousplayers = sel.split(",")
+			for each player_name as string in previousplayers
 				res = fb.InvitePreviousPlayer(pool_id:=pool_id, username:=myname, player_name:=player_name)
 			next
 
@@ -291,27 +290,6 @@
 	catch
 	end try
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	dim pool_ds as dataset
 	pool_ds = fb.GetPoolDetails(pool_id)
 	
@@ -331,6 +309,12 @@
 
 	dim players_ds as dataset
 	players_ds = fb.getPoolPlayers(pool_id:=pool_id)
+
+	dim players_array as new System.Collections.arraylist()
+	players_array = fb.ds_to_arraylist(fb.GetPlayers(pool_id))
+	
+	dim previous_players as new System.Collections.Arraylist()
+	previous_players = fb.GetPreviousPlayers(myname)
 
 	dim importteams_ds as dataset
 	importteams_ds = fb.getImportTeams()
@@ -703,14 +687,20 @@
 			<select name="invite_previous_players" multiple size=5>
 			<%
 			try
-				dim previousplayers_ds as new dataset()
-				previousplayers_ds = fb.GetPreviousPlayers(pool_owner:=myname)
-
-				for each pprow as datarow in previousplayers_ds.tables(0).rows
-					%><option value="<% = pprow("username") %>"><% = pprow("username") %></option>
+				for each pprow as string in previous_players
+					dim found as boolean = false
+					for each p as hashtable in players_array
+						if p("USERNAME") = pprow then
+							found = true
+						end if
+					next
+					if not found then
+					%><option value="<% = pprow %>"><% = pprow %></option>
 <%
+					end if
 				next
 			catch ex as exception
+				fb.makesystemlog("error getting previous players", ex.tostring())
 			end try
 			%>
 			</select><br />
