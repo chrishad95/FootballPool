@@ -14,7 +14,6 @@
 <%
 	server.execute ("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
-	fb.initialize()
 	try
 		myname = session("username")
 	catch

@@ -200,8 +200,7 @@ Namespace Rasputin
 
 				sql = "select  * from fb_comments where ref_id is null and pool_id=@pool_id and pool_id in (select pool_id from fb_players where username=@username) order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-				cmd.parameters("@POOL_ID").value = POOL_ID
+				cmd.parameters.add(getSQLParameter("POOL_ID")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters("@USERNAME").value = username
 				
@@ -385,7 +384,7 @@ Namespace Rasputin
 				sql = "select * from fb_pools where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getSQLParameter("pool_id")).value = pool_id
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -421,7 +420,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				cmd.Parameters.Add(New SQLParameter("@comment_id", SQLDbType.Int))
@@ -462,7 +461,7 @@ Namespace Rasputin
 				
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				cmd.Parameters.Add(New SQLParameter("@comment_id", SQLDbType.Int))
@@ -556,7 +555,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 
 				dim oda as new SQLDataAdapter()
@@ -584,7 +583,7 @@ Namespace Rasputin
 				sql = "select sched.game_id, sched.week_id, sched.home_id, sched.away_id, sched.game_tsp, sched.game_url, sched.pool_id, away.team_name as away_team_name, away.team_shortname as away_team_shortname, home.team_name as home_team_name, home.team_shortname as home_team_shortname from fb_sched sched full outer join fb_teams home on sched.pool_id=home.pool_id and sched.home_id=home.team_id full outer join fb_teams away on sched.pool_id=away.pool_id and sched.away_id=away.team_id where sched.pool_id in (select pool_id from fb_pools where pool_owner=@pool_owner and pool_id=@pool_id) order by sched.game_tsp"
 
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = pool_owner
 
 				dim oda as new SQLDataAdapter()
@@ -2181,14 +2180,7 @@ Namespace Rasputin
 					End If
 				end if
 				if optionname = "AUTOHOMEPICKS" then
-					sql = "update fb_pools set updatescore_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
-
-					cmd = new SQLCommand(sql, con)
-	
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-					cmd.parameters("@POOL_ID").value = POOL_ID
-					rowsaffected = cmd.executenonquery()
-
+					updatescoretsp(pool_id)
 				end if
 			end using
 			catch ex as exception
@@ -2198,7 +2190,28 @@ Namespace Rasputin
 			end try
 			return res
 		End Function
-		
+
+		public sub UpdateScoreTsp(pool_id as integer)
+			try
+			using con as new SQLConnection(myconnstring)
+				con.open()
+
+				dim sql as string
+				dim cmd as SQLCommand
+
+				sql = "update fb_pools set updatescore_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
+				cmd = new SQLCommand(sql, con)
+	
+				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+				cmd.executenonquery()
+
+			end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+		end sub
+
 		Public Function GetFeed(pool_id As Integer, xslfile as string) As String
 			
 			dim res as string = ""
@@ -2981,17 +2994,7 @@ Namespace Rasputin
 							res = "SUCCESS" 
 						end if
 					end if
-	
-					sql = "update fb_pools set updatescore_tsp = @updatescore_tsp where pool_id=@pool_id"
-					cmd = new SQLCommand(sql, con)
-	
-					cmd.parameters.add(new SQLParameter("@UPDATESCORE_TSP", SQLDbType.datetime))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-	
-					cmd.parameters("@POOL_ID").value = POOL_ID
-					cmd.parameters("@UPDATESCORE_TSP").value = system.datetime.now
-	
-					cmd.executenonquery()
+					updatescoretsp(pool_id)	
 				else
 					res = "SUCCESS" 
 				end if
@@ -4602,13 +4605,7 @@ Namespace Rasputin
 					cmd.parameters("@EMAIL").value = EMAIL
 					cmd.parameters("@INVITE_KEY").value = INVITE_KEY
 					cmd.executenonquery()
-
-					sql = "update fb_pools set updatescore_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
-
-					cmd = new SQLCommand(sql,con)
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
-					cmd.parameters("@POOL_ID").value = POOL_ID
-					cmd.executenonquery()
+					updatescoretsp(pool_id)
 
 					res = email
 
@@ -4645,6 +4642,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
 				cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = username
 				cmd.executenonquery()
+				updatescoretsp(pool_id)
 				res = username
 			end using
 			catch ex as exception
@@ -5017,7 +5015,7 @@ Namespace Rasputin
 					dim oda2 as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
 					oda2.selectcommand = cmd
 					oda2.fill(user_ds2)
-					
+					if user_ds2.tables.count > 0 then	
 					if user_ds2.tables(0).rows.count > 0 then
 						sql = "update fb_users set password=temp_password where username = @username"
 		
@@ -5046,7 +5044,9 @@ Namespace Rasputin
 						oda.fill(user_ds)
 					else
 					end if
+					end if
 		
+					if user_ds.tables.count > 0 then	
 					if user_ds.tables(0).rows.count > 0 then
 						res = user_ds.tables(0).rows(0)("username")
 						
@@ -5059,6 +5059,7 @@ Namespace Rasputin
 						cmd.parameters.add(parm1)
 						
 						cmd.executenonquery()
+					end if
 					end if
 				end using
 			end if
@@ -5120,10 +5121,10 @@ Namespace Rasputin
 				dim sql as string = "update fb_players set avatar=@avatar WHERE pool_id=@pool_id AND username=@username"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getSQLParameter("pool_id")).value = pool_id
 
 				cmd.parameters.add(new SQLParameter("@avatar", SQLDbType.VARCHAR, 255))
-				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
+				cmd.parameters.add(getSQLParameter("username"))
 
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@avatar").value = avatar
@@ -5145,7 +5146,87 @@ Namespace Rasputin
 			end try
 			return res
 		end function
+
+		private function getSqlParameter(t as string) as SQLParameter
+			select case t.tolower()
+				case "pool_id"
+					return New SQLParameter("@pool_id", SQLDbType.Int)
+				case "username"
+					return New SQLParameter("@username", SQLDbType.VarChar, 50)
+			end select
+		end function
 	end Class
+
+
+	public class FBMessage
+		private myconnstring as string = System.Configuration.ConfigurationSettings.AppSettings("connString")
+		private _from_user as string
+		private _to_user as string
+		private _subject as string
+		private _body as string
+		private _read_at as datetime
+		private _created_at as datetime
+		private _id as integer
+
+		public Property fromUser() as string
+			get
+				return _from_user
+			end get
+			set(byval value as string)
+				_from_user = value
+			end set
+		end property
+		public Property toUser() as string
+			get
+				return _to_user
+			end get
+			set(byval value as string)
+				_to_user = value
+			end set
+		end property
+		public Property subject() as string
+			get
+				return _subject
+			end get
+			set(byval value as string)
+				_subject = value
+			end set
+		end property
+		public Property body() as string
+			get
+				return _body
+			end get
+			set(byval value as string)
+				_body = value
+			end set
+		end property
+		public Property id() as integer
+			get
+				return _id
+			end get
+			set(byval value as integer)
+				_id = value
+			end set
+		end property
+		public Property created_at() as datetime
+			get
+				return _created_at
+			end get
+			set(byval value as datetime)
+				_created_at = value
+			end set
+		end property
+		public Property read_at() as datetime
+			get
+				return _read_at
+			end get
+			set(byval value as datetime)
+				_read_at = value
+			end set
+		end property
+		
+
+	end class
 
 
 Public Class GreatGraph
