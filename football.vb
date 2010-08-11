@@ -612,7 +612,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = pool_owner
 
 				dim oda as new SQLDataAdapter()
@@ -647,7 +647,7 @@ Namespace Rasputin
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
@@ -687,7 +687,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters("@pool_id").value = pool_id
 				cmd.parameters.add(new SQLParameter("@player_id", SQLDbType.int))
 				cmd.parameters("@player_id").value = player_id
@@ -713,7 +713,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 30))
 					cmd.parameters("@username").value = username
 					
-					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters("@pool_id").value = pool_id
 					
 					cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
@@ -819,7 +819,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
@@ -888,7 +888,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim ds as new DataSet()
 				dim oda as new SQLDataAdapter()
@@ -999,7 +999,7 @@ Namespace Rasputin
 				sql = "select count(*) from fb_pools where pool_name=@pool_name and pool_owner=@pool_owner and pool_id<>@pool_id"
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@pool_name", SQLDbType.varchar, 100)).value = pool_name
 				cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.varchar, 50)).value = pool_owner
 
@@ -1018,7 +1018,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@pool_banner", SQLDbType.VARCHAR, 255))
 					cmd.parameters.add(new SQLParameter("scorer", SQLDbType.VARCHAR, 30))
 
-					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@pool_owner", SQLDbType.VARCHAR, 50))
 
 					cmd.parameters("@pool_id").VAlue = POOL_ID
@@ -1056,7 +1056,7 @@ Namespace Rasputin
 						sql = "select count(*) from fb_teams where pool_id=@pool_id and (upper(team_name) = @team_name or upper(team_shortname) = @team_shortname)"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@pool_id", sqldbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@team_name", sqLDbType.VARCHAR, 40)).value = team_name.toUpper()
 						cmd.parameters.add(new SQLParameter("@team_shortname", SQLDbType.VARCHAR, 5)).value = team_shortname.toupper()
 
@@ -1071,7 +1071,7 @@ Namespace Rasputin
 							cmd.parameters.add(new SQLParameter("@team_name", sqLDbType.VARCHAR, 40)).value = team_name
 							cmd.parameters.add(new SQLParameter("@team_shortname", SQLDbType.VARCHAR, 5)).value = team_shortname
 							cmd.parameters.add(new SQLParameter("@url", sqldBtYPe.VARCHAR, 200)).value = url
-							cmd.parameters.add(new SQLParameter("@pool_id", sqldbType.int)).value = pool_id
+							cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 							cmd.executenonquery()
 							res = "Team: " & team_name & " was created."
 						else
@@ -1252,7 +1252,7 @@ Namespace Rasputin
 				dim sql as string = "insert into fb_invites(POOL_ID, EMAIL, INVITE_KEY, INVITE_TSP) values (@pool_id, @email, @invite_key, @invite_tsp)"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
 				cmd.parameters.add(new SQLParameter("@INVITE_KEY", SQLDbType.VARCHAR, 40))
 				cmd.parameters.add(new SQLParameter("@INVITE_TSP", SQLDbType.datetime))
@@ -1279,7 +1279,7 @@ Namespace Rasputin
 				dim sql as string = "delete from fb_invites where pool_id=@pool_id and email=@email"
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@EMAIL").value = EMAIL
@@ -1334,7 +1334,7 @@ Namespace Rasputin
 						sql = "select * from fb_teams where pool_id=@pool_id and team_name in (@away, @home)"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+						cmd.parameters.add(getsqlparameter("pool_id"))
 						cmd.parameters.add(new SQLParameter("@away", SQLDbType.varchar))
 						cmd.parameters.add(new SQLParameter("@home", SQLDbType.varchar))
 
@@ -1381,7 +1381,7 @@ Namespace Rasputin
 						sql = "insert into fb_sched (pool_id, week_id, home_id, away_id, game_tsp) values (@pool_id, @week_id, @home_id, @away_id, @game_tsp)"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+						cmd.parameters.add(getsqlparameter("pool_id"))
 						cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@home_id", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@away_id", SQLDbType.int))
@@ -1471,7 +1471,7 @@ Namespace Rasputin
 						sql = "delete from fb_games where pool_id=@pool_id and game_id=@game_id"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 						rowsupdated = cmd.executenonquery()
 
@@ -1484,7 +1484,7 @@ Namespace Rasputin
 						sql = "delete from fb_picks where pool_id=@pool_id and game_id=@game_id"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 						rowsupdated = cmd.executenonquery()
 
@@ -1497,7 +1497,7 @@ Namespace Rasputin
 						sql = "delete from fb_scores where pool_id=@pool_id and game_id=@game_id"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 						rowsupdated = cmd.executenonquery()
 
@@ -1510,7 +1510,7 @@ Namespace Rasputin
 						sql = "delete from fb_tiebreakers where pool_id=@pool_id and game_id=@game_id"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 						rowsupdated = cmd.executenonquery()
 						if rowsupdated > 0 then
@@ -1544,7 +1544,7 @@ Namespace Rasputin
 						sql = "delete from fb_teams where pool_id=@pool_id and team_id=@team_id"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int)).value = team_id
 						rowsupdated = cmd.executenonquery()
 
@@ -1557,7 +1557,7 @@ Namespace Rasputin
 						sql = "select game_id from fb_games where pool_id=@pool_id and (away_id=@team_id or home_id=@team_id)"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int)).value = team_id
 
 						dim da as new SQLDataAdapter()
@@ -1599,7 +1599,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40)).value = team_name
 					cmd.parameters.add(new SQLParameter("@TEAM_SHORTNAME", SQLDbType.VARCHAR, 5)).value = team_shortname
 					cmd.parameters.add(new SQLParameter("@URL", SQLDbType.VARCHAR, 200)).value = url
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int)).value = team_id
 					rowsupdated = cmd.executenonquery()
 
@@ -1633,7 +1633,7 @@ Namespace Rasputin
 					sql = "select * from fb_tiebreakers where pool_id=@pool_id"
 
 					cmd = new SQLCommand(sql,con)
-					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 					dim oda as new SQLDataAdapter()
 					oda.selectcommand = cmd
@@ -1661,7 +1661,7 @@ Namespace Rasputin
 				sql = "select distinct week_id from fb_sched where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -1725,7 +1725,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
@@ -1800,7 +1800,7 @@ Namespace Rasputin
 
 				cmd.parameters.add(new SQLParameter("@TEAM_NAME", SQLDbType.VARCHAR, 40))
 				cmd.parameters.add(new SQLParameter("@TEAM_shortname", SQLDbType.VARCHAR))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 
 				cmd.parameters("@TEAM_NAME").value = TEAM_NAME
 				cmd.parameters("@TEAM_shortname").value = TEAM_NAME.toupper()
@@ -1844,7 +1844,7 @@ Namespace Rasputin
 							cmd.parameters.add(new SQLParameter("@AWAY_ID", SQLDbType.int))
 							cmd.parameters.add(new SQLParameter("@GAME_TSP", SQLDbType.datetime))
 							cmd.parameters.add(new SQLParameter("@GAME_URL", SQLDbType.VARCHAR, 300))
-							cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+							cmd.parameters.add(getsqlparameter("pool_id"))
 							cmd.parameters("@WEEK_ID").value = WEEK_ID
 							cmd.parameters("@HOME_ID").value = HOME_ID
 							cmd.parameters("@AWAY_ID").value = AWAY_ID
@@ -1878,7 +1878,7 @@ Namespace Rasputin
 				
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TSP", SQLDbType.datetime))
@@ -1915,7 +1915,7 @@ Namespace Rasputin
 				
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TSP", SQLDbType.datetime))
@@ -1955,7 +1955,7 @@ Namespace Rasputin
 
 				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@comment_id", SQLDbType.int))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
@@ -1988,7 +1988,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@GAME_TSP", SQLDbType.datetime))
 					cmd.parameters.add(new SQLParameter("@GAME_URL", SQLDbType.VARCHAR, 300))
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters("@GAME_ID").value = GAME_ID
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
 					cmd.parameters("@HOME_ID").value = HOME_ID
@@ -2028,7 +2028,7 @@ Namespace Rasputin
 				parm1.value = username
 				cmd.parameters.add(parm1)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				dim pool_count as integer = 0
@@ -2056,7 +2056,7 @@ Namespace Rasputin
 
 					sql = "select pool_banner from fb_pools where pool_id=@pool_id"
 					cmd = new SQLCommand(sql,con)
-					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 					res = cmd.executescalar()
 				end using
 			catch ex as exception
@@ -2088,7 +2088,7 @@ Namespace Rasputin
 				parm1.value = pool_owner
 				cmd.parameters.add(parm1)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				dim pool_count as integer = 0
@@ -2117,7 +2117,7 @@ Namespace Rasputin
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@FEED_ID", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@FEED_ID").value = FEED_ID
 				
@@ -2149,7 +2149,7 @@ Namespace Rasputin
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@OPTIONVALUE", SQLDbType.varchar, 255))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@OPTIONNAME", SQLDbType.varchar, 30))
 				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@OPTIONVALUE").value = OPTIONVALUE
@@ -2167,7 +2167,7 @@ Namespace Rasputin
 					cmd = new SQLCommand(sql, con)
 	
 					cmd.parameters.add(new SQLParameter("@OPTIONVALUE", SQLDbType.varchar, 255))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@OPTIONNAME", SQLDbType.varchar, 30))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@OPTIONVALUE").value = OPTIONVALUE
@@ -2202,7 +2202,7 @@ Namespace Rasputin
 				sql = "update fb_pools set updatescore_tsp = CURRENT_TIMESTAMP where pool_id=@pool_id"
 				cmd = new SQLCommand(sql, con)
 	
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.executenonquery()
 
 			end using
@@ -2225,7 +2225,7 @@ Namespace Rasputin
 				sql = "select * from fb_rss_feeds where feed_id=(select feed_id from fb_pools where pool_id=@pool_id)"
 
 				cmd = new SQLCommand(sql,con)
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 
@@ -2299,7 +2299,7 @@ Namespace Rasputin
 
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@TB_TSP", SQLDbType.datetime))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 					cmd.parameters("@POOL_ID").value = POOL_ID
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
@@ -2314,7 +2314,7 @@ Namespace Rasputin
 						sql = "insert into fb_tiebreakers(POOL_ID, WEEK_ID, GAME_ID, TB_TSP) values (@pool_id, @week_id, @game_id, @tb_tsp)"
 						cmd = new SQLCommand(sql, con)
 
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+						cmd.parameters.add(getsqlparameter("pool_id"))
 						cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@TB_TSP", SQLDbType.datetime))
@@ -2358,7 +2358,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
 				cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@FASTKEY", SQLDbType.CHAR, 30))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters("@USERNAME").value = player_name
 				cmd.parameters("@WEEK_ID").value = WEEK_ID
 				cmd.parameters("@FASTKEY").value = FASTKEY
@@ -2445,7 +2445,7 @@ Namespace Rasputin
 				sql = "select pool_name from fb_pools where pool_id=@pool_id"
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters("@pool_id").value = pool_id
 				pool_name = cmd.executescalar()
 			end using
@@ -2470,7 +2470,7 @@ Namespace Rasputin
 				sql = "insert into fb_picks_history (POOL_ID, GAME_ID, USERNAME, TEAM_ID, MOD_USER, MOD_TSP) values (@pool_id, @game_id, @username, @team_id, @mod_user, @mod_tsp)"
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
@@ -2492,7 +2492,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@MOD_TSP", SQLDbType.datetime))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 
@@ -2508,7 +2508,7 @@ Namespace Rasputin
 				sql = "select count(*) from fb_picks where pool_id=@pool_id and game_id=@game_id and username=@username"
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 
@@ -2523,7 +2523,7 @@ Namespace Rasputin
 					sql = "insert into fb_picks(POOL_ID, GAME_ID, USERNAME, TEAM_ID, MOD_USER, MOD_TSP) values (@pool_id, @game_id, @username, @team_id, @mod_user, @mod_tsp)"
 					cmd = new SQLCommand(sql, con)
 
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 					cmd.parameters.add(new SQLParameter("@TEAM_ID", SQLDbType.int))
@@ -2565,7 +2565,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim checkdate as datetime = system.datetime.now
@@ -2616,7 +2616,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = new SQLParameter("@pool_id", SQLDbType.int)
+				parm1 = getsqlparameter("pool_id")
 				parm1.value = pool_id
 				cmd.parameters.add(parm1)
 				parm1 = new SQLParameter("@username", SQLDbType.varchar, 50)
@@ -2648,7 +2648,7 @@ Namespace Rasputin
 				dim cmd as SQLCommand = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@NICKNAME", SQLDbType.VARCHAR, 100))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 30))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
@@ -2687,7 +2687,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				parm1 = new SQLParameter("week_id", SQLDbType.int)
 				parm1.value = week_id
@@ -2717,7 +2717,7 @@ Namespace Rasputin
 				sql = "select min(week_id) as week_id from fb_sched where pool_id=@pool_id and  game_tsp > dateadd(day,-1, current_timestamp)"
 
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim ds as new dataset()
 				dim oda as new SQLDataAdapter()
@@ -2755,7 +2755,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				parm1 = new SQLParameter("@week_id", SQLDbType.int)
 				parm1.value = week_id
@@ -2820,7 +2820,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@WEEK_ID").value = WEEK_ID
 				cmd.parameters("@SCORE").value = SCORE
@@ -2837,7 +2837,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters("@USERNAME").value = USERNAME
 					cmd.parameters("@WEEK_ID").value = WEEK_ID
 					cmd.parameters("@SCORE").value = SCORE
@@ -2873,7 +2873,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 				cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters("@MOD_USER").value = mod_user
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@WEEK_ID").value = WEEK_ID
@@ -2891,7 +2891,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50))
 					cmd.parameters.add(new SQLParameter("@WEEK_ID", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@SCORE", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@MOD_USER", SQLDbType.VARCHAR, 50))
 					cmd.parameters("@MOD_USER").value = mod_user
 					cmd.parameters("@USERNAME").value = USERNAME
@@ -2929,7 +2929,7 @@ Namespace Rasputin
 				cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
 				cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 
 				cmd.parameters("@GAME_ID").value = GAME_ID
 				cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
@@ -2944,7 +2944,7 @@ Namespace Rasputin
 					sql = "insert into fb_scores_history (away_score, home_score, game_id, pool_id, mod_user, mod_tsp) values (@away_score, @home_score, @game_id, @pool_id, @mod_user, CURRENT_TIMESTAMP)"
 					cmd = new SQLCommand(sql, con)
 	
-					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 					cmd.parameters.add(new SQLParameter("@mod_user", SQLDbType.varchar, 30)).value = username
 					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int)).value = away_score
 					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int)).value = home_score
@@ -2960,7 +2960,7 @@ Namespace Rasputin
 					cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 	
 					cmd.parameters("@GAME_ID").value = GAME_ID
 					cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
@@ -2980,7 +2980,7 @@ Namespace Rasputin
 						cmd.parameters.add(new SQLParameter("@GAME_ID", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@AWAY_SCORE", SQLDbType.int))
 						cmd.parameters.add(new SQLParameter("@HOME_SCORE", SQLDbType.int))
-						cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+						cmd.parameters.add(getsqlparameter("pool_id"))
 	
 						cmd.parameters("@GAME_ID").value = GAME_ID
 						cmd.parameters("@AWAY_SCORE").value = AWAY_SCORE
@@ -3021,7 +3021,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim oda as new SQLDataAdapter()
@@ -3051,7 +3051,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim game_id as integer
@@ -3077,7 +3077,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim oda as new SQLDataAdapter()
@@ -3165,7 +3165,7 @@ Namespace Rasputin
 					& " from fb_comments where ref_id is null and pool_id=@pool_id"
 				
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim dr as SQLDataReader
 				dr = cmd.executereader()
@@ -3191,13 +3191,13 @@ Namespace Rasputin
 						sql = "select count(*) from fb_comments where ref_id=@ref_id and pool_id=@pool_id"
 						cmd = new SQLCommand(sql,con)
 						cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int)).value = temp_table.rows(i)("thread_id")
-						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						
 						temp_table.rows(i)("replies") = cmd.executescalar()
 
 						sql = "select * from fb_comments where pool_id=@pool_id and (comment_id=@ref_id or ref_id=@ref_id) order by comment_tsp desc"
 						cmd = new SQLCommand(sql,con)
-						cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+						cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int)).value = temp_table.rows(i)("thread_id")
 
 						dr = cmd.executereader()
@@ -3237,7 +3237,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id 
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id 
 				cmd.parameters.add(new SQLParameter("@comment_id", SQLDbType.int)).value = thread_id
 
 				dim oda as new SQLDataAdapter()
@@ -3266,7 +3266,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
 				dim oda as new SQLDataAdapter()
@@ -3293,7 +3293,7 @@ Namespace Rasputin
 				
 				sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , fb_scores b where a.pool_id=@pool_id and a.pool_id =b.pool_id and not b.away_score is null) as t full outer join fb_picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not t.away_score is null order by t.username, d.week_id"
 				cmd = New SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				
 				oda = new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -3543,7 +3543,7 @@ Namespace Rasputin
 					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , fb_scores b where a.pool_id=@pool_id and b.pool_id=@pool_id and not b.away_score is null) as t full outer join fb_picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not d.away_id is null and d.week_id <=@week_id and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
 					cmd = New SQLCommand(sql,con)
 					
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@POOL_ID2", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@POOL_ID3", SQLDbType.int))
 					cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int))
@@ -3801,7 +3801,7 @@ Namespace Rasputin
 				
 				sql = "select count(*) from fb_pools where pool_id=@pool_id and (updatescore_tsp > standings_tsp or standings_tsp is null)"
 				cmd = New SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim c as integer = 0
 				c = cmd.executescalar() 
@@ -3904,7 +3904,7 @@ Namespace Rasputin
 					
 					sql = "select t.pool_id, t.username, t.nickname, t.game_id, t.away_score, t.home_score, c.team_id, d.week_id, d.home_id, d.away_id from (select a.pool_id, a.username, a.nickname, b.game_id, b.away_score, b.home_score from fb_players a , fb_scores b where a.pool_id=@pool_id and b.pool_id=@pool_id and not b.away_score is null) as t full outer join fb_picks c on t.pool_id=c.pool_id and t.game_id=c.game_id and t.username=c.username full outer join fb_sched d on d.pool_id=t.pool_id and d.game_id=t.game_id where (c.pool_id=@pool_id or c.pool_id is null) and not d.away_id is null and not d.home_id is null and not t.away_score is null order by t.username, d.week_id"
 					cmd = New SQLCommand(sql,con)
-					cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+					cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 					
 					oda = New SQLDataAdapter()
 					oda.SelectCommand = cmd
@@ -4288,7 +4288,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50)).value = player_name
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 
@@ -4315,7 +4315,7 @@ Namespace Rasputin
 				
 				sql = "select team_id from fb_picks  where pool_id=@pool_id and username=@username and game_id=@game_id"
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@game_id", SQLDbType.int)).value = game_id
 				cmd.parameters.add(new SQLParameter("@USERNAME", SQLDbType.VARCHAR, 50)).value = player_name
 				res = cmd.executescalar()
@@ -4340,7 +4340,7 @@ Namespace Rasputin
 				sql = "select score from fb_tiebreaker  where pool_id=@pool_id and week_id=@week_id and username=@username"
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@week_id", SQLDbType.int)).value = week_id
 				cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = player_name
 
@@ -4472,7 +4472,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim oda as new SQLDataAdapter()
 				oda.selectcommand = cmd
@@ -4539,7 +4539,7 @@ Namespace Rasputin
 
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+				cmd.parameters.add(getsqlparameter("pool_id"))
 				cmd.parameters.add(new SQLParameter("@INVITE_KEY", SQLDbType.VARCHAR, 40))
 
 				cmd.parameters("@POOL_ID").value = POOL_ID
@@ -4573,7 +4573,7 @@ Namespace Rasputin
 				sql = "select * from fb_pools a full outer join fb_users b on a.pool_owner=b.username where pool_id=@pool_id"
 
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 
 				dim pool_ds as new dataset()
 				dim oda as new SQLDataAdapter()
@@ -4598,7 +4598,7 @@ Namespace Rasputin
 
 					cmd = new SQLCommand(sql,con)
 					cmd.parameters.add(new SQLParameter("@EMAIL", SQLDbType.VARCHAR, 255))
-					cmd.parameters.add(new SQLParameter("@POOL_ID", SQLDbType.int))
+					cmd.parameters.add(getsqlparameter("pool_id"))
 					cmd.parameters.add(new SQLParameter("@INVITE_KEY", SQLDbType.VARCHAR, 40))
 
 					cmd.parameters("@POOL_ID").value = POOL_ID
@@ -4639,7 +4639,7 @@ Namespace Rasputin
 				sql = "insert into fb_players (pool_id, username) values (@pool_id, @username)"
 
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@username", SQLDbType.varchar, 50)).value = username
 				cmd.executenonquery()
 				updatescoretsp(pool_id)
@@ -4888,7 +4888,7 @@ Namespace Rasputin
 				
 				cmd = new SQLCommand(sql,con)
 				
-				cmd.parameters.add(new SQLParameter("@pool_id", SQLDbType.int)).value = pool_id
+				cmd.parameters.add(getsqlparameter("pool_id")).value = pool_id
 				cmd.parameters.add(new SQLParameter("@email", SQLDbType.varchar, 50)).value = email
 				
 				dim oda as new SQLDataAdapter()
@@ -5150,7 +5150,7 @@ Namespace Rasputin
 		private function getSqlParameter(t as string) as SQLParameter
 			select case t.tolower()
 				case "pool_id"
-					return New SQLParameter("@pool_id", SQLDbType.Int)
+					return getsqlparameter("pool_id")
 				case "username"
 					return New SQLParameter("@username", SQLDbType.VarChar, 50)
 			end select
