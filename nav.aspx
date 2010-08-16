@@ -1,5 +1,11 @@
 <%@ Page language="VB" src="/football/football.vb" %>
 <%@ Import Namespace="System.Data" %>
+<script runat="server" language="VB">
+
+	private function link_to (url as string, text as string) as string
+		return "<a class=""nav"" href=""" & url & """>" & text & "</a>"
+	end function
+</script>
 <%
 dim myname as string = ""
 try
@@ -33,69 +39,53 @@ catch
 end try
 
 %>
-<a href="/football">Home</a><BR>
-<A HREF="/football/login.aspx">Login</A> / <A HREF="logout.aspx">Logout</A><BR>
-<A HREF="/football/register.aspx">Register</A><BR>
-<A HREF="/football/resetpassword.aspx">Reset Password</A><BR>
+<dl>
+<dt><% = link_to("/football", "Home") %></dt>
+<% if myname <> "" then %>
+<dt><% = link_to("/football/logout.aspx", "Signout") %></dt>
+<dt><% = link_to("/football/messages", "Messages") %></dt>
+<% else %>
+<dt><% = link_to("/football/login.aspx", "Signin") %></dt>
+<dt><% = link_to("/football/register.aspx", "Register") %></dt>
+<% end if %>
+<dt><% = link_to("/football/ayudame.aspx", "Help") %></dt>
+<dt><% = link_to("/football/donate.aspx", "Donate") %></dt>
+</dl>
+<dl>
 <%
-if myname <> "" then
-	%>
-	<A HREF="/changepassword.aspx">Change&nbsp;Password</A><BR>
-	<%
-end if
-%>
-<a href="/football/ayudame.aspx">Help!</a><BR><br />
-<a href="/football/donate.aspx">Donate</a><BR><br />
-<%
-if http_host <> "superpools.gotdns.com" then
-	%>
-	<a href="/football">My Pools</a><BR>	
-	<%
-end if
-
 try
 	if isplayer or isowner then
 		%>
-		<a href="/football/showsched.aspx?pool_id=<% = pool_id %>">Schedule</a><BR>
-		<a href="/football/makepicks.aspx?pool_id=<% = pool_id %>">Make&nbsp;Picks</a><BR>
-		<a href="/football/showpicks.aspx?pool_id=<% = pool_id %>">Show&nbsp;Picks</a><BR>
-		<a href="/football/standings.aspx?pool_id=<% = pool_id %>">Standings</a><BR>
-		<a href="/football/sendinvite.aspx?pool_id=<% = pool_id %>">Send&nbsp;Invite</a><BR>
-		<a href="/football/nickname.aspx?pool_id=<% = pool_id %>">Change&nbsp;Nickname</a><BR>
-		<a href="/football/showthreads.aspx?pool_id=<% = pool_id %>">Trash&nbsp;Talk</a><BR>
-		<a href="/football/pickavatar.aspx?pool_id=<% = pool_id %>">Avatar</a><BR>
-		<a href="/football/stats.aspx?pool_id=<% = pool_id %>">Statistics</a><BR>
+		<dt><a class="nav" href="/football/showsched.aspx?pool_id=<% = pool_id %>">Schedule</a></dt>
+		<dt><a class="nav" href="/football/makepicks.aspx?pool_id=<% = pool_id %>">Make&nbsp;Picks</a></dt>
+		<dt><a class="nav" href="/football/showpicks.aspx?pool_id=<% = pool_id %>">Show&nbsp;Picks</a></dt>
+		<dt><a class="nav" href="/football/standings.aspx?pool_id=<% = pool_id %>">Standings</a></dt>
+		<dt><a class="nav" href="/football/sendinvite.aspx?pool_id=<% = pool_id %>">Send&nbsp;Invite</a></dt>
+		<dt><a class="nav" href="/football/nickname.aspx?pool_id=<% = pool_id %>">Change&nbsp;Nickname</a></dt>
+		<dt><a class="nav" href="/football/showthreads.aspx?pool_id=<% = pool_id %>">Trash&nbsp;Talk</a></dt>
+		<dt><a class="nav" href="/football/pickavatar.aspx?pool_id=<% = pool_id %>">Avatar</a></dt>
+		<dt><a class="nav" href="/football/stats.aspx?pool_id=<% = pool_id %>">Statistics</a></dt>
 		<%
 	end if
 catch
 end try
 if myname <> "" then
 	%>
-	<a href="/football/newpool.aspx">New&nbsp;Pool</a><BR>
-	<a href="/football/upload.aspx">Upload&nbsp;File</a><BR>
+	<dt><a class="nav" href="/football/newpool.aspx">New&nbsp;Pool</a></dt>
+	<dt><a class="nav" href="/football/upload.aspx">Upload&nbsp;File</a></dt>
 	<%
 end if
 if isowner then
 	%>
-	<br />
-	Owner Tasks:
-	<br />
-	<a href="/football/adminpool.aspx?pool_id=<% = pool_id %>">Admin</a><BR>
-	<a href="/football/scoregames.aspx?pool_id=<% = pool_id %>">Game Scores</a><BR>
-	<a href="/football/sendnotice.aspx?pool_id=<% = pool_id %>">Send Notices</a><BR>	
+	<dt><a href="/football/adminpool.aspx?pool_id=<% = pool_id %>">Admin</a></dt>
+	<dt><a href="/football/scoregames.aspx?pool_id=<% = pool_id %>">Game Scores</a></dt>
+	<dt><a href="/football/sendnotice.aspx?pool_id=<% = pool_id %>">Send Notices</a></dt>	
 	<%
 end if
 if isscorer then
 	%>
-	<a href="/football/scoregames.aspx?pool_id=<% = pool_id %>">Game Scores</a><BR>
+	<dt><a class="nav" href="/football/scoregames.aspx?pool_id=<% = pool_id %>">Game Scores</a></dt>
 	<%
 end if
-try
-	if session("username") = "chadley" then
-		%>
-			
-		<%
-	end if
-catch
-end try
 %>
+</dl>

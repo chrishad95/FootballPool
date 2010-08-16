@@ -14,7 +14,6 @@
 
 	server.execute ("/football/cookiecheck.aspx")
 	dim fb as new Rasputin.FootballUtility()
-	fb.initialize()
 
 	try
 		myname = session("username")
@@ -26,8 +25,8 @@
 	catch
 	end try
 
-	dim errors_ds as new dataset()
-	errors_ds = fb.geterrors()
+	dim errors as new datatable()
+	errors = fb.geterrors()
 
 %>
 <html>
@@ -49,7 +48,7 @@
 <body>
 
 <div class="content">
-	<% for each drow as datarow in errors_ds.tables(0).rows %>
+	<% for each drow as datarow in errors.rows %>
 	<fieldset>
 	<legend><% = drow("entry_title") %></legend>
 	<% = drow("entry_text").replace(system.environment.newline,"<br>" & system.environment.newline) %>

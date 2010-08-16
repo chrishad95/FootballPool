@@ -52,7 +52,7 @@
 <html>
 <head>
 <title><% = http_host %></title>
-<style type="text/css" media="all">@import "/football/style4.css";</style>
+<style type="text/css" media="all">@import "/football/css/cssplay4.css";</style>
 <style>
 
 	caption {
@@ -324,13 +324,29 @@
 	{
 		color: #FFFF66;
 	}
-
+a.pool_links {
+display: block;
+background: silver;
+height: 25px;
+border: 1px solid;
+color: black;
+text-decoration: none;
+text-align: center;
+width:100px;
+line-height: 25px;
+}
+a.pool_links:hover {background:#000; color:#fff;}
 </style>
 </head>
 
 <body>
 
-<div class="content">
+<div id="head">
+<img src="/football/images/smackpools_header.png" alt="WWW.SMACKPOOLS.COM">
+</div>
+<div id="foot">
+</div>
+<div id="content">
 	<%
 	try
 		if session("page_message") <> "" then
@@ -363,7 +379,6 @@
 
 			if not pool_id_found and mypools.tables(0).rows.count > 1  then
 				%>
-				<h1><% = http_host %></h1>
 				<h2>My Pools</h2>
 				<%
 				dim temppoolrows as datarow()
@@ -371,11 +386,40 @@
 
 				for each drow as datarow in temppoolrows
 					dim pooldesc as string = ""
+					dim p_id as integer = drow("pool_id")
 					if not drow("pool_desc") is dbnull.value then
 						pooldesc = drow("pool_desc")
 					end if
 
 					%>
+					<div class="pool_header">
+					<a href="?pool_id=<% = drow("pool_id") %>" title="<% = pooldesc %>"><% = drow("pool_name") %></a> created by <% = drow("pool_owner") %> on <% = drow("pool_tsp") %>
+					</div>
+					<div class="pool_links">
+					<a href="showsched.aspx?pool_id=<% = p_id %>">Schedule</a>
+					<a href="makepicks.aspx?pool_id=<% = p_id %>">Make&nbsp;Picks</a>
+					<a href="showpicks.aspx?pool_id=<% = p_id %>">Show&nbsp;Picks</a>
+					<a href="standings.aspx?pool_id=<% = p_id %>">Standings</a>
+					<a href="nickname.aspx?pool_id=<% =  p_id %>">Change&nbsp;Nickname</a>
+					<a href="showthreads.aspx?pool_id=<% = p_id %>">Trash&nbsp;Talk</a>
+					<%
+					if fb.isowner(pool_id:=p_id, pool_owner:=myname) then
+						%>
+						<a class="admin" href="adminpool.aspx?pool_id=<% =  p_id %>">Admin</a>
+						<a class="admin" href="scoregames.aspx?pool_id=<% = p_id %>">Scores</a>
+						<a class="admin" href="sendnotice.aspx?pool_id=<% = p_id %>">Send Notices</a>
+						<%
+					end if
+					%>
+					</div>
+					<%
+				next
+				for each drow as datarow in temppoolrows
+					dim pooldesc as string = ""
+					if not drow("pool_desc") is dbnull.value then
+						pooldesc = drow("pool_desc")
+					end if
+				%>
 					<table class="pool_table" cellspacing="0">
 					<tr><td colspan="2" class="pool_name"><a href="?pool_id=<% = drow("pool_id") %>"><% = drow("pool_name") %></a></td></tr>
 					<tr><td colspan="2" class="pool_owner">Administrator: <% = drow("pool_owner") %></td></tr>
@@ -387,6 +431,7 @@
 					<a href="standings.aspx?pool_id=<% = drow("pool_id") %>">Standings</a>
 					<a href="nickname.aspx?pool_id=<% = drow("pool_id") %>">Change&nbsp;Nickname</a>
 					<a href="showthreads.aspx?pool_id=<% = drow("pool_id") %>">Trash&nbsp;Talk</a><%
+
 					if fb.isowner(pool_id:=drow("pool_id"), pool_owner:=myname) then
 						%>
 						<br />
@@ -623,28 +668,10 @@
 	%>
 </div>
 
-<div id="NavAlpha">
+<div id="left">
 <% 
 server.execute("nav.aspx")
 %>
-<br />
-<script type="text/javascript"><!--
-google_ad_client = "pub-8829998647639174";
-google_ad_width = 120;
-google_ad_height = 600;
-google_ad_format = "120x600_as";
-google_ad_type = "text_image";
-google_ad_channel = "";
-google_color_border = "FFFFFF";
-google_color_bg = "EEEEEE";
-google_color_link = "0000FF";
-google_color_text = "000000";
-google_color_url = "008000";
-//-->
-</script>
-<script type="text/javascript"
-  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-</script>
 </div>
 
 <!-- BlueRobot was here. -->

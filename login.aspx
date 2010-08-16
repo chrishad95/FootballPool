@@ -99,7 +99,7 @@
 <html>
 <head>
 	<title>Login</title>
-	<style type="text/css" media="all">@import "/football/style2.css";</style> 
+	<style type="text/css" media="all">@import "/football/css/cssplay4.css";</style>
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="cmxform.js"></script>
 	<style>
@@ -154,9 +154,13 @@
 
 <body>
 
-<div id="Header"><% = http_host %></div>
+<div id="head">
+<img src="/football/images/smackpools_header.png" alt="WWW.SMACKPOOLS.COM">
+</div>
+<div id="foot">
+</div>
 
-<div id="Content">
+<div id="content">
 		<form class="cmxform" name="loginform" method="post" action="login.aspx">
 			<%
 			if returnurl <> "" then 
@@ -175,7 +179,7 @@
 					<td><input type="password" name="password" id="password"></td>
 				</tr>		
 				<tr>
-					<td>Remember Login?</td>
+					<td>Remember me.</td>
 					<td><input type="checkbox" name="rememberlogin"></td>
 				</tr>	
 				<tr>
@@ -215,15 +219,11 @@
 
 </div>
 
-<div id="Menu">
+<div id="left">
 <% 
 Server.Execute("nav.aspx")
 %>
 </div>
-
-<!-- BlueRobot was here. -->
-
 </body>
-
 </html>
 

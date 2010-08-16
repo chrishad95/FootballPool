@@ -1,9 +1,13 @@
 
 targetdir = football
-prodserver = www.rexfordroad.com
+prodserver = noprodwww.rexfordroad.com
+testserver = 192.168.1.12
 
-PRODDIR=/home/chadley/prod_install/$(targetdir)
+PRODDIR=/home/chadley/web/football/prod/$(targetdir)
+TESTDIR=/home/chadley/web/football/test/$(targetdir)
+
 PRODFTPDIR=$(targetdir)
+TESTFTPDIR=$(targetdir)
 
 prodobjs=$(patsubst %.aspx,$(PRODDIR)/%.aspx,$(wildcard *.aspx)) \
 	$(patsubst %.html,$(PRODDIR)/%.html,$(wildcard *.html)) \
@@ -16,10 +20,24 @@ prodobjs=$(patsubst %.aspx,$(PRODDIR)/%.aspx,$(wildcard *.aspx)) \
 	$(patsubst %.png,$(PRODDIR)/%.png,$(wildcard *.png)) \
 	$(patsubst %.config,$(PRODDIR)/%.config,$(wildcard *.config))
 
+testobjs=$(patsubst %.aspx,$(TESTDIR)/%.aspx,$(wildcard *.aspx)) \
+	$(patsubst %.html,$(TESTDIR)/%.html,$(wildcard *.html)) \
+	$(patsubst %.js,$(TESTDIR)/%.js,$(wildcard *.js)) \
+	$(patsubst %.vb,$(TESTDIR)/%.vb,$(wildcard *.vb)) \
+	$(patsubst %.css,$(TESTDIR)/%.css,$(wildcard *.css)) \
+	$(patsubst %.xsl,$(TESTDIR)/%.xsl,$(wildcard *.xsl)) \
+	$(patsubst %.gif,$(TESTDIR)/%.gif,$(wildcard *.gif)) \
+	$(patsubst %.jpg,$(TESTDIR)/%.jpg,$(wildcard *.jpg)) \
+	$(patsubst %.png,$(TESTDIR)/%.png,$(wildcard *.png)) \
+	$(patsubst %.config,$(TESTDIR)/%.config,$(wildcard *.config))
+
 GET:
-	cvs update -l
+	get status
 
 prod: $(prodobjs)
+	@echo Target is up to date.
+
+test: $(testobjs)
 	@echo Target is up to date.
 
 $(PRODDIR)/%.aspx: %.aspx
@@ -65,6 +83,52 @@ $(PRODDIR)/%.gif: %.gif
 
 $(PRODDIR)/%.png: %.png
 	devput.pl --binary --hostname $(prodserver) -r $< -l $< -d $(PRODFTPDIR)
+	cp $< $@
+
+
+$(TESTDIR)/%.aspx: %.aspx
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+$(TESTDIR)/%.js: %.js
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+	
+$(TESTDIR)/%.vb: %.vb
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+$(TESTDIR)/%.xsl: %.xsl
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+$(TESTDIR)/%.config: %.config
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+
+$(TESTDIR)/%.css: %.css
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+
+$(TESTDIR)/%.html: %.html
+	devput.pl --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+
+
+$(TESTDIR)/%.jpg: %.jpg
+	devput.pl --binary --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+$(TESTDIR)/%.gif: %.gif
+	devput.pl --binary --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
+	cp $< $@
+
+
+$(TESTDIR)/%.png: %.png
+	devput.pl --binary --hostname $(testserver) -r $< -l $< -d $(TESTFTPDIR)
 	cp $< $@
 
 

@@ -50,21 +50,15 @@ Namespace Rasputin
 			end try
 		end sub 
 
-		public function GetErrors() as dataset
-			dim res as new dataset()
+		public function GetErrors() as DataTable
+			dim res as new DataTable()
 			try
 			using con as new SQLConnection(myconnstring)
 				con.open()
 
 				dim sql as string
 				dim cmd as SQLCommand
-				dim dr as SQLDataReader
 				dim oda as SQLDataAdapter
-				dim parm1 as SQLParameter
-				
-				dim ds as dataset
-				dim drow as datarow
-				dim dt as datatable
 				
 				sql = "select top 50 * from fb_journal_entries where journal_type='FOOTBALL' order by entry_tsp desc"
 				cmd = new SQLCommand(sql,con)
@@ -73,7 +67,8 @@ Namespace Rasputin
 				oda.Fill(res)
 			end using
 			catch ex as exception
-				makesystemlog("error in geterrors", ex.tostring())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 
 			return res
@@ -835,6 +830,20 @@ Namespace Rasputin
 			return res
 		end function
 
+		public function cmd_to_arraylist (cmd as SqlCommand) as System.Collections.Arraylist
+			dim res as new System.Collections.Arraylist()
+			try
+				dim da as new SQLDataAdapter()
+				dim ds as new DataSet()
+				da.SelectCommand = cmd
+				da.fill(ds)	
+				res = ds_to_arraylist(ds)
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
 		public function ds_to_arraylist (ds as dataset) as System.Collections.Arraylist
 			dim res as new System.Collections.Arraylist()
 			try
@@ -1209,7 +1218,7 @@ Namespace Rasputin
 					
 					sb.append("You will need an account with this site (and be logged in) to accept the invitation.  If you don't have an account you should get one <a href=""http://www.smackpools.com/football/register.aspx"">here</a> first.<br /><br />" & system.environment.newline)
 
-					sb.append("Note: If you already have an account on rasputin.dnsalias.com, you can user your username and password from that site.<br /><br />" & system.environment.newline)
+					sb.append("Note: If you already have an account on rasputin.dnsalias.com, you can use your username and password from that site.<br /><br />" & system.environment.newline)
 					
 					sb.append ("Thanks,<br />" & system.environment.newline & "Chris<br><br>" & system.environment.newline)
 					
@@ -4917,6 +4926,31 @@ Namespace Rasputin
 			return res
 		end function
 
+		public function SendMessage(to_user as string, from_user as string, subject as string, body as string) as string
+			dim res as string = ""
+			try
+				using con as new SQLConnection(myconnstring)
+					con.open()
+					dim cmd as SQLCommand
+					dim sql as string
+						
+					sql = "insert into fb_messages (to_user, from_user, subject, body) values (@to_user, @from_user, @subject, @body)"
+					cmd = new SQLCommand(sql,con)
+						
+					cmd.parameters.add(GetParm("to_user")).value = to_user
+					cmd.parameters.add(GetParm("from_user")).value = from_user
+					cmd.parameters.add(GetParm("subject")).value = subject
+					cmd.parameters.add(GetParm("body")).value = body
+					cmd.executenonquery()
+					res = "Message was sent."
+				end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
 		public function sendmessage(email as string, msg as string, username as string) as string
 			dim res as string = ""
 			try
@@ -5142,7 +5176,8 @@ Namespace Rasputin
 			end using
 			catch ex as exception
 				res = ex.message
-				makesystemlog("error in ChangeAvatar", ex.toString())
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
 		end function
@@ -5159,8 +5194,61 @@ Namespace Rasputin
 					return new SQLParameter("@pool_owner",  SQLDbType.VarChar, 50)
 				case "email"
 					return new SQLParameter("@email",  SQLDbType.VarChar, 255)
+				case else
+					return new SQLParameter("@" & t,  SQLDbType.VarChar)
 			end select
 		end function
+
+		Public function GetMessagesFor(username as string) as ArrayList
+			dim res as new ArrayList()
+			try
+			using con as new SQLConnection(myconnstring)
+				con.open()
+				dim sql as string = "select * from fb_messages where to_user = @username order by created_at desc"
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
+				cmd.parameters.add(GetParm("username")).value = username
+				res = cmd_to_arraylist(cmd) 
+			end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
+		Public function GetMessage(id as integer) as Hashtable
+			dim res as new Hashtable()
+			try
+			using con as new SQLConnection(myconnstring)
+				con.open()
+				dim sql as string = "select * from fb_messages where id = @id"
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
+				cmd.parameters.add(GetParm("id")).value = id
+				res = cmd_to_arraylist(cmd)(0)
+			end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
+		Public sub DeleteMessage(id as integer, username as string)
+			try
+			using con as new SQLConnection(myconnstring)
+				con.open()
+				dim sql as string = "delete from fb_messages where id = @id and to_user = @username"
+				dim cmd as SQLCommand = new SQLCommand(sql, con)
+				cmd.parameters.add(GetParm("id")).value = id
+				cmd.parameters.add(GetParm("username")).value = username
+				cmd.executenonquery()
+			end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+		end sub
+
 	end Class
 
 

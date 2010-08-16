@@ -39,7 +39,7 @@ private void insertLogReport(String logtext){
 		DateTime rightnow = new DateTime();
 		rightnow = DateTime.Now;
 		
-		String connstring = "server=mssql01.1and1.com; initial catalog=db108114264;uid=dbo108114264;pwd=j7aQMZbs";
+		String connstring = System.Configuration.ConfigurationSettings.AppSettings["connstring"];
 		
 		cn = new SqlConnection(connstring);
 		cn.Open();
@@ -62,204 +62,11 @@ private void insertLogReport(String logtext){
 	}
 }
 
-private void processxmlinventorystream(System.IO.Stream xmlstream) {
-	try {
-	
-		// Create the validating reader and specify DTD validation.
-		XmlTextReader txtReader = new XmlTextReader(xmlstream);
-		XmlValidatingReader reader = new XmlValidatingReader(txtReader);
-		reader.ValidationType = ValidationType.DTD;
-		
-		// Pass the validating reader to the XML document.
-		// Validation fails due to an undefined attribute, but the 
-		// data is still loaded into the document.
-		XmlDocument doc = new XmlDocument();
-		doc.Load(reader);
-		XmlNode root = doc.FirstChild;
-		System.Xml.XmlNodeList elemlist;
-		
-		SqlConnection con;
-		SqlCommand cmd;
-		SqlDataReader dr;
-		SqlConnection con2;
-		SqlCommand cmd2;
-		SqlParameter parm1;
-		String sql;
-		String connstring = "server=mssql01.1and1.com; initial catalog=db108114264;uid=dbo108114264;pwd=j7aQMZbs";
-		
-		String isbn;
-		Double units;
-		String unit_cost;
-		String item_qty;
-		
-		con = new SqlConnection(connstring);
-		con.Open();
-		cmd = new SqlCommand();
-		cmd.Connection = con;
-		cmd.CommandText = "create table master_inventory (item_number varchar(255), description varchar(255), units float , uncost float , price1 float , isbn varchar(255), avail_flag char(1), uncost_flag char(1), insert_flag char(1), expect_date datetime, mod_date datetime)";
-		
-		try {
-			cmd.ExecuteNonQuery();
-		} catch (Exception ex) {
-				//Response.Write(ex.ToString());
-		}
-		con.Close();
-		
-		con = new SqlConnection(connstring);
-		con.Open();
-		cmd = new SqlCommand();
-		cmd.Connection = con;
-		cmd.CommandText = "update master_inventory set avail_flag='N', uncost_flag='N', insert_flag='N'";
-		
-		try {
-			cmd.ExecuteNonQuery();
-		} catch (Exception ex) {
-				//Response.Write(ex.ToString());
-		}
-		con.Close();
-		
-		if (root["inventoryControlDetail"]["inventoryControlType"].InnerText == "FULL") {
-			
-			con = new SqlConnection(connstring);
-			con.Open();
-			cmd = new SqlCommand();
-			cmd.Connection = con;
-			cmd.CommandText = "delete from master_inventory";
-			
-			try {
-				cmd.ExecuteNonQuery();
-			} catch (Exception ex) {
-				//Response.Write(ex.ToString());
-				
-			}
-			con.Close();
-			
-		}		
-		
-		int rowsaffected = 0;
-		
-		elemlist = doc.GetElementsByTagName("inventoryItemData");
-		
-		if (root["inventoryControlDetail"]["inventoryControlType"].InnerText == "FULL") {
-			mailLogReport("Received full inventory feed, ItemCount: " + elemlist.Count);
-		}
-		for (int i=0; i< elemlist.Count; i++) {
-							
-			con = new SqlConnection(connstring);
-			con.Open();
-			
-			cmd = new SqlCommand();
-			cmd.Connection = con;
-			
-			//Updating the units field with the new inventory quantity.
-			cmd.CommandText = "update master_inventory set avail_flag='Y', units=@units, expect_date=@expect_date, mod_date=@mod_date where item_number=@item_number";
-			
-			parm1 = new SqlParameter("@units",System.Data.SqlDbType.Float);
-			parm1.Value = System.Convert.ToDouble(elemlist[i]["availabilityDetail"]["itemQuantity"]["quantity"].InnerText);
-			cmd.Parameters.Add(parm1);	
-			
-			parm1 = new SqlParameter("@expect_date",System.Data.SqlDbType.DateTime);
-			parm1.Value = System.Convert.ToDateTime(elemlist[i]["availabilityDetail"]["expectedDate"].InnerText);
-			cmd.Parameters.Add(parm1);	
-				
-			parm1 = new SqlParameter("@mod_date",System.Data.SqlDbType.DateTime);
-			parm1.Value = DateTime.Now;
-			cmd.Parameters.Add(parm1);		
-			
-			parm1 = new SqlParameter("@item_number",System.Data.SqlDbType.VarChar, 50);
-			parm1.Value = elemlist[i]["itemID"].InnerText;
-			cmd.Parameters.Add(parm1);
-			rowsaffected = 0;
-			try {
-				rowsaffected = cmd.ExecuteNonQuery();
-			} catch (Exception e) {
-				//Response.Write(e.ToString());
-				mailLogReport(e.ToString());
-				
-			}
-			if (rowsaffected == 0) {
-				
-				cmd = new SqlCommand();
-				cmd.Connection = con;
-				
-				//Inserting this record
-
-				cmd.CommandText = "insert into master_inventory (item_number, units, uncost, avail_flag, uncost_flag, insert_flag,expect_date,mod_date) values (@item_number, @units, @uncost,'Y','Y','Y',@expect_date,@mod_date)";
-
-				
-				parm1 = new SqlParameter("@item_number",System.Data.SqlDbType.VarChar, 50);
-				parm1.Value = elemlist[i]["itemID"].InnerText;
-				cmd.Parameters.Add(parm1);
-				
-				parm1 = new SqlParameter("@units",System.Data.SqlDbType.Float);
-				parm1.Value = System.Convert.ToDouble(elemlist[i]["availabilityDetail"]["itemQuantity"]["quantity"].InnerText);
-				cmd.Parameters.Add(parm1);		
-				
-				parm1 = new SqlParameter("@uncost",System.Data.SqlDbType.Float);
-				parm1.Value = System.Convert.ToDouble(elemlist[i]["availabilityDetail"]["unitCost"].InnerText);
-				cmd.Parameters.Add(parm1);	
-				
-				parm1 = new SqlParameter("@expect_date",System.Data.SqlDbType.DateTime);
-				parm1.Value = System.Convert.ToDateTime(elemlist[i]["availabilityDetail"]["expectedDate"].InnerText);
-				cmd.Parameters.Add(parm1);	
-					
-				parm1 = new SqlParameter("@mod_date",System.Data.SqlDbType.DateTime);
-				parm1.Value = DateTime.Now;
-				cmd.Parameters.Add(parm1);	
-				
-				try {
-					cmd.ExecuteNonQuery();
-				} catch (Exception e) {
-					//Response.Write(e.ToString());
-					mailLogReport(e.ToString());
-				}
-
-			}
-			
-				
-				//Updating the uncost field with the new unit cost.
-				cmd = new SqlCommand();
-				cmd.Connection = con;
-				
-				//Inserting this record
-				cmd.CommandText = "update master_inventory set uncost_flag='Y', uncost=@uncost where item_number=@item_number and uncost <> @uncost2";
-
-				
-				parm1 = new SqlParameter("@uncost",System.Data.SqlDbType.Float);
-				parm1.Value = System.Convert.ToDouble(elemlist[i]["availabilityDetail"]["unitCost"].InnerText);
-				cmd.Parameters.Add(parm1);	
-				
-				parm1 = new SqlParameter("@item_number",System.Data.SqlDbType.VarChar, 50);
-				parm1.Value = elemlist[i]["itemID"].InnerText;
-				cmd.Parameters.Add(parm1);
-				
-				parm1 = new SqlParameter("@uncost2",System.Data.SqlDbType.Float);
-				parm1.Value = System.Convert.ToDouble(elemlist[i]["availabilityDetail"]["unitCost"].InnerText);
-				cmd.Parameters.Add(parm1);	
-					
-					
-				try {
-					cmd.ExecuteNonQuery();
-				} catch (Exception e) {
-					//Response.Write(e.ToString());
-					mailLogReport(e.ToString());
-				}
-				
-				con.Close();
-				
-		}
-	    	Response.StatusCode  = 200;
-			
-	} catch (Exception ex) {
-				//Response.Write(ex.ToString());
-		Response.StatusCode  = 800;
-		mailLogReport(ex.ToString());
-	}
-}
 	  	
 private void processPool(String p_file) {
 	try {
 	
+		Response.Write ("Processing " + p_file + "<BR>");
 		// Create the validating reader and specify DTD validation.
 
 		XmlTextReader txtReader = new XmlTextReader(HttpContext.Current.Request.MapPath(p_file));
@@ -281,7 +88,7 @@ private void processPool(String p_file) {
 		SqlCommand cmd2;
 		SqlParameter parm1;
 		String sql;
-		String connstring = "server=mssql01.1and1.com; initial catalog=db108114264;uid=dbo108114264;pwd=j7aQMZbs";
+		String connstring = System.Configuration.ConfigurationSettings.AppSettings["connstring"];
 		
 		String isbn;
 		Double units;
@@ -294,6 +101,7 @@ private void processPool(String p_file) {
 		{
 			con.Open();
 			
+			Response.Write ("Found " + elemlist.Count + " pools to insert.<br>");	
 			for (int i=0; i< elemlist.Count; i++) {
 								
 				cmd = new SqlCommand();
@@ -326,6 +134,41 @@ private void processPool(String p_file) {
 
 				pool_id = (Int32) cmd.ExecuteScalar();
 				ht.Add("POOL_ID", pool_id);
+			}
+
+			elemlist = doc.GetElementsByTagName("Table");
+			Response.Write ("Found " + elemlist.Count + " users to insert.<br>");	
+			for (int i=0; i< elemlist.Count; i++) {
+								
+				cmd = new SqlCommand();
+				cmd.Connection = con;
+				sql = "insert into fb_users (username, password, email, login_count, last_seen, validated, created_at) values (";
+				sql = sql + "@username,";
+				sql = sql + "@password,";
+				sql = sql + "@email,";
+				sql = sql + "@login_count,";
+				sql = sql + "@last_seen,";
+				sql = sql + "@validated,";
+				sql = sql + "@created_at";
+				sql = sql + ")";
+
+				cmd.CommandText = sql;
+				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["username"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@password",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["password"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@email",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["email"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@login_count",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["login_count"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@last_seen",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["last_seen"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@validated",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["validated"].InnerText ;
+				cmd.Parameters.Add(new SqlParameter("@created_at",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["created_at"].InnerText ;
+
+				try 
+				{
+					cmd.ExecuteNonQuery();
+					Response.Write ("inserted  " + elemlist[i]["username"].InnerText + "<br>");	
+				} catch (Exception ex) {
+					Response.Write ("failed to insert  " + elemlist[i]["username"].InnerText + "<br>");	
+					insertLogReport ("failed to insert " + elemlist[i]["username"].InnerText + "<br>" + ex.ToString());
+				}
 			}
 
 			elemlist = doc.GetElementsByTagName("FASTKEY_ROW");
@@ -738,58 +581,60 @@ private void processPool(String p_file) {
 				ht.Add("NEW_COMMENT_ID:" + comment_id,  elemlist[i]["COMMENT_ID"].InnerText);
 			}
 
-//			elemlist = doc.GetElementsByTagName("USER_ROW");
-//			for (int i=0; i< elemlist.Count; i++) {
-//								
-//				cmd = new SqlCommand();
-//				cmd.Connection = con;
-//				
-//				sql = "insert into fb_users (password, username, created_at, email, last_seen, login_count, validated) values (' ',";
-//				sql = sql + "@username,";
-//				sql = sql + "@created_at,";
-//				sql = sql + "@email,";
-//				sql = sql + "@last_seen,";
-//				sql = sql + "@login_count,";
-//				sql = sql + "@validated";
-//				sql = sql + ")";
-//
-//				cmd.CommandText = sql;
-//				cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText ;
-//				cmd.Parameters.Add(new SqlParameter("@created_at",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["CREATED_AT"].InnerText.Substring(0,19) ;
-//				cmd.Parameters.Add(new SqlParameter("@last_seen",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["LAST_SEEN"].InnerText.Substring(0,19) ;
-//				cmd.Parameters.Add(new SqlParameter("@email",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["EMAIL"].InnerText ;
-//				cmd.Parameters.Add(new SqlParameter("@login_count",System.Data.SqlDbType.Int)).Value = elemlist[i]["LOGIN_COUNT"].InnerText;
-//				cmd.Parameters.Add(new SqlParameter("@validated",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["VALIDATED"].InnerText ;
-//
-//
-//				cmd.ExecuteNonQuery();
-//			}
+			//elemlist = doc.GetElementsByTagName("USER_ROW");
+			//for (int i=0; i< elemlist.Count; i++) {
+			//					
+			//	cmd = new SqlCommand();
+			//	cmd.Connection = con;
+			//	
+			//	sql = "insert into fb_users (password, username, created_at, email, last_seen, login_count, validated) values (' ',";
+			//	sql = sql + "@username,";
+			//	sql = sql + "@created_at,";
+			//	sql = sql + "@email,";
+			//	sql = sql + "@last_seen,";
+			//	sql = sql + "@login_count,";
+			//	sql = sql + "@validated";
+			//	sql = sql + ")";
 
-//			elemlist = doc.GetElementsByTagName("COPY_TEAM_ROW");
-//			for (int i=0; i< elemlist.Count; i++) {
-//								
-//				cmd = new SqlCommand();
-//				cmd.Connection = con;
-//				
-//				sql = "insert into fb_copy_teams (division, team_name, team_shortname) values (";
-//				sql = sql + "@division,";
-//				sql = sql + "@team_name,";
-//				sql = sql + "@team_shortname";
-//				sql = sql + ")";
-//
-//				cmd.CommandText = sql;
-//				cmd.Parameters.Add(new SqlParameter("@division",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["DIVISION"].InnerText ;
-//				cmd.Parameters.Add(new SqlParameter("@team_name",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TEAM_NAME"].InnerText ;
-//				cmd.Parameters.Add(new SqlParameter("@team_shortname",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TEAM_SHORTNAME"].InnerText ;
-//
-//				cmd.ExecuteNonQuery();
-//			}
+			//	cmd.CommandText = sql;
+			//	cmd.Parameters.Add(new SqlParameter("@username",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["USERNAME"].InnerText ;
+			//	cmd.Parameters.Add(new SqlParameter("@created_at",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["CREATED_AT"].InnerText.Substring(0,19) ;
+			//	cmd.Parameters.Add(new SqlParameter("@last_seen",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["LAST_SEEN"].InnerText.Substring(0,19) ;
+			//	cmd.Parameters.Add(new SqlParameter("@email",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["EMAIL"].InnerText ;
+			//	cmd.Parameters.Add(new SqlParameter("@login_count",System.Data.SqlDbType.Int)).Value = elemlist[i]["LOGIN_COUNT"].InnerText;
+			//	cmd.Parameters.Add(new SqlParameter("@validated",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["VALIDATED"].InnerText ;
+
+
+			//	cmd.ExecuteNonQuery();
+			//}
+
+			//elemlist = doc.GetElementsByTagName("COPY_TEAM_ROW");
+			//for (int i=0; i< elemlist.Count; i++) {
+			//					
+			//	cmd = new SqlCommand();
+			//	cmd.Connection = con;
+			//	
+			//	sql = "insert into fb_copy_teams (division, team_name, team_shortname) values (";
+			//	sql = sql + "@division,";
+			//	sql = sql + "@team_name,";
+			//	sql = sql + "@team_shortname";
+			//	sql = sql + ")";
+
+			//	cmd.CommandText = sql;
+			//	cmd.Parameters.Add(new SqlParameter("@division",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["DIVISION"].InnerText ;
+			//	cmd.Parameters.Add(new SqlParameter("@team_name",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TEAM_NAME"].InnerText ;
+			//	cmd.Parameters.Add(new SqlParameter("@team_shortname",System.Data.SqlDbType.VarChar)).Value = elemlist[i]["TEAM_SHORTNAME"].InnerText ;
+
+			//	cmd.ExecuteNonQuery();
+			//}
+
 
 		}
 
-	    Response.StatusCode  = 200;
+
 			
 	} catch (Exception ex) {
+		insertLogReport(ex.ToString());
 		Response.StatusCode  = 800;
 		insertLogReport(ex.ToString());
 	}
@@ -799,7 +644,8 @@ private void processPool(String p_file) {
 <%
 //processPool("pool.1000.xml");
 //processPool("pool.200.xml");
-//processPool("pool.435.xml");
+//processPool("pool.900.xml");
+//processPool("fb_users2.xml");
 
 //processxmlinventorystream(Request.InputStream);
 
