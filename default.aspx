@@ -338,18 +338,40 @@
 	{
 		color: #FFFF66;
 	}
-.pool_links a{
-display: block;
-background: silver;
-height: 25px;
-border: 1px solid;
-color: black;
-text-decoration: none;
-text-align: center;
-width:100px;
-line-height: 25px;
+.navcontainer ul
+{
+margin: 0;
+padding: 0;
+list-style-type: none;
 }
-.pool_links a:hover {background:#000; color:#fff;}
+
+.navcontainer ul li { display: inline; }
+
+.navcontainer ul li a
+{
+text-decoration: none;
+padding: .2em 1em;
+color: #fff;
+background-color: #036;
+}
+
+.navcontainer ul li a:hover
+{
+color: #fff;
+background-color: #369;
+}
+.pool_header {
+font-size: 2em;
+padding: 3px;
+}
+.pool_header a{
+text-decoration: none;
+}
+
+.pool { 
+background-color: silver;
+padding: 3px;
+}
 </style>
 </head>
 
@@ -407,12 +429,13 @@ line-height: 25px;
 					end if
 
 					%>
+					<div class="pool">
 					<div class="pool_header">
 					<a href="?pool_id=<% = drow("pool_id") %>" title="<% = pooldesc %>"><% = drow("pool_name") %></a> created by <% = drow("pool_owner") %> on <% = drow("pool_tsp") %>
 					</div>
-					<div class="horizontalcssmenu">
-					<ul id="cssmenu<% = poolcounter %>">	
-					<li style="border-left: 1px solid #202020;"><a href="showsched.aspx?pool_id=<% = p_id %>">Games</a></li>
+					<div class="navcontainer">
+					<ul>	
+					<li><a href="showsched.aspx?pool_id=<% = p_id %>">Games</a></li>
 					<li><a href="makepicks.aspx?pool_id=<% = p_id %>">Make&nbsp;Picks</a></li>
 					<li><a href="showpicks.aspx?pool_id=<% = p_id %>">Show&nbsp;Picks</a></li>
 					<li><a href="standings.aspx?pool_id=<% = p_id %>">Standings</a></li>
@@ -420,51 +443,16 @@ line-height: 25px;
 					<%
 					if fb.isowner(pool_id:=p_id, pool_owner:=myname) then
 						%>
-						<li><a href="#">Admin</a>
-						<ul>
-						<a class="admin" href="adminpool.aspx?pool_id=<% =  p_id %>">Admin</a>
-						<a class="admin" href="scoregames.aspx?pool_id=<% = p_id %>">Scores</a>
-						<a class="admin" href="sendnotice.aspx?pool_id=<% = p_id %>">Send Notices</a>
-						</ul>
-						</li>
+						<li><a class="admin" href="adminpool.aspx?pool_id=<% =  p_id %>">Admin</a></li>
+						<li><a class="admin" href="scoregames.aspx?pool_id=<% = p_id %>">Scores</a></li>
+						<li><a class="admin" href="sendnotice.aspx?pool_id=<% = p_id %>">Send Notices</a></li>
 						<%
 					end if
 					%>
 					</ul>
-					<br style="clear; left;" />
 					</div>
-					<%
-				next
-				for each drow as datarow in temppoolrows
-					dim pooldesc as string = ""
-					if not drow("pool_desc") is dbnull.value then
-						pooldesc = drow("pool_desc")
-					end if
-				%>
-					<table class="pool_table" cellspacing="0">
-					<tr><td colspan="2" class="pool_name"><a href="?pool_id=<% = drow("pool_id") %>"><% = drow("pool_name") %></a></td></tr>
-					<tr><td colspan="2" class="pool_owner">Administrator: <% = drow("pool_owner") %></td></tr>
-					<tr>
-					<td class="pool_desc" ><% = fb.bbencode(pooldesc) %></td>
-					<td class="actions_column"><a href="showsched.aspx?pool_id=<% = drow("pool_id") %>">Schedule</a>
-					<a href="makepicks.aspx?pool_id=<% = drow("pool_id") %>">Make&nbsp;Picks</a>
-					<a href="showpicks.aspx?pool_id=<% = drow("pool_id") %>">Show&nbsp;Picks</a>
-					<a href="standings.aspx?pool_id=<% = drow("pool_id") %>">Standings</a>
-					<a href="nickname.aspx?pool_id=<% = drow("pool_id") %>">Change&nbsp;Nickname</a>
-					<a href="showthreads.aspx?pool_id=<% = drow("pool_id") %>">Trash&nbsp;Talk</a><%
-
-					if fb.isowner(pool_id:=drow("pool_id"), pool_owner:=myname) then
-						%>
-						<br />
-						<a href="adminpool.aspx?pool_id=<% = drow("pool_id") %>">Admin</a>
-						<a href="scoregames.aspx?pool_id=<% = drow("pool_id") %>">Scores</a>
-						<a href="sendnotice.aspx?pool_id=<% = drow("pool_id") %>">Send Notices</a>
-						<%
-					end if
-					%>
-					</td>
-					</tr></table>
-					<br />
+					</div>
+					<br>
 					<%
 				next
 			elseif mypools.tables(0).rows.count = 1 or pool_id_found then
