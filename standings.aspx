@@ -16,8 +16,6 @@
 server.execute("/football/cookiecheck.aspx")
 
 dim fb as new Rasputin.FootballUtility()
-fb.initialize()
-
 dim myname as string = ""
 try
 	if session("username") <> "" then
@@ -83,10 +81,8 @@ else
 	standings_ds = fb.getstandings(pool_id:=pool_id)
 end if
 
-
 dim pool_details_ds as new dataset()
 pool_details_ds = fb.getpooldetails(pool_id:= pool_id)
-
 
 dim banner_image as string = fb.getbannerimage(pool_id)
 
@@ -126,7 +122,7 @@ end if
 <html>
 <head>
 	<title>Pool Standings - <% = http_host %> - [<% = myname %>]</title>
-	<style type="text/css" media="screen">@import "/football/style4.css";</style>
+	<style type="text/css" media="all">@import "/football/css/cssplay4.css";</style>
 	<style type="text/css">
 	.winner {
 		background-color: #00FF00;
@@ -204,8 +200,13 @@ end if
 </head>
 
 <body>
-
-	<div class="content">
+	<div id="head">
+	<img src="/football/images/smackpools_header.png" alt="WWW.SMACKPOOLS.COM">
+	</div>
+	<div id="foot">
+		Copyright Smackpools.com
+	</div>
+	<div id="content">
 		<%
 			if banner_image = "" then
 				%><h1><% = pool_name %></h1><%
@@ -429,10 +430,8 @@ end if
 		</script>
 	</div>
 
-<div id="NavAlpha">
+<div id="left">
 <% server.execute ("nav.aspx") %>
 </div>
-
-<!-- BlueRobot was here. -->
 </body>
 </html>

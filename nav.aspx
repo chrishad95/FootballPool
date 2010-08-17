@@ -43,6 +43,7 @@ end try
 <dt><% = link_to("/football", "Home") %></dt>
 <% if myname <> "" then %>
 <dt><% = link_to("/football/logout.aspx", "Signout") %></dt>
+<dt><% = link_to("/football/profile.aspx", "Profile") %></dt>
 <dt><% = link_to("/football/messages", "Messages") %></dt>
 <% else %>
 <dt><% = link_to("/football/login.aspx", "Signin") %></dt>
@@ -63,7 +64,6 @@ try
 		<dt><a class="nav" href="/football/sendinvite.aspx?pool_id=<% = pool_id %>">Send&nbsp;Invite</a></dt>
 		<dt><a class="nav" href="/football/nickname.aspx?pool_id=<% = pool_id %>">Change&nbsp;Nickname</a></dt>
 		<dt><a class="nav" href="/football/showthreads.aspx?pool_id=<% = pool_id %>">Trash&nbsp;Talk</a></dt>
-		<dt><a class="nav" href="/football/pickavatar.aspx?pool_id=<% = pool_id %>">Avatar</a></dt>
 		<dt><a class="nav" href="/football/stats.aspx?pool_id=<% = pool_id %>">Statistics</a></dt>
 		<%
 	end if

@@ -53,6 +53,20 @@
 <head>
 <title><% = http_host %></title>
 <style type="text/css" media="all">@import "/football/css/cssplay4.css";</style>
+<link rel="stylesheet" type="text/css" href="/football/css/csshorizontalmenu.css" />
+<script type="text/javascript" src="/football/js/csshorizontalmenu.js">
+
+/***********************************************
+
+* CSS Horizontal List Menu- by JavaScript Kit (www.javascriptkit.com)
+* Menu interface credits: http://www.dynamicdrive.com/style/csslibrary/item/glossy-vertical-menu/ 
+* This notice must stay intact for usage
+* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and 100s more
+
+***********************************************/
+
+</script>
+
 <style>
 
 	caption {
@@ -324,7 +338,7 @@
 	{
 		color: #FFFF66;
 	}
-a.pool_links {
+.pool_links a{
 display: block;
 background: silver;
 height: 25px;
@@ -335,7 +349,7 @@ text-align: center;
 width:100px;
 line-height: 25px;
 }
-a.pool_links:hover {background:#000; color:#fff;}
+.pool_links a:hover {background:#000; color:#fff;}
 </style>
 </head>
 
@@ -383,8 +397,9 @@ a.pool_links:hover {background:#000; color:#fff;}
 				<%
 				dim temppoolrows as datarow()
 				temppoolrows = mypools.tables(0).select("1=1", "pool_tsp desc")
-
+				dim poolcounter as integer = 0
 				for each drow as datarow in temppoolrows
+					poolcounter = poolcounter + 1
 					dim pooldesc as string = ""
 					dim p_id as integer = drow("pool_id")
 					if not drow("pool_desc") is dbnull.value then
@@ -395,22 +410,28 @@ a.pool_links:hover {background:#000; color:#fff;}
 					<div class="pool_header">
 					<a href="?pool_id=<% = drow("pool_id") %>" title="<% = pooldesc %>"><% = drow("pool_name") %></a> created by <% = drow("pool_owner") %> on <% = drow("pool_tsp") %>
 					</div>
-					<div class="pool_links">
-					<a href="showsched.aspx?pool_id=<% = p_id %>">Schedule</a>
-					<a href="makepicks.aspx?pool_id=<% = p_id %>">Make&nbsp;Picks</a>
-					<a href="showpicks.aspx?pool_id=<% = p_id %>">Show&nbsp;Picks</a>
-					<a href="standings.aspx?pool_id=<% = p_id %>">Standings</a>
-					<a href="nickname.aspx?pool_id=<% =  p_id %>">Change&nbsp;Nickname</a>
-					<a href="showthreads.aspx?pool_id=<% = p_id %>">Trash&nbsp;Talk</a>
+					<div class="horizontalcssmenu">
+					<ul id="cssmenu<% = poolcounter %>">	
+					<li style="border-left: 1px solid #202020;"><a href="showsched.aspx?pool_id=<% = p_id %>">Games</a></li>
+					<li><a href="makepicks.aspx?pool_id=<% = p_id %>">Make&nbsp;Picks</a></li>
+					<li><a href="showpicks.aspx?pool_id=<% = p_id %>">Show&nbsp;Picks</a></li>
+					<li><a href="standings.aspx?pool_id=<% = p_id %>">Standings</a></li>
+					<li><a href="showthreads.aspx?pool_id=<% = p_id %>">Trash&nbsp;Talk</a></li>
 					<%
 					if fb.isowner(pool_id:=p_id, pool_owner:=myname) then
 						%>
+						<li><a href="#">Admin</a>
+						<ul>
 						<a class="admin" href="adminpool.aspx?pool_id=<% =  p_id %>">Admin</a>
 						<a class="admin" href="scoregames.aspx?pool_id=<% = p_id %>">Scores</a>
 						<a class="admin" href="sendnotice.aspx?pool_id=<% = p_id %>">Send Notices</a>
+						</ul>
+						</li>
 						<%
 					end if
 					%>
+					</ul>
+					<br style="clear; left;" />
 					</div>
 					<%
 				next
