@@ -52,21 +52,7 @@
 <html>
 <head>
 <title><% = http_host %></title>
-<style type="text/css" media="all">@import "/football/css/cssplay4.css";</style>
-<link rel="stylesheet" type="text/css" href="/football/css/csshorizontalmenu.css" />
-<script type="text/javascript" src="/football/js/csshorizontalmenu.js">
-
-/***********************************************
-
-* CSS Horizontal List Menu- by JavaScript Kit (www.javascriptkit.com)
-* Menu interface credits: http://www.dynamicdrive.com/style/csslibrary/item/glossy-vertical-menu/ 
-* This notice must stay intact for usage
-* Visit JavaScript Kit at http://www.javascriptkit.com/ for this script and 100s more
-
-***********************************************/
-
-</script>
-
+<style type="text/css" media="all">@import "/football/style4.css";</style>
 <style>
 
 	caption {
@@ -338,51 +324,13 @@
 	{
 		color: #FFFF66;
 	}
-.navcontainer ul
-{
-margin: 0;
-padding: 0;
-list-style-type: none;
-}
 
-.navcontainer ul li { display: inline; }
-
-.navcontainer ul li a
-{
-text-decoration: none;
-padding: .2em 1em;
-color: #fff;
-background-color: #036;
-}
-
-.navcontainer ul li a:hover
-{
-color: #fff;
-background-color: #369;
-}
-.pool_header {
-font-size: 2em;
-padding: 3px;
-}
-.pool_header a{
-text-decoration: none;
-}
-
-.pool { 
-background-color: silver;
-padding: 3px;
-}
 </style>
 </head>
 
 <body>
 
-<div id="head">
-<img src="/football/images/smackpools_header.png" alt="WWW.SMACKPOOLS.COM">
-</div>
-<div id="foot">
-</div>
-<div id="content">
+<div class="content">
 	<%
 	try
 		if session("page_message") <> "" then
@@ -415,44 +363,42 @@ padding: 3px;
 
 			if not pool_id_found and mypools.tables(0).rows.count > 1  then
 				%>
+				<h1><% = http_host %></h1>
 				<h2>My Pools</h2>
 				<%
 				dim temppoolrows as datarow()
 				temppoolrows = mypools.tables(0).select("1=1", "pool_tsp desc")
-				dim poolcounter as integer = 0
+
 				for each drow as datarow in temppoolrows
-					poolcounter = poolcounter + 1
 					dim pooldesc as string = ""
-					dim p_id as integer = drow("pool_id")
 					if not drow("pool_desc") is dbnull.value then
 						pooldesc = drow("pool_desc")
 					end if
 
 					%>
-					<div class="pool">
-					<div class="pool_header">
-					<a href="?pool_id=<% = drow("pool_id") %>" title="<% = pooldesc %>"><% = drow("pool_name") %></a> created by <% = drow("pool_owner") %> on <% = drow("pool_tsp") %>
-					</div>
-					<div class="navcontainer">
-					<ul>	
-					<li><a href="showsched.aspx?pool_id=<% = p_id %>">Games</a></li>
-					<li><a href="makepicks.aspx?pool_id=<% = p_id %>">Make&nbsp;Picks</a></li>
-					<li><a href="showpicks.aspx?pool_id=<% = p_id %>">Show&nbsp;Picks</a></li>
-					<li><a href="standings.aspx?pool_id=<% = p_id %>">Standings</a></li>
-					<li><a href="showthreads.aspx?pool_id=<% = p_id %>">Trash&nbsp;Talk</a></li>
-					<%
-					if fb.isowner(pool_id:=p_id, pool_owner:=myname) then
+					<table class="pool_table" cellspacing="0">
+					<tr><td colspan="2" class="pool_name"><a href="?pool_id=<% = drow("pool_id") %>"><% = drow("pool_name") %></a></td></tr>
+					<tr><td colspan="2" class="pool_owner">Administrator: <% = drow("pool_owner") %></td></tr>
+					<tr>
+					<td class="pool_desc" ><% = fb.bbencode(pooldesc) %></td>
+					<td class="actions_column"><a href="showsched.aspx?pool_id=<% = drow("pool_id") %>">Schedule</a>
+					<a href="makepicks.aspx?pool_id=<% = drow("pool_id") %>">Make&nbsp;Picks</a>
+					<a href="showpicks.aspx?pool_id=<% = drow("pool_id") %>">Show&nbsp;Picks</a>
+					<a href="standings.aspx?pool_id=<% = drow("pool_id") %>">Standings</a>
+					<a href="nickname.aspx?pool_id=<% = drow("pool_id") %>">Change&nbsp;Nickname</a>
+					<a href="showthreads.aspx?pool_id=<% = drow("pool_id") %>">Trash&nbsp;Talk</a><%
+					if fb.isowner(pool_id:=drow("pool_id"), pool_owner:=myname) then
 						%>
-						<li><a class="admin" href="adminpool.aspx?pool_id=<% =  p_id %>">Admin</a></li>
-						<li><a class="admin" href="scoregames.aspx?pool_id=<% = p_id %>">Scores</a></li>
-						<li><a class="admin" href="sendnotice.aspx?pool_id=<% = p_id %>">Send Notices</a></li>
+						<br />
+						<a href="adminpool.aspx?pool_id=<% = drow("pool_id") %>">Admin</a>
+						<a href="scoregames.aspx?pool_id=<% = drow("pool_id") %>">Scores</a>
+						<a href="sendnotice.aspx?pool_id=<% = drow("pool_id") %>">Send Notices</a>
 						<%
 					end if
 					%>
-					</ul>
-					</div>
-					</div>
-					<br>
+					</td>
+					</tr></table>
+					<br />
 					<%
 				next
 			elseif mypools.tables(0).rows.count = 1 or pool_id_found then
@@ -677,10 +623,28 @@ padding: 3px;
 	%>
 </div>
 
-<div id="left">
+<div id="NavAlpha">
 <% 
 server.execute("nav.aspx")
 %>
+<br />
+<script type="text/javascript"><!--
+google_ad_client = "pub-8829998647639174";
+google_ad_width = 120;
+google_ad_height = 600;
+google_ad_format = "120x600_as";
+google_ad_type = "text_image";
+google_ad_channel = "";
+google_color_border = "FFFFFF";
+google_color_bg = "EEEEEE";
+google_color_link = "0000FF";
+google_color_text = "000000";
+google_color_url = "008000";
+//-->
+</script>
+<script type="text/javascript"
+  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+</script>
 </div>
 
 <!-- BlueRobot was here. -->

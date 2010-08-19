@@ -150,9 +150,9 @@ teams_ds = fb.getpoolteams(myname, pool_id)
 			border: 1px solid white;
 		}
 	</style>
-	<script type="text/javascript" src="/football/js/webtoolkit.scrollabletable.js"></script>
-	<script type="text/javascript" src="/football/js/jquery.js"></script>
-	<script type="text/javascript" src="/football/js/webtoolkit.jscrollable.js"></script>
+	<script type="text/javascript" src="js/webtoolkit.scrollabletable.js"></script>
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/webtoolkit.jscrollable.js"></script>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
 			jQuery('table').Scrollable(400, 800);
