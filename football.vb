@@ -79,8 +79,8 @@ Namespace Rasputin
 			return res
 		end function
 
-		public function authenticate(username as string, password as string) as string
-			dim res as string = ""
+		public function authenticate(username as string, password as string) as boolean
+			dim res as boolean = false
 			try
 			using con as new SQLConnection(myconnstring)
 				con.open()
@@ -93,22 +93,25 @@ Namespace Rasputin
 				dim valid_username as string = ""
 
 				' do not bother unless they are validated
-				sql = "select username, salt from fb_users where (upper(username) = @username or upper(email) = @username) and validated='Y'"
-				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(GetParm("username")).value = username.toupper()
+				sql = "select username, salt from fb_users where (upper(username) = @email or upper(email) = @email) and validated='Y'"
+				makesystemlog("debuggin authenticate", sql)
 
-				dim ds as new dataset()	
+				cmd = new SQLCommand(sql,con)
+				cmd.parameters.add(GetParm("email")).value = username.toupper()
+				makesystemlog("debuggin authenticate", cmd.parameters("@email").value )
+
+				dim dt as new datatable()	
 				dim da as new sqldataadapter()
 				da.selectcommand = cmd
-				da.fill(ds)
-				if ds.tables.count > 0 then
-					if ds.tables(0).rows.count > 0 then
-						if ds.tables(0).rows(0)("salt") is dbnull.value then
-						else
-							salt = ds.tables(0).rows(0)("salt")
-						end if
-						valid_username = ds.tables(0).rows(0)("username")
+				da.fill(dt)
+
+				makesystemlog("debug authenticate", dt.rows.count )
+				if dt.rows.count > 0 then
+					if dt.rows(0)("salt") is dbnull.value then
+					else
+						salt = dt.rows(0)("salt")
 					end if
+					valid_username = dt.rows(0)("username")
 				end if
 
 				sql = "select count(*) from fb_users where username=@username and password=@password and validated='Y'"
@@ -122,7 +125,7 @@ Namespace Rasputin
 				usercount = cmd.executescalar()
 				
 				if usercount > 0 then
-					res = valid_username
+					res = true
 					sql = "update fb_users set login_count=login_count + 1, last_seen = CURRENT_TIMESTAMP where username=@username"
 					
 					cmd = new SQLCommand(sql,con)
@@ -133,13 +136,13 @@ Namespace Rasputin
 					
 					cmd.executenonquery()
 				end if
+				makesystemlog("debug authenticate", "usercount:" & usercount & " valid_username:" & valid_username )
 			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
 			return res
-
 		end function
 
 		public function GetCommentsFeed(username as string) as dataset
@@ -2382,6 +2385,29 @@ Namespace Rasputin
 			end try
 
 
+			return res
+		end function
+
+		public function GetUsername(s  as string) as string
+			Dim res as String = ""
+			if s.contains("@") then
+				res = GetUsernameForEmail(s)
+			else
+				try
+				using con as new SQLConnection(myconnstring)
+					con.open()
+					dim sql as string = "select username from fb_users where UPPER(username)=@username"
+					dim cmd as SQLCommand = new SQLCommand(sql, con)
+
+					cmd.parameters.add(getParm("username")).value = s.toupper() 
+					res = cmd.executescalar()
+				end using
+				catch ex as exception
+					res = ""
+					dim st as new System.Diagnostics.StackTrace() 
+					makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+				end try
+			end if
 			return res
 		end function
 
@@ -4987,9 +5013,9 @@ Namespace Rasputin
 		public function Login(username as string, password as string) as string
 			dim res as string = ""
 			try
-			res = authenticate(username, password)
-			if res.toupper() = username.toUpper() then
-				return res
+			if authenticate(username, password) then
+				res = getusername(username)
+				makesystemlog("debuggin authenticate", "getusername returns: " & res)
 			else
 				' failed to authenticate with username and normal password, try temp password
 				using con as new SQLConnection(myconnstring)
@@ -5065,7 +5091,6 @@ Namespace Rasputin
 				end using
 			end if
 			catch ex as exception
-				res = ex.message
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
@@ -5160,6 +5185,8 @@ Namespace Rasputin
 					return new SQLParameter("@pool_owner",  SQLDbType.VarChar, 50)
 				case "email"
 					return new SQLParameter("@email",  SQLDbType.VarChar, 255)
+				case else
+					return new SQLParameter("@" & t,  SQLDbType.VarChar)
 			end select
 		end function
 	end Class

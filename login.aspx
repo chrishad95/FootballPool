@@ -43,7 +43,7 @@
 		dim res as string = ""
 		res = fb.login(username:=username, password:=password)
 
-		if res.toupper() = username.toupper() then
+		if res <> ""  then
 			if rememberlogin = "on" then
 				Dim MyCookie As New HttpCookie("username")
 				Dim now As DateTime = DateTime.Now
