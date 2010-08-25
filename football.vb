@@ -4686,6 +4686,7 @@ Namespace Rasputin
 
 					cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar, 50)).value = hashpassword(temppassword)
 					cmd.parameters.add(GetParm("username")).value = realUsername
+					cmd.executeNonQuery()
 
 						
 					dim sb as stringbuilder = new stringbuilder()
@@ -4696,7 +4697,7 @@ Namespace Rasputin
 					SendEmail(email, "Your password has been reset.",sb.tostring())		
 				end if
 				res = realUsername
-				makesystemlog("Password reset", "Input Username: " & username)
+				makesystemlog("Password reset", "Input Username: " & username & " Real Username:" & realUsername)
 			end using
 			catch ex as exception
 				res = "An error occurred.  The password may not have been reset."
