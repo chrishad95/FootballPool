@@ -167,7 +167,7 @@
 				<legend>Login</legend>
 				<table border="0" cellspacing="2" cellpadding="2">
 				<tr>
-					<td> Username:</td>
+					<td> Username or Email:</td>
 					<td><input type="text" name="username" id="username" value="<% = username %>"></td>
 				</tr>
 				<tr>
