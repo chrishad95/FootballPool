@@ -94,18 +94,15 @@ Namespace Rasputin
 
 				' do not bother unless they are validated
 				sql = "select username, salt from fb_users where (upper(username) = @email or upper(email) = @email) and validated='Y'"
-				makesystemlog("debuggin authenticate", sql)
 
 				cmd = new SQLCommand(sql,con)
 				cmd.parameters.add(GetParm("email")).value = username.toupper()
-				makesystemlog("debuggin authenticate", cmd.parameters("@email").value )
 
 				dim dt as new datatable()	
 				dim da as new sqldataadapter()
 				da.selectcommand = cmd
 				da.fill(dt)
 
-				makesystemlog("debug authenticate", dt.rows.count )
 				if dt.rows.count > 0 then
 					if dt.rows(0)("salt") is dbnull.value then
 					else
@@ -136,7 +133,6 @@ Namespace Rasputin
 					
 					cmd.executenonquery()
 				end if
-				makesystemlog("debug authenticate", "usercount:" & usercount & " valid_username:" & valid_username )
 			end using
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
@@ -5015,7 +5011,6 @@ Namespace Rasputin
 			try
 			if authenticate(username, password) then
 				res = getusername(username)
-				makesystemlog("debuggin authenticate", "getusername returns: " & res)
 			else
 				' failed to authenticate with username and normal password, try temp password
 				using con as new SQLConnection(myconnstring)
