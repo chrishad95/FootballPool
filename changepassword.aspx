@@ -1,44 +1,6 @@
-<%@ Page language="VB" runat="server" %>
+<%@ Page language="VB" src="/football/football.vb" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Threading" %>
-<%@ Import Namespace="System.Data.ODBC" %>
-<%@ Import Namespace="System.Web.Mail" %>
-<%@ Import Namespace="System.Security.Cryptography" %>
-<%@ Import Namespace="System.Text" %>
 <script runat="server" language="VB">
-
-	private sub MakeSystemLog (log_title as string, log_text as string)
-	
-		dim sql as string
-		dim cmd as odbccommand
-		dim con as odbcconnection
-		dim parm1 as odbcparameter
-		
-		sql = "insert into journal.entries (username,journal_type,entry_tsp,entry_date,entry_title,entry_text) values (?,?,current timestamp,date(current timestamp),?,?)"
-		
-		dim connstring as string
-		connstring = ConfigurationSettings.AppSettings("connString")
-		
-		con = new odbcconnection(connstring)
-		con.open()
-		cmd = new odbccommand(sql,con)
-	
-		parm1 = new odbcparameter("username", odbctype.varchar, 50)
-		parm1.value = "chadley"
-		cmd.parameters.add(parm1)
-		parm1 = new odbcparameter("journal_type", odbctype.varchar, 20)
-		parm1.value = "SYSTEM"
-		cmd.parameters.add(parm1)
-		parm1 = new odbcparameter("entry_title", odbctype.varchar, 200)
-		parm1.value = log_title
-		cmd.parameters.add(parm1)
-		parm1 = new odbcparameter("entry_text", odbctype.text, 32700)
-		parm1.value = log_text
-		cmd.parameters.add(parm1)
-		
-		cmd.executenonquery()
-	end sub
-	
 	private sub ChangePassword(sender as Object, e as EventArgs)
 	
 		dim username as string = ""
