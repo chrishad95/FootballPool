@@ -141,6 +141,40 @@ Namespace Rasputin
 			return res
 		end function
 
+		public function ChangePassword(username as string, password as string, newpassword as string) as boolean
+			dim res as boolean = false
+			try
+			using con as new SQLConnection(myconnstring)
+				con.open()
+		
+				dim cmd as SQLCommand
+				dim sql as string
+				
+				sql = "update fb_users set password=@newpassword where username = @username and password=@password "
+				
+				cmd = new SQLCommand(sql,con)
+				
+				cmd.parameters.add(GetParm("username")).value = username
+				cmd.parameters.add(GetParm("newpassword")).value = hashpassword(newpassword)
+				cmd.parameters.add(GetParm("password")).value = hashpassword(password)
+	
+				dim rows_affected as integer = 0
+	
+				rows_affected = cmd.executenonquery()
+				if rows_affected > 0 then
+					res = true
+					makesystemlog("Changed Password", username & " has changed their password successfully.")
+				else
+					makesystemlog("Changed Password", username & " has failed to change their password. (Incorrect password)")
+				end if
+			end using
+			catch ex as exception
+				dim st as new System.Diagnostics.StackTrace() 
+				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
+			end try
+			return res
+		end function
+
 		public function GetCommentsFeed(username as string) as dataset
 			dim res as new dataset()
 			try

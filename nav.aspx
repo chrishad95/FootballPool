@@ -34,13 +34,17 @@ end try
 
 %>
 <a href="/football">Home</a><BR>
-<A HREF="/football/login.aspx">Login</A> / <A HREF="logout.aspx">Logout</A><BR>
-<A HREF="/football/register.aspx">Register</A><BR>
-<A HREF="/football/resetpassword.aspx">Reset Password</A><BR>
 <%
 if myname <> "" then
 	%>
-	<A HREF="/changepassword.aspx">Change&nbsp;Password</A><BR>
+	<A HREF="logout.aspx">Logout</A><BR>
+	<A HREF="/football/changepassword.aspx">Change&nbsp;Password</A><BR>
+	<%
+else
+	%>
+	<A HREF="/football/login.aspx">Login</A><BR>
+	<A HREF="/football/register.aspx">Register</A><BR>
+	<A HREF="/football/resetpassword.aspx">Reset Password</A><BR>
 	<%
 end if
 %>
