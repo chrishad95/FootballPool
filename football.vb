@@ -5018,9 +5018,6 @@ Namespace Rasputin
 					dim usercount as integer = 0		
 					
 					dim cmd as SQLCommand
-					dim dr as SQLDataReader
-					dim parm1 as SQLParameter
-					
 					dim sql as string
 						
 					sql = "select username from fb_users where (UPPER(username) = @username  or upper(email) = @username) and temp_password=@password and validated='Y'"
@@ -5030,58 +5027,23 @@ Namespace Rasputin
 					cmd.parameters.add(GetParm("username")).value = username.toupper()
 					cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar, 50)).value = hashpassword(password)
 						
-					dim user_ds2 as system.data.dataset = new dataset()
-					dim user_ds as new dataset()
+					dim dt as new datatable()
 					dim oda as new SQLDataAdapter()
+					oda.selectcommand = cmd
+					oda.fill(dt)
+					if dt.rows.count > 0 then
+						res = dt.rows(0)("username")
+						sql = "update fb_users set password=temp_password, login_count=login_count + 1, last_seen = current_timestamp where username=@username"
+						cmd = new SQLCommand(sql,con)
+						cmd.parameters.add(GetParm("username")).value = res
+						cmd.executenonquery()
+						makesystemlog ("Updated user record", "Updated password with temporary password for user:" & res)
 
-					dim oda2 as System.Data.SQLClient.SQLDataAdapter = new System.Data.SQLClient.SQLDataAdapter()
-					oda2.selectcommand = cmd
-					oda2.fill(user_ds2)
-					if user_ds2.tables.count > 0 then	
-					if user_ds2.tables(0).rows.count > 0 then
-						sql = "update fb_users set password=temp_password where username = @username"
-		
+						sql = "update fb_users set temp_password = ''  where username=@username"
 						cmd = new SQLCommand(sql,con)
+						cmd.parameters.add(GetParm("username")).value = res
+						cmd.executenonquery()
 		
-						parm1 = GetParm("username")
-						parm1.value = user_ds2.tables(0).rows(0)("username")
-						cmd.parameters.add(parm1)
-						
-						dim ra as integer
-						ra = cmd.executenonquery()
-						'makesystemlog ("Updated fb_users", "Updated fb_users with new password. Rows affected=" & ra)
-		
-						' refill user_ds dataset so the rest of the code will work normally 
-		
-						sql = "select username from fb_users where UPPER(username) = @username and password=@password and validated='Y'"
-					
-						cmd = new SQLCommand(sql,con)
-						
-						cmd.parameters.add(GetParm("username")).value = username.toupper()
-						cmd.parameters.add(new SQLParameter("@password", SQLDbType.varchar, 50)).value = hashpassword(password)
-						
-						user_ds = new dataset()
-						oda = new System.Data.SQLClient.SQLDataAdapter()
-						oda.selectcommand = cmd
-						oda.fill(user_ds)
-					else
-					end if
-					end if
-		
-					if user_ds.tables.count > 0 then	
-						if user_ds.tables(0).rows.count > 0 then
-							res = user_ds.tables(0).rows(0)("username")
-							
-							sql = "update fb_users set login_count=login_count + 1, last_seen = current_timestamp, temp_password = NULL  where username=@username"
-							
-							cmd = new SQLCommand(sql,con)
-							
-							parm1 = GetParm("username")
-							parm1.value = res
-							cmd.parameters.add(parm1)
-							
-							cmd.executenonquery()
-						end if
 					end if
 				end using
 			end if
