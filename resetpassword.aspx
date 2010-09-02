@@ -33,7 +33,9 @@
 		if username <> "" then
 			dim res as string
 			res = fb.resetpassword(username)
-			message_text = "Password reset successful.  You will receive an email with a new password."
+			session("page_message") = "Password reset successful.  You will receive an email with a new password."
+			response.redirect("/football/default.aspx",true)
+
 		end if
 	end if
 %>
@@ -60,19 +62,10 @@
 		</TR>
 		</TABLE>
 		</form>
-		<%
-			if message_text <> "" then
-				%><script>window.alert("<% = message_text %>")</script><%
-			end if
-		%>
 	</div>
 
 <div id="Menu">
 <% server.execute ("nav.aspx") %>
 </div>
-
-
-<!-- BlueRobot was here. -->
-
 </body>
 </html>
