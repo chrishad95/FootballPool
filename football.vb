@@ -126,10 +126,7 @@ Namespace Rasputin
 					sql = "update fb_users set login_count=login_count + 1, last_seen = CURRENT_TIMESTAMP where username=@username"
 					
 					cmd = new SQLCommand(sql,con)
-					
-					parm1 = GetParm("username")
-					parm1.value = res
-					cmd.parameters.add(parm1)
+					cmd.parameters.add(GetParm("username")).value = valid_username
 					
 					cmd.executenonquery()
 				end if
