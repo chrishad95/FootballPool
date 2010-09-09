@@ -764,41 +764,7 @@ Namespace Rasputin
 						sb.append ("<br/><b>DO NOT FORWARD THIS EMAIL</b></BR> If you forward this email to someone else they will be able to use the fastpick link to change your picks for this week.  <br><br>" & system.environment.newline)
 						sb.append("<br>Message from the pool administrator:<br>" & system.environment.newline)
 						sb.append(bbencode(message))
-						
-						dim myMessage as system.Web.Mail.MailMessage = New system.Web.Mail.MailMessage()
-						
-						myMessage.BodyFormat = system.Web.Mail.MailFormat.Html
-						myMessage.From = "chrishad95@yahoo.com"
-						myMessage.To = email
-						myMessage.Subject = "Football Pool Week #" & week_id 
-						myMessage.Body = sb.toString()
-						
-						myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserver", "smtp.mail.yahoo.com")
-						myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpserverport", 25)
-						myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusing", 2)
-						myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/smtpauthenticate", 1)
-						myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendusername", "chrishad95")
-						myMessage.Fields.Add("http://schemas.microsoft.com/cdo/configuration/sendpassword", "househorse89")
-					
-						' Doesn't have to be local... just enter your
-						' SMTP server's name or ip address!
-						
-						
-						system.Web.Mail.SmtpMail.SmtpServer = "smtp.mail.yahoo.com"
-						try
-							SmtpMail.Send(myMessage)
-						catch 		
-							try
-								SmtpMail.Send(myMessage)
-							catch 		
-								try
-									SmtpMail.Send(myMessage)
-								catch ex as exception
-									makesystemlog("error sending notice to" & email, ex.tostring())
-									res = res & "error sending notice to " & email & system.environment.newline
-								end try
-							end try
-						end try
+						sendemail(email, "Football Pool Week #" & week_id, sb.ToString())
 					End If
 					
 				Catch ex As exception
