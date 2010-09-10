@@ -85,9 +85,6 @@ a.incomment:hover 			{ border-bottom:1px solid #CD3700; color:#f00; }
 }
 
 
-table {
-	width: 100%;
-}
 #registry_table {
 	border: 1px black solid;
 }
