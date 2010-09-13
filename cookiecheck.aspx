@@ -57,7 +57,7 @@ if myname = "" then
 		end try
 		if username <> "" and password <> "" then
 			dim res as string
-			res = fb.authenticate(username, password)
+			res = fb.login(username, password)
 			if res <> "" then
 				session("username") = res
 				myname = res
@@ -68,77 +68,4 @@ if myname = "" then
 	end try
 	
 end if
-
-' not sure what this stuff is for
-
-'	dim mysessionid as string = ""
-'	try
-'		mysessionid = request.cookies("mysessionid").value
-'	catch
-'	end try
-'
-'	try
-'
-'		if mysessionid = "" then
-'			mysessionid = getrandomstring()
-'			Dim MyCookie As New HttpCookie("mysessionid")
-'			MyCookie.Value = mysessionid
-'			Response.Cookies.Add(MyCookie)
-'		end if
-'
-'
-'		sql = "update admin.sessions set value=? where session_key=? and name=?"
-'
-'		dim cmd1 as new SQLCommand(sql,cn)
-'
-'		cmd1.parameters.add(new SQLParameter("value", SQLDbType.text))
-'		cmd1.parameters.add(new SQLParameter("session_key", SQLDbType.varchar, 40))
-'		cmd1.parameters.add(new SQLParameter("name", SQLDbType.varchar, 255))
-'		cmd1.parameters("session_key").value = mysessionid
-'
-'		for each x as object in session.contents
-'			dim ra as integer = 0
-'			cmd1.parameters("name").value = x
-'			cmd1.parameters("value").value = session(x)
-'			ra = cmd1.executenonquery()
-'			if ra < 1 then
-'
-'				sql = "insert into admin.sessions (session_key, name, value) values (?,?,?)"
-'				cmd = new SQLCommand(sql,cn)
-'
-'				cmd.parameters.add(new SQLParameter("session_key", SQLDbType.varchar, 40))
-'				cmd.parameters.add(new SQLParameter("name", SQLDbType.varchar, 255))
-'				cmd.parameters.add(new SQLParameter("value", SQLDbType.text))
-'				cmd.parameters("session_key").value = mysessionid
-'				cmd.parameters("name").value = x
-'				cmd.parameters("value").value = session(x)
-'				cmd.executenonquery()
-'			end if
-'		next
-'
-'
-'		sql = "select * from admin.sessions where session_key=?"
-'
-'
-'		cmd = new SQLCommand(sql,cn)
-'
-'		cmd.parameters.add(new SQLParameter("session_key", SQLDbType.varchar, 40))
-'		cmd.parameters("session_key").value = mysessionid
-'		dim session_ds as new dataset()
-'		oda = new SQLDataAdapter()
-'		oda.selectcommand = cmd
-'		oda.fill(session_ds)
-'
-'		try
-'			for each sdrow as datarow in session_ds.tables(0).rows
-'				dim n as string = sdrow("name")
-'				dim v as string = sdrow("value")
-'				session(n) = v
-'			next
-'		catch
-'		end try
-'
-'
-'	catch ex as exception
-'	end try
 %>
