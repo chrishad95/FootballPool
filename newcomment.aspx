@@ -30,20 +30,9 @@ try
 catch
 end try
 
-try
-	parms.add("pool_id", request("pool_id"))
-catch ex as exception
-	fb.makesystemlog("error adding pool_id to parms", ex.tostring())
-end try
-
 if parms("myname") = "" then
 	session("error_message") = "You must login to make comments."
 	response.redirect("login.aspx?returnurl=" & parms("url") & "?" &  parms("query_string"), true)
-end if
-	
-if fb.isplayer(pool_id:=parms("pool_id"), player_name:=parms("myname")) or fb.isowner(parms("pool_id"), parms("myname")) then
-else
-	callerror(parms("myname") & " is not allowed to make comments in this pool.")
 end if
 
 dim submit as string = ""
@@ -75,7 +64,7 @@ dim quote_author as string = ""
 dim quote_title as string = ""
 
 if ref_id_set then
-	commentdetails_ds = fb.getcommentdetails(pool_id:=parms("pool_id"), comment_id:=ref_id)
+	commentdetails_ds = fb.getcommentdetails(pool_id:=0, comment_id:=ref_id)
 	if commentdetails_ds.tables.count > 0 then
 		if commentdetails_ds.tables(0).rows.count > 0 then
 			if quote = "true" then
@@ -103,31 +92,22 @@ if submit = "Make Comment" then
 		end if
 		thread_id = temp_id
 
-		res = fb.MakeComment(pool_id:=parms("pool_id"), username:=parms("myname"), comment_text:=request("comment_text"), comment_title:=request("comment_title"), ref_id:=temp_id)
+		res = fb.MakeComment(pool_id:=0, username:=parms("myname"), comment_text:=request("comment_text"), comment_title:=request("comment_title"), ref_id:=temp_id)
 	else
-		res = fb.MakeComment(pool_id:=parms("pool_id"), username:=parms("myname"), comment_text:=request("comment_text"), comment_title:=request("comment_title"))
+		res = fb.MakeComment(pool_id:=0, username:=parms("myname"), comment_text:=request("comment_text"), comment_title:=request("comment_title"))
 	end if
 	if res = parms("myname") then
 		session("page_message") = "Comment was added."
-		response.redirect ("showthreads.aspx?pool_id=" & parms("pool_id"), true)
+		response.redirect ("showthreads.aspx", true)
 	else
 		session("error_message")  = "Comment was not added."
 	end if
 end if
-	
-	dim pool_details_ds as new dataset()
-	pool_details_ds = fb.getpooldetails(pool_id:= parms("pool_id"))
-
-	dim banner_image as string = fb.getbannerimage( parms("pool_id"))
-
-	dim pool_name as string = ""
-	pool_name = pool_details_ds.tables(0).rows(0)("pool_name")
-
 %>
 
 <html>
 <head>
-	<title>Make Comment - <% = pool_name %> - [<% = parms("myname") %>]</title>
+	<title>Make Comment - www.SmackPools.com</title>
 	<style type="text/css" media="all">@import "/football/style4.css";</style> 
 	<script type="text/javascript" src="jquery.js"></script>
 	<script type="text/javascript" src="cmxform.js"></script>
@@ -191,12 +171,6 @@ end if
 <div id="Header"><% = parms("http_host") %></div>
 	<div class="content">
 	<%
-	if banner_image = "" then
-		%><h1><% = pool_name %></h1><%
-	else
-		%><img src="<% = "images/" & parms("pool_id") & "/" & banner_image %>" border="0"><BR><BR><%
-	end if
-
 	try
 		if session("page_message") <> "" then
 			%>
@@ -221,7 +195,6 @@ end if
 	end try
 	%>
 		<form class="cmxform">
-			<input type="hidden" name="pool_id" value="<% = parms("pool_id") %>">
 			<% 
 				if ref_id_set then
 					%><input type="hidden" name="ref_id" value="<% = ref_id %>"><%

@@ -1863,7 +1863,7 @@ Namespace Rasputin
 				dim sql as string 
 
 				dim cmd as SQLCommand 
-				sql = "insert into fb_comments(USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, views) values (@username, @comment_text, @comment_tsp, @comment_title, 0)"
+				sql = "insert into fb_comments(pool_id, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, views) values (1,@username, @comment_text, @comment_tsp, @comment_title, 0)"
 				
 				cmd = new SQLCommand(sql, con)
 
@@ -1898,7 +1898,7 @@ Namespace Rasputin
 				dim cmd as SQLCommand 
 
 
-				sql = "insert into fb_comments(USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, ref_id, views) values (@username, @comment_text, @comment_tsp, @comment_title, @ref_id, 0)"
+				sql = "insert into fb_comments(pool_id,USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, ref_id, views) values (1,@username, @comment_text, @comment_tsp, @comment_title, @ref_id, 0)"
 				
 				cmd = new SQLCommand(sql, con)
 

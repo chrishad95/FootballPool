@@ -26,28 +26,8 @@ try
 catch
 end try
 
-dim pool_id as integer
-try
-	if request("pool_id") <> "" then
-		pool_id = request("pool_id")
-	end if
-catch ex as exception
-	fb.makesystemlog("error in comment.aspx", ex.tostring())
-end try
-
 if myname = "" then
 	callerror("You must login.")
-end if
-
-
-dim isowner as boolean = false
-isowner = fb.isowner(pool_id:=pool_id, pool_owner:=myname)
-dim isplayer as boolean = false
-isplayer = fb.isplayer(pool_id:=pool_id, player_name:=myname)
-
-if  isplayer or isowner then
-else
-	callerror("Invalid player/pool.")
 end if
 
 dim submit as string = ""
@@ -59,15 +39,8 @@ end try
 dim res as string = ""
 
 dim comments_ds as new dataset()
-comments_ds = fb.GetComments(pool_id:=pool_id, thread_id:=thread_id, count:=0)
+comments_ds = fb.GetComments(pool_id:=0, thread_id:=thread_id, count:=0)
 
-dim pooldetails_ds as new dataset()
-pooldetails_ds = fb.getpooldetails(pool_id:=pool_id)
-dim pool_name as string = ""
-try
-	pool_name = pooldetails_ds.tables(0).rows(0)("pool_name")
-catch
-end try
 dim alreadyviewed as boolean = false
 try
 	if session("post" & thread_id) = "true" then
@@ -76,14 +49,14 @@ try
 catch
 end try
 if not alreadyviewed then 
-	fb.incrementviewcount(pool_id:=pool_id, comment_id:=thread_id)
+	fb.incrementviewcount(pool_id:=0, comment_id:=thread_id)
 	session("post" & thread_id) = "true"
 end if
 %>
 
 <html>
 <head>
-	<title>Pool Comments - <% = http_host %> - [<% = myname %>]</title>
+	<title>Pool Comments - www.SmackPools.com</title>
 	<link rel="stylesheet" href='/football/hoverbox.css' type="text/css" media="screen, projection" />
 	<!--[if IE]>
 	<link rel="stylesheet" href='/football/ie_fixes.css' type="text/css" media="screen, projection" />
@@ -223,19 +196,19 @@ end if
 	<table class="tborder" cellpadding="6" cellspacing="1" border="0" width="100%" align="center">
 	<tr>
 		<td class="thead" >
-		<% = http_host %> - <% = pool_name %>
+		www.SmackPools.com
 		</td>
 	</tr>
 	<tr>
 		<td class="block1" >
-		<a href="/"><% = http_host %></a> > <a href="/football/showthreads.aspx?pool_id=<% = pool_id %>"><% = pool_name %></a>
+		<a href="/">www.SmackPools.com</a> > <a href="/football/showthreads.aspx">Trash Talk</a>
 		</td>
 	</tr>
 	</table>
 	<br />
 
 		<div align="left">
-		<a href="/football/newcomment.aspx?pool_id=<% = pool_id %>&ref_id=<% = thread_id %>"><img src="/football/images/reply.gif" alt="Reply" border="0" /></a>
+		<a href="/football/newcomment.aspx?ref_id=<% = thread_id %>"><img src="/football/images/reply.gif" alt="Reply" border="0" /></a>
 		</div>
 		<br />
 <%
@@ -258,7 +231,7 @@ end if
 				<td class="thead" >
 				<% = comment_tsp %><%
 				if comment_username = myname or myname= "chadley" then
-					%> <a href="/football/editcomment.aspx?pool_id=<% = pool_id %>&comment_id=<% = comment_id %>">Edit</a><%
+					%> <a href="/football/editcomment.aspx?&comment_id=<% = comment_id %>">Edit</a><%
 				end if
 				%>
 				</td>
@@ -274,7 +247,7 @@ end if
 							<div class="bigusername">
 							<%
 								dim avatar as string = ""
-								avatar = fb.GetAvatar(pool_id:=pool_id, username:=comment_username)
+								avatar = fb.GetAvatar(username:=comment_username)
 								if avatar <> "" then
 								%>
 									<ul class="hoverbox">
@@ -320,7 +293,7 @@ end if
 					<div align="right">
 						<!-- controls -->
 
-							<a href="/football/newcomment.aspx?pool_id=<% = pool_id %>&ref_id=<% = comment_id %>&quote=true" rel="nofollow"><img src="/football/images/quote.gif" alt="Reply With Quote" border="0" /></a>
+							<a href="/football/newcomment.aspx?ref_id=<% = comment_id %>&quote=true" rel="nofollow"><img src="/football/images/quote.gif" alt="Reply With Quote" border="0" /></a>
 						
 						<!-- / controls -->
 					</div>
@@ -343,7 +316,7 @@ end if
 	end try
 %>
 	<div align="left">
-	<a href="/football/newcomment.aspx?pool_id=<% = pool_id %>&ref_id=<% = thread_id %>"><img src="/football/images/reply.gif" alt="Reply" border="0" /></a>
+	<a href="/football/newcomment.aspx?ref_id=<% = thread_id %>"><img src="/football/images/reply.gif" alt="Reply" border="0" /></a>
 	</div>
 </div>
 
@@ -354,7 +327,7 @@ end if
 <div id="navBeta"><%
 	try
 		dim feedtext as string = ""
-		feedtext = fb.getfeed(pool_id:=pool_id, xslfile:=server.mappath("football.xsl"))
+		feedtext = fb.getfeed(pool_id:=0, xslfile:=server.mappath("football.xsl"))
 		if feedtext <> "" then
 			response.write(feedtext)
 		end if

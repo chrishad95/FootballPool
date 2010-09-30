@@ -25,36 +25,6 @@ try
 catch
 end try
 
-dim pool_id as integer
-dim pool_id_found as boolean = false
-
-try
-	if request("pool_id") <> "" then
-		pool_id = request("pool_id")
-		pool_id_found = true
-	end if
-catch ex as exception
-end try
-
-dim pool_details_ds as new dataset()
-pool_details_ds = fb.getpooldetails(pool_id:= pool_id)
-
-dim options_ht as new system.collections.hashtable()
-options_ht = fb.getPoolOptions(pool_id:=pool_id)
-
-
-dim isowner as boolean = false
-isowner = fb.isowner(pool_id:=pool_id, pool_owner:=myname)
-dim isplayer as boolean = false
-isplayer = fb.isplayer(pool_id:=pool_id, player_name:=myname)
-
-if options_ht("HIDECOMMENTS") = "on" then
-	if  isplayer or isowner then
-	else
-		callerror("Invalid player/pool.")
-	end if
-end if
-
 dim submit as string = ""
 try
 	submit = request("submit")
@@ -64,7 +34,7 @@ end try
 dim res as string = ""
 
 if submit = "Make Comment" and myname <> "" then
-	res = fb.MakeComment(pool_id:=pool_id, username:=myname, comment_text:=request("comment_text"), comment_title:=request("comment_title"))
+	res = fb.MakeComment(pool_id:=0, username:=myname, comment_text:=request("comment_text"), comment_title:=request("comment_title"))
 	if res = myname then
 		message_text = "Comment was added."
 	else
@@ -73,21 +43,13 @@ if submit = "Make Comment" and myname <> "" then
 end if
 
 dim threads_ds as new dataset()
-dim banner_image as string = fb.getbannerimage(pool_id)
-dim pool_name as string = ""
-if pool_id_found then
-	threads_ds = fb.ShowThreads(pool_id:=pool_id, count:=0)
-	
-	pool_name = pool_details_ds.tables(0).rows(0)("pool_name")
-else
-	threads_ds = fb.ShowThreads()
-end if
+threads_ds = fb.ShowThreads(pool_id:=0, count:=0)
 
 %>
 
 <html>
 <head>
-	<title>Trash Talk - <% = http_host %> - [<% = myname %>]</title>
+	<title>Trash Talk - www.SmackPools.com</title>
 	<style type="text/css" media="all">@import "/football/style4.css";</style> 
 	<style>
 	.thread_title {	
@@ -190,11 +152,6 @@ end if
 <div class="content">
 
 <%
-	if banner_image = "" then
-		%><h1><% = pool_name %></h1><%
-	else
-		%><img src=" <% = banner_image %>" border="0"><BR><BR><%
-	end if
 	try
 		if session("page_message") <> "" then
 			%>
@@ -220,19 +177,13 @@ end if
 %>
 
 <div align="left">
-<% 
-if pool_id_found then
-%>
-<a href="newcomment.aspx?pool_id=<% = pool_id %>" rel="nofollow"><img src="images/newthread.gif" alt="New Thread" border="0" /></a>
-<%
-end if
-%>
+<a href="newcomment.aspx" rel="nofollow"><img src="images/newthread.gif" alt="New Thread" border="0" /></a>
 </div>
 
 <br />
 
 <table class="tborder" border=0 cellspacing=1 cellpadding=2 width="100%">		
-<tr><td colspan="4" class="thead"><% = http_host %> - Discussions for <% = pool_name %></td><tr>
+<tr><td colspan="4" class="thead">www.SmackPools.com - Trash Talk</td><tr>
 <%
 	dim threadsfound as integer = 0
 	try
@@ -258,7 +209,7 @@ end if
 				dim thread_id as integer = threadrow("thread_id")
 
 				%>
-				<tr><td class="thread_title"><span class="title_text"><a href="/football/showthread.aspx?pool_id=<% = pool_id %>&t=<% = thread_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
+				<tr><td class="thread_title"><span class="title_text"><a href="/football/showthread.aspx?t=<% = thread_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
 				by&nbsp;<span class="poster_text"><% = last_poster %></span></td><td class="replies"><% = replies %></td><td class="views"><% = views %></td></tr>
 				<%
 			next
@@ -270,7 +221,7 @@ end if
 	<tr><td colspan="4" class="tfoot" >Found <% = threadsfound %> active threads.</td></tr>
 	</table><%
 %>
-<link rel="alternate" type="application/rss+xml" title="<% = pool_name %>" href="pool_comments_rss.aspx?pool_id=<% = pool_id %>" />
+<link rel="alternate" type="application/rss+xml" title="www.SmackPools.com Trash Talk" href="pool_comments_rss.aspx" />
 
 		Would you like to make a <a href="/donate.aspx">donation?</a><br /><br />
 		<BR><BR>

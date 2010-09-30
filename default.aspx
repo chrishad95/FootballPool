@@ -385,8 +385,8 @@
 					<a href="makepicks.aspx?pool_id=<% = drow("pool_id") %>">Make&nbsp;Picks</a>
 					<a href="showpicks.aspx?pool_id=<% = drow("pool_id") %>">Show&nbsp;Picks</a>
 					<a href="standings.aspx?pool_id=<% = drow("pool_id") %>">Standings</a>
-					<a href="nickname.aspx?pool_id=<% = drow("pool_id") %>">Change&nbsp;Nickname</a>
-					<a href="showthreads.aspx?pool_id=<% = drow("pool_id") %>">Trash&nbsp;Talk</a><%
+					<a href="nickname.aspx?pool_id=<% = drow("pool_id") %>">Change&nbsp;Nickname</a><%
+
 					if fb.isowner(pool_id:=drow("pool_id"), pool_owner:=myname) then
 						%>
 						<br />
@@ -537,17 +537,17 @@
 
 
 				dim threads_ds as new dataset()
-				threads_ds = fb.ShowThreads(pool_id:=pool_id, count:=0)
+				threads_ds = fb.ShowThreads(pool_id:=0, count:=0)
 
 
 				%>
 				<div align="left">
-				<a href="newcomment.aspx?pool_id=<% = pool_id %>" rel="nofollow"><img src="images/newthread.gif" alt="New Thread" border="0" /></a>
+				<a href="newcomment.aspx" rel="nofollow"><img src="images/newthread.gif" alt="New Thread" border="0" /></a>
 				</div>
 				<br />
 
 				<table class="tborder" border=0 cellspacing=1 cellpadding=2 width="100%">		
-				<tr><td colspan="4" class="thead">Latest Discussions for <% = pool_name %></td><tr>
+				<tr><td colspan="4" class="thead">Latest Discussions on www.SmackPools.com</td><tr>
 				<%
 					dim threadsfound as integer = 0
 					dim maxthreads as integer = 5
@@ -576,7 +576,7 @@
 								dim thread_id as integer = threadrow("thread_id")
 
 								%>
-								<tr><td class="thread_title"><span class="title_text"><a href="showthread.aspx?t=<% = thread_id %>&pool_id=<% = pool_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
+								<tr><td class="thread_title"><span class="title_text"><a href="showthread.aspx?t=<% = thread_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
 								by&nbsp;<span class="poster_text"><% = last_poster %></span></td><td class="replies"><% = replies %></td><td class="views"><% = views %></td></tr>
 								<%
 							next

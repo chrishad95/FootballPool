@@ -39,6 +39,7 @@ if myname <> "" then
 	%>
 	<A HREF="logout.aspx">Logout</A><BR>
 	<A HREF="/football/changepassword.aspx">Change&nbsp;Password</A><BR>
+	<a href="/football/showthreads.aspx">Trash&nbsp;Talk</a><BR>
 	<%
 else
 	%>
@@ -66,7 +67,6 @@ try
 		<a href="/football/standings.aspx?pool_id=<% = pool_id %>">Standings</a><BR>
 		<a href="/football/sendinvite.aspx?pool_id=<% = pool_id %>">Send&nbsp;Invite</a><BR>
 		<a href="/football/nickname.aspx?pool_id=<% = pool_id %>">Change&nbsp;Nickname</a><BR>
-		<a href="/football/showthreads.aspx?pool_id=<% = pool_id %>">Trash&nbsp;Talk</a><BR>
 		<a href="/football/pickavatar.aspx?pool_id=<% = pool_id %>">Avatar</a><BR>
 		<a href="/football/stats.aspx?pool_id=<% = pool_id %>">Statistics</a><BR>
 		<%
