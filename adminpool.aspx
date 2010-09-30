@@ -46,22 +46,18 @@
 		response.redirect("error.aspx", true)
 	end if
 
-	dim parms_ht as new System.Collections.Hashtable()
-	parms_ht.add("bannerurl","")
-
-	for each k as object in parms_ht.keys
-		try
-			if request(k.toString()) <> "" then
-				parms_ht(k) = request(k.toString())
-			end if
-		catch
-		end try
-	next
+	dim bannerurl as string = ""
+	try
+		if request("bannerurl") <> "" then
+			bannerurl = request("bannerurl")
+		end if
+	catch
+	end try
 
 	try
 		if request("submit") = "Update Pool Details" then
 			dim res as string = ""
-			res = fb.updatepool(pool_id:=pool_id, pool_owner:=myname, pool_name:=request("poolname"), pool_desc:=request("desc"), pool_banner:=parms_ht("bannerurl"), pool_logo:=request("logourl"), eligibility:=request("eligibility"), scorer:=request("scorer"))
+			res = fb.updatepool(pool_id:=pool_id, pool_owner:=myname, pool_name:=request("poolname"), pool_desc:=request("desc"), pool_banner:=bannerurl, pool_logo:=request("logourl"), eligibility:=request("eligibility"), scorer:=request("scorer"))
 			if res = request("pool_name") then
 				session("page_message") = "The pool details were updated."
 			else
