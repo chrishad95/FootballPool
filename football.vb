@@ -191,7 +191,7 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 
-				sql = "select  * from fb_comments where ref_id is null and ( pool_id in (select pool_id from fb_players where username=@username) or pool_id in (select pool_id from fb_pools where pool_owner=@username) ) order by comment_tsp DESC"
+				sql = "select  * from fb_comments where ref_id is null order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
 
 				cmd.parameters.add(GetParm("username")).value = username
@@ -228,9 +228,8 @@ Namespace Rasputin
 				'con = new SQLConnection(myconnstring)
 				
 
-				sql = "select  * from fb_comments where ref_id is null and pool_id=@pool_id and pool_id in (select pool_id from fb_players where username=@username) order by comment_tsp DESC"
+				sql = "select  * from fb_comments where ref_id is null order by comment_tsp DESC"
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(GetParm("POOL_ID")).value = pool_id
 				cmd.parameters.add(GetParm("username"))
 				cmd.parameters("@USERNAME").value = username
 				
@@ -446,13 +445,10 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "update fb_comments set views=views + 1 where pool_id=@pool_id and comment_id=@comment_id"
+				sql = "update fb_comments set views=views + 1 where comment_id=@comment_id"
 
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = GetParm("pool_id")
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
 				cmd.Parameters.Add(New SQLParameter("@comment_id", SQLDbType.Int))
 				cmd.Parameters("@comment_id").value = comment_id
 				
@@ -487,13 +483,10 @@ Namespace Rasputin
 				'con = new SQLConnection(connstring)
 				
 
-				sql = "select * from fb_comments where pool_id=@pool_id and comment_id=@comment_id"
+				sql = "select * from fb_comments where comment_id=@comment_id"
 				
 				cmd = new SQLCommand(sql,con)
 
-				parm1 = GetParm("pool_id")
-				parm1.value = pool_id
-				cmd.parameters.add(parm1)
 				cmd.Parameters.Add(New SQLParameter("@comment_id", SQLDbType.Int))
 				cmd.Parameters("@comment_id").value = comment_id
 				
@@ -1870,16 +1863,14 @@ Namespace Rasputin
 				dim sql as string 
 
 				dim cmd as SQLCommand 
-				sql = "insert into fb_comments(POOL_ID, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, views) values (@pool_id, @username, @comment_text, @comment_tsp, @comment_title, 0)"
+				sql = "insert into fb_comments(USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, views) values (@username, @comment_text, @comment_tsp, @comment_title, 0)"
 				
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(GetParm("pool_id"))
 				cmd.parameters.add(GetParm("username"))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TSP", SQLDbType.datetime))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
-				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
 				cmd.parameters("@COMMENT_TSP").value = system.datetime.now
@@ -1907,17 +1898,15 @@ Namespace Rasputin
 				dim cmd as SQLCommand 
 
 
-				sql = "insert into fb_comments(POOL_ID, USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, ref_id, views) values (@pool_id, @username, @comment_text, @comment_tsp, @comment_title, @ref_id, 0)"
+				sql = "insert into fb_comments(USERNAME, COMMENT_TEXT, COMMENT_TSP,  COMMENT_TITLE, ref_id, views) values (@username, @comment_text, @comment_tsp, @comment_title, @ref_id, 0)"
 				
 				cmd = new SQLCommand(sql, con)
 
-				cmd.parameters.add(GetParm("pool_id"))
 				cmd.parameters.add(GetParm("username"))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TSP", SQLDbType.datetime))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
 				cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int))
-				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@USERNAME").value = USERNAME
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
 				cmd.parameters("@COMMENT_TSP").value = system.datetime.now
@@ -1945,15 +1934,13 @@ Namespace Rasputin
 				dim cmd as SQLCommand 
 
 
-				sql = "update fb_comments set comment_title=@comment_title, comment_text=@comment_text where pool_id=@pool_id and comment_id=@comment_id"
+				sql = "update fb_comments set comment_title=@comment_title, comment_text=@comment_text where comment_id=@comment_id"
 				
 				cmd = new SQLCommand(sql, con)
 
 				cmd.parameters.add(new SQLParameter("@COMMENT_TITLE", SQLDbType.VARCHAR, 200))
 				cmd.parameters.add(new SQLParameter("@COMMENT_TEXT", SQLDbType.text))
-				cmd.parameters.add(GetParm("pool_id"))
 				cmd.parameters.add(new SQLParameter("@comment_id", SQLDbType.int))
-				cmd.parameters("@POOL_ID").value = POOL_ID
 				cmd.parameters("@COMMENT_TEXT").value = COMMENT_TEXT
 				cmd.parameters("@COMMENT_TITLE").value = COMMENT_TITLE
 				cmd.parameters("@comment_id").value = comment_id
@@ -3181,10 +3168,9 @@ Namespace Rasputin
 				
 				sql = sql & " comment_id as thread_id, comment_title as thread_title, username as thread_author, " _
 					& " comment_tsp as thread_tsp, username as last_poster, 0 as replies, views " _
-					& " from fb_comments where ref_id is null and pool_id=@pool_id"
+					& " from fb_comments where ref_id is null"
 				
 				cmd = new SQLCommand(sql,con)
-				cmd.parameters.add(GetParm("pool_id")).value = pool_id
 
 				dim dr as SQLDataReader
 				dr = cmd.executereader()
@@ -3207,16 +3193,14 @@ Namespace Rasputin
 
 				if temp_table.rows.count > 0 then
 					for i as integer = 0 to temp_table.rows.count -1
-						sql = "select count(*) from fb_comments where ref_id=@ref_id and pool_id=@pool_id"
+						sql = "select count(*) from fb_comments where ref_id=@ref_id"
 						cmd = new SQLCommand(sql,con)
 						cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int)).value = temp_table.rows(i)("thread_id")
-						cmd.parameters.add(GetParm("pool_id")).value = pool_id
 						
 						temp_table.rows(i)("replies") = cmd.executescalar()
 
-						sql = "select * from fb_comments where pool_id=@pool_id and (comment_id=@ref_id or ref_id=@ref_id) order by comment_tsp desc"
+						sql = "select * from fb_comments where (comment_id=@ref_id or ref_id=@ref_id) order by comment_tsp desc"
 						cmd = new SQLCommand(sql,con)
-						cmd.parameters.add(GetParm("pool_id")).value = pool_id
 						cmd.parameters.add(new SQLParameter("@ref_id", SQLDbType.int)).value = temp_table.rows(i)("thread_id")
 
 						dr = cmd.executereader()
@@ -3252,11 +3236,10 @@ Namespace Rasputin
 					count = 1000000
 				end if
 
-				sql = "select top " & count & " a.pool_id, a.username, a.comment_text, a.comment_tsp, a.comment_id, a.ref_id, a.comment_title, a.views, b.nickname from fb_comments a full outer join fb_players b on a.pool_id=b.pool_id and a.username=b.username where a.pool_id=@pool_id and (a.comment_id=@comment_id or a.ref_id=@comment_id) order by comment_tsp asc"
+				sql = "select top " & count & " a.pool_id, a.username, a.comment_text, a.comment_tsp, a.comment_id, a.ref_id, a.comment_title, a.views, b.nickname from fb_comments a full outer join fb_players b on a.pool_id=b.pool_id and a.username=b.username where (a.comment_id=@comment_id or a.ref_id=@comment_id) order by comment_tsp asc"
 
 				cmd = new SQLCommand(sql,con)
 
-				cmd.parameters.add(GetParm("pool_id")).value = pool_id 
 				cmd.parameters.add(new SQLParameter("@comment_id", SQLDbType.int)).value = thread_id
 
 				dim oda as new SQLDataAdapter()
