@@ -6,8 +6,6 @@
 server.execute("/football/cookiecheck.aspx")
 
 dim fb as new Rasputin.FootballUtility()
-fb.initialize()
-
 dim myname as string
 myname = ""
 try
@@ -16,33 +14,12 @@ try
 	end if
 catch
 end try
-dim pool_id as integer
-dim pool_id_set as boolean = false
-try
-	if request("pool_id") <> "" then
-		pool_id = request("pool_id")
-		pool_id_set = true
-	end if
-catch
-end try
-
-
-dim http_host as string = ""
-try
-	http_host = request.servervariables("HTTP_HOST")
-catch
-end try
-
+dim http_host as string = "www.SmackPools.com"
 
 dim articles_ds as dataset = new dataset()
-if pool_id_set then
-	articles_ds = fb.GetCommentsFeed(pool_id:=pool_id, username:=myname)
-else
-	articles_ds = fb.GetCommentsFeed(username:=myname)
-end if
+articles_ds = fb.GetCommentsFeed(username:=myname)
 
 Dim dtUpdatedDate As DateTime  = system.datetime.now
-
 try
 	dtUpdatedDate = articles_ds.tables(0).rows(0)("comment_tsp")
 catch
@@ -60,25 +37,19 @@ atomWriter.WriteStartDocument(True)
 atomWriter.WriteStartElement("feed")
 atomWriter.WriteAttributeString("xmlns", "http://www.w3.org/2005/Atom")
 
-' write title, link and date
-if pool_id_set then
-	dim pool_details_ds as dataset = fb.getpooldetails(pool_id:=pool_id)
-	dim pool_name as string = pool_details_ds.tables(0).rows(0)("pool_name") 
-	atomWriter.WriteElementString("title", "Comments for " & pool_name)
-else
-	atomWriter.WriteElementString("title", "Comments for " & myname)
-end if
+'' write title, link and date
 
+atomWriter.WriteElementString("title", "Comments for www.SmackPools.com")
 atomWriter.WriteStartElement("link")
 atomWriter.WriteAttributeString("href", "http://" & http_host)
 atomWriter.WriteEndElement()
 
 atomWriter.WriteElementString("updated", dtUpdatedDate.ToString("s"))
 
-' write author info
+'' write author info
 atomWriter.WriteStartElement("author")
 atomWriter.WriteElementString("name", "chadley")
-atomWriter.WriteElementString("email", "webmaster@" & http_host)
+atomWriter.WriteElementString("email", "webmaster@www.SmackPools.com")
 atomWriter.WriteEndElement()
 atomWriter.WriteElementString("id", "urn:uuid:" & http_host) ' RSS feeds doesnt really have any id element
 
@@ -95,7 +66,7 @@ for each drow as datarow in articles_ds.tables(0).rows
 			atomWriter.WriteElementString("title", drow("comment_title")) 
 
 			atomWriter.WriteStartElement("link")
-				atomWriter.WriteAttributeString("href", "http://" & http_host & "/football/articles/" & drow("pool_id") & "/" & drow("comment_id") & "/default.aspx")  
+			atomWriter.WriteAttributeString("href", "http://" & http_host & "/football/showthread.aspx?t=" & drow("comment_id"))  
 
 			atomWriter.WriteEndElement()
 
