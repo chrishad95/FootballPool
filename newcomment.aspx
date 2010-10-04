@@ -194,7 +194,7 @@ end if
 	catch
 	end try
 	%>
-		<form class="cmxform">
+		<form class="cmxform" method="post">
 			<% 
 				if ref_id_set then
 					%><input type="hidden" name="ref_id" value="<% = ref_id %>"><%
