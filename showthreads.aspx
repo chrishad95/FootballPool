@@ -42,8 +42,8 @@ if submit = "Make Comment" and myname <> "" then
 	end if
 end if
 
-dim threads_ds as new dataset()
-threads_ds = fb.ShowThreads(pool_id:=0, count:=0)
+dim threads_dt as new datatable()
+threads_dt = fb.ShowThreads(count:=0)
 
 %>
 
@@ -187,13 +187,13 @@ threads_ds = fb.ShowThreads(pool_id:=0, count:=0)
 <%
 	dim threadsfound as integer = 0
 	try
-		threadsfound = threads_ds.tables(0).rows.count
-		if threads_ds.tables(0).rows.count > 0 then
+		threadsfound = threads_dt.rows.count
+		if threads_dt.rows.count > 0 then
 			%>	
 			<tr><td class="thead">Thread</td><td class="thead">Last Post</td><td class="thead">Replies</td><td class="thead">Views</td></tr>
 			<%
 			dim threadrows as datarow()
-			threadrows = threads_ds.tables(0).select(filterExpression:="1=1", sort:="thread_tsp desc")
+			threadrows = threads_dt.select(filterExpression:="1=1", sort:="thread_tsp desc")
 
 			for each threadrow as datarow in threadrows
 

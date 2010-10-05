@@ -3104,13 +3104,12 @@ Namespace Rasputin
 			return new system.data.dataset()
 		end function
 	
-		public function ShowThreads(pool_id as integer, count as integer) as dataset
+		public function ShowThreads(count as integer) as datatable
 
-			dim res as new system.data.dataset()
+			dim temp_table as new system.data.datatable("Threads")
 			try
 			using con as new SQLConnection(myconnstring)
 				con.open()
-				Dim temp_table As New system.Data.DataTable("Threads")
 				Dim temp_col As system.Data.DataColumn 
 				dim temp_row as system.Data.DataRow
 				
@@ -3168,7 +3167,7 @@ Namespace Rasputin
 				
 				sql = sql & " comment_id as thread_id, comment_title as thread_title, username as thread_author, " _
 					& " comment_tsp as thread_tsp, username as last_poster, 0 as replies, views " _
-					& " from fb_comments where ref_id is null"
+					& " from fb_comments where ref_id is null order by thread_tsp desc"
 				
 				cmd = new SQLCommand(sql,con)
 
@@ -3211,17 +3210,13 @@ Namespace Rasputin
 						dr.close()
 					next
 				end if
-
-				res.tables.add(temp_table)
 			end using
 				
 			catch ex as exception
 				dim st as new System.Diagnostics.StackTrace() 
 				makesystemlog("error in " & st.GetFrame(0).GetMethod().Name.toString(), ex.tostring())
 			end try
-
-			return res
-
+			return temp_table
 		end function
 
 		public function GetComments(pool_id as integer, thread_id as integer, count as integer) as dataset

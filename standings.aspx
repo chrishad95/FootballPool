@@ -213,6 +213,9 @@ end if
 				%><img src="<% = banner_image %>" border="0"><BR><BR><%
 			end if
 		%>
+		<% server.execute("/football/comment_ticker.aspx") %>
+		<br>
+
 		<form action="standings.aspx">
 		<input type="hidden" name="pool_id" value="<% = pool_id %>">
 		<table class="week_table">
@@ -407,9 +410,6 @@ end if
 		%>
 		
 		</table>
-
-		Would you like to make a <a href="/donate.aspx">donation?</a><br /><br />
-		<BR><BR>
 
 		<script type="text/javascript"><!--
 		google_ad_client = "pub-8829998647639174";

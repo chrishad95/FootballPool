@@ -609,7 +609,8 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 		end if ' non print view
 		%>
 		<br />
-		Would you like to make a <a href="/donate.aspx">donation?</a><br /><br />
+		<% server.execute("/football/comment_ticker.aspx") %>
+		<br>
 
 		Scoreboard<br />
 		<%
