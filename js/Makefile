@@ -1,6 +1,6 @@
 
 targetdir = football/js
-prodserver = noprodwww.rexfordroad.com
+prodserver = www.rexfordroad.com
 testserver = 192.168.1.12
 
 PRODDIR=/home/chadley/web/football/prod/$(targetdir)
