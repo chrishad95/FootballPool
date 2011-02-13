@@ -213,7 +213,6 @@ end if
 				%><img src="<% = banner_image %>" border="0"><BR><BR><%
 			end if
 		%>
-		<% server.execute("/football/comment_ticker.aspx") %>
 		<br>
 
 		<form action="standings.aspx">
@@ -410,23 +409,10 @@ end if
 		%>
 		
 		</table>
+		<br />
+		<br />
+		<% server.execute("/football/comment_ticker.aspx") %>
 
-		<script type="text/javascript"><!--
-		google_ad_client = "pub-8829998647639174";
-		google_ad_width = 728;
-		google_ad_height = 90;
-		google_ad_format = "728x90_as";
-		google_ad_type = "text_image";
-		google_ad_channel = "";
-		google_color_border = "6699CC";
-		google_color_bg = "003366";
-		google_color_link = "FFFFFF";
-		google_color_text = "AECCEB";
-		google_color_url = "AECCEB";
-		//--></script>
-		<script type="text/javascript"
-		  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
-		</script>
 	</div>
 
 <div id="NavAlpha">
