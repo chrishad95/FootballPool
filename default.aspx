@@ -420,7 +420,8 @@
 				dim standings_ds as new dataset()
 				standings_ds = fb.getstandings(pool_id:=pool_id)
 
-
+					If standings_ds.Tables.Count > 0 Then
+					    
 				dim sort_by as string = "TOTALSCORE"
 				dim sort_dir as string = "DESC"
 
@@ -530,6 +531,9 @@
 				%>
 				
 				</table>
+				<%
+					End If
+                %>
 
 				<BR><BR>
 				<div id="showthreads">

@@ -243,6 +243,7 @@ end if
 		</select> <input type="submit" name="submit" value="Refresh"></td></tr>
 		</table>
 		</form>
+		<%If standings_ds.Tables.Count > 0 Then%>
 		<table border=1 cellspacing=0 cellpadding=3>
 		<tr><td class="table_header" colspan="<% = colspan %>"><% = pool_name %> Standings</td></tr>
 		<tr><%
@@ -409,6 +410,7 @@ end if
 		%>
 		
 		</table>
+		<% end if %>
 		<br />
 		<br />
 		<% server.execute("/football/comment_ticker.aspx") %>
