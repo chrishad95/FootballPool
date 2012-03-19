@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet href="http://sports.espn.go.com/rss/friendlyRSSDemo.xsl" type="text/xsl" media="screen"?>
+<rss version="2.0" 	xmlns:dc="http://purl.org/dc/elements/1.1/"	xmlns:sy="http://purl.org/rss/1.0/modules/syndication/"	xmlns:admin="http://webns.net/mvcb/"	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"	xmlns:atom="http://purl.org/atom/ns#"	xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<channel>
+	<title>ESPN.com - College Football</title>
+	<link>http://espn.go.com/college-football/</link>	<description>Latest College Football news from ESPN.com</description>
+	<language>en-us</language>
+   <atom:link rel="self" href="http://sports.espn.go.com/espn/rss/ncf/news?null" />
+	<lastBuildDate>Mon, 19 Mar 2012 13:38:26 PDT</lastBuildDate>
+	<docs>http://backend.userland.com/rss</docs>
+	<managingEditor>webmaster@espn.go.com</managingEditor>
+ <image> 
+     <url>http://a.espncdn.com/i/tvlistings/tv_espn_original.gif</url>
+	<title>ESPN logo</title>
+	<link>http://espn.go.com</link>
+	<width>84</width>
+	<height>34</height>
+ </image> 
+ <ttl>30</ttl> 
+	<dc:rights>Copyright 2012</dc:rights>
+	<admin:generatorAgent rdf:resource="http://espn.go.com/rss/?v=0.9beta"/>
+	<admin:errorReportsTo rdf:resource="mailto:customer.service@espn.go.com"/>
+	<sy:updatePeriod>hourly</sy:updatePeriod>
+	<sy:updateFrequency>1</sy:updateFrequency>
+	<sy:updateBase>2000-01-01T12:00+00:00</sy:updateBase>
+<item>
+<dc:creator><![CDATA[Ivan Maisel]]></dc:creator>
+<title><![CDATA[Maisel: Butch Davis era sets UNC back]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7678094/butch-davis-era-sets-north-carolina-tar-heels-back&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7678094/butch-davis-era-sets-north-carolina-tar-heels-back" height="49" width="41" /></a>The Butch Davis era at North Carolina began with promise, but came to a bitter end Monday with the release of a report of the NCAA Committee on Infractions.]]></description>
+<pubDate>Mon, 12 Mar 2012 23:43:53 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7678094/butch-davis-era-sets-north-carolina-tar-heels-back</guid>
+<link>http://espn.go.com/college-football/story/_/id/7678094/butch-davis-era-sets-north-carolina-tar-heels-back</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Longtime Atlanta sportswriter Bisher dies at 93]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/espn/story/_/id/7707594/longtime-atlanta-journal-constitution-sportswriter-furman-bisher-dies-93&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/espn/story/_/id/7707594/longtime-atlanta-journal-constitution-sportswriter-furman-bisher-dies-93" height="49" width="41" /></a>Sportswriter Furman Bisher has died of a massive heart attack at the age of 93.]]></description>
+<pubDate>Sun, 18 Mar 2012 20:15:36 PDT</pubDate>
+<guid>http://espn.go.com/espn/story/_/id/7707594/longtime-atlanta-journal-constitution-sportswriter-furman-bisher-dies-93</guid>
+<link>http://espn.go.com/espn/story/_/id/7707594/longtime-atlanta-journal-constitution-sportswriter-furman-bisher-dies-93</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Poll: Paterno favored for renaming of stadium]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7695232/joe-paterno-favored-renaming-penn-state-nittany-lions-stadium-polls-shows&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7695232/joe-paterno-favored-renaming-penn-state-nittany-lions-stadium-polls-shows" height="49" width="41" /></a>A new poll released Friday shows Pennsylvania's registered voters favor renaming Penn State's football stadium in honor of longtime coach Joe Paterno, who died in January.]]></description>
+<pubDate>Sun, 18 Mar 2012 11:12:36 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7695232/joe-paterno-favored-renaming-penn-state-nittany-lions-stadium-polls-shows</guid>
+<link>http://espn.go.com/college-football/story/_/id/7695232/joe-paterno-favored-renaming-penn-state-nittany-lions-stadium-polls-shows</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Sandusky's lawyer asks for accusers' records]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7697397/jerry-sandusky-lawyer-asks-records-accusers&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7697397/jerry-sandusky-lawyer-asks-records-accusers" height="49" width="41" /></a>Penn State trustees have unanimously approved structural changes that board leaders say will help improve openness and governance.]]></description>
+<pubDate>Sun, 18 Mar 2012 11:13:06 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7697397/jerry-sandusky-lawyer-asks-records-accusers</guid>
+<link>http://espn.go.com/college-football/story/_/id/7697397/jerry-sandusky-lawyer-asks-records-accusers</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[PSU officials get subpoenas in Sandusky case]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7696384/penn-state-nittany-lions-officials-get-subpoenas-jerry-sandusky-case&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7696384/penn-state-nittany-lions-officials-get-subpoenas-jerry-sandusky-case" height="49" width="41" /></a>Penn State has started implementing recommendations offered by a former FBI director leading an internal investigation into the school's handling of child sex abuse allegations against a retired assistant coach.]]></description>
+<pubDate>Sun, 18 Mar 2012 11:13:33 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7696384/penn-state-nittany-lions-officials-get-subpoenas-jerry-sandusky-case</guid>
+<link>http://espn.go.com/college-football/story/_/id/7696384/penn-state-nittany-lions-officials-get-subpoenas-jerry-sandusky-case</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Wisconsin officials shocked by Chadima case]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7697590/wisconsin-badgers-barry-alvarez-bret-bielema-shocked-john-chadima-case-report-says&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7697590/wisconsin-badgers-barry-alvarez-bret-bielema-shocked-john-chadima-case-report-says" height="49" width="41" /></a>Top athletic officials at the University of Wisconsin-Madison were shocked when allegations of sexual impropriety surfaced against a then-assistant athletic director, according to an investigative report released Friday.]]></description>
+<pubDate>Sun, 18 Mar 2012 11:14:33 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7697590/wisconsin-badgers-barry-alvarez-bret-bielema-shocked-john-chadima-case-report-says</guid>
+<link>http://espn.go.com/college-football/story/_/id/7697590/wisconsin-badgers-barry-alvarez-bret-bielema-shocked-john-chadima-case-report-says</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Arkansas lineman Peacock faces theft charge]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7700626/arkansas-razorbacks-lineman-jason-peacock-arrested-theft-property&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7700626/arkansas-razorbacks-lineman-jason-peacock-arrested-theft-property" height="49" width="41" /></a>Arkansas offensive lineman Jason Peacock was arrested Friday night for using a stolen debit card to buy approximately $35 worth of gas.]]></description>
+<pubDate>Sun, 18 Mar 2012 11:15:04 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7700626/arkansas-razorbacks-lineman-jason-peacock-arrested-theft-property</guid>
+<link>http://espn.go.com/college-football/story/_/id/7700626/arkansas-razorbacks-lineman-jason-peacock-arrested-theft-property</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Matt Fortuna]]></dc:creator>
+<title><![CDATA[ND's Carlisle OK to play in '12; Shepard leaves]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7691002/notre-dame-fighting-irish-amir-carlisle-ok-play-2012-tee-shepard-leaves-school&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7691002/notre-dame-fighting-irish-amir-carlisle-ok-play-2012-tee-shepard-leaves-school" height="49" width="41" /></a>Notre Dame early enrollee Tee Shepard has returned home to Fresno, Calif., while USC transfer Amir Carlisle had his waiver request approved by the NCAA, making the running back eligible to play in 2012, the school said Thursday.]]></description>
+<pubDate>Thu, 15 Mar 2012 19:50:25 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7691002/notre-dame-fighting-irish-amir-carlisle-ok-play-2012-tee-shepard-leaves-school</guid>
+<link>http://espn.go.com/college-football/story/_/id/7691002/notre-dame-fighting-irish-amir-carlisle-ok-play-2012-tee-shepard-leaves-school</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Ex-Fiesta Bowl exec pleads guilty to conspiracy]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7692314/former-fiesta-bowl-coo-natalie-wisneski-pleads-guilty-conspiracy&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7692314/former-fiesta-bowl-coo-natalie-wisneski-pleads-guilty-conspiracy" height="49" width="41" /></a>The former chief operating officer of the Fiesta Bowl pleaded guilty Thursday to a felony federal conspiracy charge for her role in a fraudulent campaign-contribution scheme.]]></description>
+<pubDate>Sun, 18 Mar 2012 11:15:31 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7692314/former-fiesta-bowl-coo-natalie-wisneski-pleads-guilty-conspiracy</guid>
+<link>http://espn.go.com/college-football/story/_/id/7692314/former-fiesta-bowl-coo-natalie-wisneski-pleads-guilty-conspiracy</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Okla. St. front-loads Gundy's $30.3M contract]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7688027/oklahoma-state-cowboys-front-load-mike-gundy-303-million-eight-year-contract&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7688027/oklahoma-state-cowboys-front-load-mike-gundy-303-million-eight-year-contract" height="49" width="41" /></a>Oklahoma State football coach Mike Gundy's new eight-year, $30.3 million contract includes a big boost at the beginning.]]></description>
+<pubDate>Wed, 14 Mar 2012 17:11:57 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7688027/oklahoma-state-cowboys-front-load-mike-gundy-303-million-eight-year-contract</guid>
+<link>http://espn.go.com/college-football/story/_/id/7688027/oklahoma-state-cowboys-front-load-mike-gundy-303-million-eight-year-contract</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[Arkansas loses LB Highsmith to pectoral injury]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7687694/arkansas-razorbacks-alonzo-highsmith-spring-injury&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7687694/arkansas-razorbacks-alonzo-highsmith-spring-injury" height="49" width="41" /></a>Arkansas coach Bobby Petrino says senior linebacker Alonzo Highsmith will miss spring practice after injuring his left pectoral muscle.]]></description>
+<pubDate>Wed, 14 Mar 2012 16:28:12 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7687694/arkansas-razorbacks-alonzo-highsmith-spring-injury</guid>
+<link>http://espn.go.com/college-football/story/_/id/7687694/arkansas-razorbacks-alonzo-highsmith-spring-injury</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[ESPN.com news services]]></dc:creator>
+<title><![CDATA[North Carolina football banned from postseason]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7677271/north-carolina-tar-heels-handed-postseason-ban-2012-ncaa&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7677271/north-carolina-tar-heels-handed-postseason-ban-2012-ncaa" height="49" width="41" /></a>The NCAA has placed North Carolina's football program on three years' probation and banned it from the 2012 postseason, the governing body announced Monday.]]></description>
+<pubDate>Mon, 12 Mar 2012 18:02:46 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7677271/north-carolina-tar-heels-handed-postseason-ban-2012-ncaa</guid>
+<link>http://espn.go.com/college-football/story/_/id/7677271/north-carolina-tar-heels-handed-postseason-ban-2012-ncaa</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[David Ubben]]></dc:creator>
+<title><![CDATA[Donation brings Baylor closer to new stadium]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7682227/baylor-bears-closer-new-campus-football-stadium-large-donation&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7682227/baylor-bears-closer-new-campus-football-stadium-large-donation" height="49" width="41" /></a>Baylor received the biggest gift in university history for its new on-campus football stadium alongside the Brazos River alongside Interstate 35, according to a release on Tuesday.]]></description>
+<pubDate>Tue, 13 Mar 2012 18:34:20 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7682227/baylor-bears-closer-new-campus-football-stadium-large-donation</guid>
+<link>http://espn.go.com/college-football/story/_/id/7682227/baylor-bears-closer-new-campus-football-stadium-large-donation</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[David Ching]]></dc:creator>
+<title><![CDATA[Richt, Grantham agree with UGA on extensions]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7676760/georgia-bulldogs-mark-richt-todd-grantham-agree-contract-extensions&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7676760/georgia-bulldogs-mark-richt-todd-grantham-agree-contract-extensions" height="49" width="41" /></a>After leading Georgia to its first SEC East title in six seasons last fall, Georgia coach Mark Richt and defensive coordinator Todd Grantham agreed to terms on contract extensions, it was announced Monday.]]></description>
+<pubDate>Mon, 12 Mar 2012 19:43:46 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7676760/georgia-bulldogs-mark-richt-todd-grantham-agree-contract-extensions</guid>
+<link>http://espn.go.com/college-football/story/_/id/7676760/georgia-bulldogs-mark-richt-todd-grantham-agree-contract-extensions</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[Associated Press]]></dc:creator>
+<title><![CDATA[TCU CB formally charged in drug investigation]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/dallas/ncf/story/_/id/7677421/devin-johnson-tcu-horned-frogs-formally-charged-drug-investigation&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/dallas/ncf/story/_/id/7677421/devin-johnson-tcu-horned-frogs-formally-charged-drug-investigation" height="49" width="41" /></a>One of four TCU football players accused of selling marijuana as part of a six-month drug sting has been charged.]]></description>
+<pubDate>Mon, 12 Mar 2012 13:39:00 PDT</pubDate>
+<guid>http://espn.go.com/dallas/ncf/story/_/id/7677421/devin-johnson-tcu-horned-frogs-formally-charged-drug-investigation</guid>
+<link>http://espn.go.com/dallas/ncf/story/_/id/7677421/devin-johnson-tcu-horned-frogs-formally-charged-drug-investigation</link>
+</item>
+
+<item>
+<dc:creator><![CDATA[David Ching]]></dc:creator>
+<title><![CDATA[Georgia CB Smith facing marijuana charge]]></title>
+<description><![CDATA[
+<a href="http://api.tweetmeme.com/share?url=http://espn.go.com/college-football/story/_/id/7675951/branden-smith-georgia-bulldogs-arrested-marijuana-charge-alabama&amp;service=bit.ly&amp;source=espn"><img style="padding-left:10px;" align="right" border="0" style="border:none;" src="http://api.tweetmeme.com/imagebutton.gif?url=http://espn.go.com/college-football/story/_/id/7675951/branden-smith-georgia-bulldogs-arrested-marijuana-charge-alabama" height="49" width="41" /></a>Georgia cornerback Branden Smith was arrested and charged with misdemeanor marijuana possession in Alabama late Sunday night, police said. ]]></description>
+<pubDate>Mon, 12 Mar 2012 15:58:21 PDT</pubDate>
+<guid>http://espn.go.com/college-football/story/_/id/7675951/branden-smith-georgia-bulldogs-arrested-marijuana-charge-alabama</guid>
+<link>http://espn.go.com/college-football/story/_/id/7675951/branden-smith-georgia-bulldogs-arrested-marijuana-charge-alabama</link>
+</item>
+
+</channel></rss>

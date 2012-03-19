@@ -1,6 +1,6 @@
 
 targetdir = football
-prodserver = www.rexfordroad.com
+prodserver = ftp.rexfordroad.com
 testserver = 192.168.1.12
 
 PRODDIR=/home/chadley/web/football/prod/$(targetdir)
@@ -15,6 +15,7 @@ prodobjs=$(patsubst %.aspx,$(PRODDIR)/%.aspx,$(wildcard *.aspx)) \
 	$(patsubst %.vb,$(PRODDIR)/%.vb,$(wildcard *.vb)) \
 	$(patsubst %.css,$(PRODDIR)/%.css,$(wildcard *.css)) \
 	$(patsubst %.xsl,$(PRODDIR)/%.xsl,$(wildcard *.xsl)) \
+	$(patsubst %.xml,$(PRODDIR)/%.xml,$(wildcard *.xml)) \
 	$(patsubst %.gif,$(PRODDIR)/%.gif,$(wildcard *.gif)) \
 	$(patsubst %.jpg,$(PRODDIR)/%.jpg,$(wildcard *.jpg)) \
 	$(patsubst %.png,$(PRODDIR)/%.png,$(wildcard *.png)) \
@@ -49,6 +50,10 @@ $(PRODDIR)/%.js: %.js
 	cp $< $@
 	
 $(PRODDIR)/%.vb: %.vb
+	devput.pl --hostname $(prodserver) -r $< -l $< -d $(PRODFTPDIR)
+	cp $< $@
+
+$(PRODDIR)/%.xml: %.xml
 	devput.pl --hostname $(prodserver) -r $< -l $< -d $(PRODFTPDIR)
 	cp $< $@
 

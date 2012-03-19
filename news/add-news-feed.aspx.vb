@@ -5,31 +5,27 @@ Imports System.ComponentModel
 Imports System.Data
 Imports System.Data.SqlClient
 
-Partial Class addnewsitem
+Partial Class news_add_news_feed
     Inherits System.Web.UI.Page
 
-    Private myconnstring As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
-    Private myname As String = ""
 
-    Protected Sub Button1_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles Button1.Click
+    Private myconnstring As String = System.Configuration.ConfigurationSettings.AppSettings("connString")
+
+    Protected Sub Button1_Click(sender As Object, e As System.EventArgs) Handles Button1.Click
         Try
             Using con As New SqlConnection(myconnstring)
                 con.Open()
                 Dim sql As String
                 Dim cmd As SqlCommand
 
-                sql = "insert into fb_news_items (item_title, item_body, item_excerpt, item_author, item_source_url, team_name) values " _
-                & "(@item_title, @item_body, @item_excerpt, @item_author, @item_source_url, @team_name)"
+                sql = "insert into fb_rss_feeds (feed_title, feed_url) values " _
+                & "(@feed_title, @feed_url)"
 
 
                 cmd = New SqlCommand(sql, con)
 
-                cmd.Parameters.Add(GetParm("item_title")).Value = txtTitle.Text
-                cmd.Parameters.Add(GetParm("item_body")).Value = txtBody.Text
-                cmd.Parameters.Add(GetParm("item_excerpt")).Value = txtExcerpt.Text
-                cmd.Parameters.Add(GetParm("item_author")).Value = myname
-                cmd.Parameters.Add(GetParm("item_source_url")).Value = txtSourceURL.Text
-                cmd.Parameters.Add(GetParm("team_name")).Value = txtTeamName.Text
+                cmd.Parameters.Add(GetParm("feed_title")).Value = txtTitle.Text
+                cmd.Parameters.Add(GetParm("feed_url")).Value = txtURL.Text
                 cmd.ExecuteNonQuery()
 
             End Using
@@ -37,7 +33,6 @@ Partial Class addnewsitem
             Throw (ex)
         End Try
         Response.Redirect("/football/news/")
-
     End Sub
     Private Function GetParm(ByVal t As String) As SqlParameter
         Select Case t.tolower()
@@ -55,12 +50,4 @@ Partial Class addnewsitem
                 Return New SQLParameter("@" & t, SQLDbType.VarChar)
         End Select
     End Function
-
-    Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-
-        If Session("username") <> "" Then
-            myname = Session("username")
-        End If
-
-    End Sub
 End Class

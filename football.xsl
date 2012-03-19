@@ -6,12 +6,15 @@
 		<xsl:for-each select="rss/channel">
 			<h2><a href="{link}" target="_blank"><xsl:value-of select="title" /></a></h2>
 		</xsl:for-each>
-
-		<ul>
 			<xsl:for-each select="rss/channel/item">
-				<li><a href="{link}" target="_blank"><strong><xsl:value-of select="title" /></strong></a></li>
+				<p>
+					<a href="{link}" target="_blank">
+						<strong>
+							<xsl:value-of select="title" />
+						</strong>
+					</a>
+				</p>
 			</xsl:for-each>
-		</ul>
 	</xsl:template>
 
 </xsl:stylesheet>

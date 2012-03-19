@@ -15,10 +15,6 @@
 	catch
 	end try
 	
-	if myname = "" then
-        Dim returnurl As String = "/football/news"
-        Response.Redirect("/football/login.aspx?returnurl=" & returnurl, True)
-	end if
     Dim team_name As String = ""
     Dim url_team_name As String = ""
 
@@ -56,8 +52,7 @@
     If myname = "chadley" Then
 		        %><p><a href="addnewsitem.aspx?team_name=<% = url_team_name %>">Add News Item for <% = team_name %></a></p><%
 
-    End If
-		       
+    End If    
     Server.Execute("footer.aspx")
     %>
 		        

@@ -23,11 +23,6 @@
 		http_host = request.servervariables("HTTP_HOST")
 	catch
 	end try
-	
-	if myname = "" then
-		dim returnurl as string = "/football"
-		response.redirect("login.aspx?returnurl=" & returnurl, true)
-	end if
 
 	dim pool_id as integer 
 	dim pool_id_found as boolean = false
@@ -53,279 +48,7 @@
 <head>
 <title><% = http_host %></title>
 <style type="text/css" media="all">@import "/football/style4.css";</style>
-<style>
-
-	caption {
-		padding: 0.5em 0.6em 0.8em;
-		font-size: 16px;
-		font-weight: bold;
-		text-align: left;
-		color: #000;
-		background: LightSteelBlue;
-	}
-	
-	.table_subheader {
-		font-size: 11px;
-		font-weight: bold;
-		background: Silver;
-	}
-	.table_header {
-		font-size: 12px;
-		font-weight: bold;
-		background: Silver;
-	}	
-	.table_header td {
-		font-size: 12px;
-		font-weight: bold;
-		background: Silver;
-	}	
-	.table_header a {
-		color: #000000;
-		font-size: 11px;
-		font-weight: bold;
-	}
-
-	.RowLight {
-		background: WhiteSmoke;
-	}
-
-	.RowDark {
-		background: Gainsboro;
-	}
-
-	.content {
-		border: none;
-		padding: 1px;
-		margin:0px 0px 20px 170px;
-	}
-	table {
-		font-size: 10px;
-		font-weight: normal;
-	}
-	.score_cell {
-		text-align: right;
-	}
-
-	#MyPoolsTable {
-		border-collapse: collapse;
-		border: 2px solid #3f7c5f;
-		font: normal 80%/140% arial, verdana, helvetica, sans-serif;
-		font-size: 14px;
-		color: #000;
-		background: #fff;
-	}
-
-	#MyPoolsTable caption {
-		padding: 0 0.6em 0.8em;
-		font-size: 18px;
-		font-weight: bold;
-		text-align: left;
-		color: #000;
-		background: transparent;
-	}
-
-	#MyPoolsTable td, th {
-		border: 1px solid #e0e0e0;
-		padding: 0.5em;
-	}
-
-	#MyPoolsTable thead th {
-		border: 1px solid #e0e0e0;
-		text-align: left;
-		font-size: 14px;
-		font-weight: bold;
-		background: #c6d7cf;
-	}
-	
-	tfoot th, tfoot td {
-		border: 1px solid #e0e0e0;
-		text-align: left;
-		font-size: 14px;
-		background: #e8e8cf;
-	}
-	tfoot th {
-		font-weight: bold;
-	}
-	tbody td a {
-		background: transparent;
-		color: #00c;
-		text-decoration: none;
-	}
-	tbody td a:hover {
-		background: transparent;
-		color: #00c;
-		text-decoration: underline;
-	}
-	tbody th a {
-		background: transparent;
-		color: #3f7c5f;
-		text-decoration: underline;
-		font-weight: bold;
-	}
-	tbody th a:visited {
-		color: #b98b00;
-	}
-	tbody th, tbody td {
-		vertical-align: top;
-		text-align: left;
-	}
-	tfoot td {
-		border: 1px solid #996;
-	}
-		
-	.actions_column {
-		width: 150px;
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-		background: #E1E4F2;
-		text-align: left;
-		border-width: 0px 1px 1px 0px;
-		border-color: DarkGray;
-		border-style: solid;
-	}
-	.actions_column a {
-		display: block; 
-		text-decoration: none;
-		border: 1px solid gray;   
-		border-color: rgb(90%,85%,80%) rgb(60%,55%,50%) rgb(60%,55%,50%) rgb(90%,85%,80%); 
-		color: navy;
-		background: rgb(92%,91%,90%) url(images/link-base.gif) 3px 50% no-repeat;
-		padding: 2px 10px 1px 20px;
-		margin: 0;
-		font: bold 100% Arial, Verdana, sans-serif;
-	}
-
-	.actions_column a:hover {
-		background: rgb(92%,91%,90%) url(images/link-hover.gif) 3px 50% no-repeat;
-	}
-
-	.pool_name {	
-		background: #E1E4F2;
-		border-width: 1px 1px 0px 1px;
-		border-color: DarkGray;
-		border-style: solid;
-
-	}
-	.pool_name a {
-		color: #030303;
-		font:16px verdana, arial, helvetica, sans-serif;
-		font-weight: bold;
-		text-decoration: none;
-	}
-
-	.pool_owner {
-		background: #F5F5FF;
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-		border-width: 0px 1px 1px 1px;
-		border-color: DarkGray;
-		border-style: solid;
-	}
-	.pool_desc {
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-		background: #E1E4F2;
-		border-width: 0px 0px 1px 1px;
-		border-color: DarkGray;
-		border-style: solid;
-		padding: 2px 2px 2px 2px;
-	}
-
-
-
-	#showthreads .tborder
-	{
-		background: #D1D1E1;
-		color: #000000;
-		border: 1px solid #0B198C;
-	}
-	
-	#showthreads .thread_title {	
-		background: #F5F5FF;
-		color: #000000;
-		width: 500px;
-	}
-	#showthreads .last_post {
-		background: #E1E4F2;
-		color:#333;
-		font:10px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-	}
-	#showthreads .title_text {
-		color:#333;
-		font:14px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-	}
-	#showthreads .author_text {
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-	}
-	#showthreads .time_text {
-		color:#333;
-		font:10px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-	}
-	#showthreads .poster_text {
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-	}
-	#showthreads .replies {
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-		background: #F5F5FF;
-		text-align: right;
-	}
-	#showthreads .views {
-		color:#333;
-		font:12px verdana, arial, helvetica, sans-serif;
-		text-decoration: none;
-		background: #E1E4F2;
-		text-align: right;
-	}
-	
-	#showthreads .thead
-	{
-		background: #5C7099 url(images/gradients/gradient_thead.gif) repeat-x top left;
-		color: #FFFFFF;
-		font: bold 14px tahoma, verdana, geneva, lucida, 'lucida grande', arial, helvetica, sans-serif;
-	}
-	#showthreads .thead a:link
-	{
-		color: #FFFFFF;
-	}
-	#showthreads .thead a:visited
-	{
-		color: #FFFFFF;
-	}
-	#showthreads .thead a:hover, .thead a:active
-	{
-		color: #FFFF00;
-	}
-	#showthreads .tfoot
-	{
-		background: #3E5C92;
-		color: #E0E0F6;
-	}
-	#showthreads .tfoot a:link
-	{
-		color: #E0E0F6;
-	}
-	#showthreads .tfoot a:visited
-	{
-		color: #E0E0F6;
-	}
-	#showthreads .tfoot a:hover, .tfoot a:active
-	{
-		color: #FFFF66;
-	}
-
-</style>
+<style type="text/css" media="all">@import "/football/fbstyle.css";</style>
 </head>
 
 <body>
@@ -357,7 +80,15 @@
 
 
 	if myname = "" then
-		response.write("You are not logged in.<br />")
+		Dim newsitems As New ArrayList
+			newsitems = fb.GetNewsItems()
+			Response.Write(fb.getrssfeed(Server.MapPath("/football/espn.xml"), Server.MapPath("/football/football.xsl")))
+			Response.Write("<br/><br/>")
+			Response.Write(fb.getrssfeed(Server.MapPath("/football/espn-college.xml"), Server.MapPath("/football/football.xsl")))
+			Response.Write("<br/><br/>")
+			Response.Write(fb.getrssfeed(Server.MapPath("/football/fox-nfl.xml"), Server.MapPath("/football/football.xsl")))
+			               
+			
 	else
 		if mypools.tables.count > 0 then
 
