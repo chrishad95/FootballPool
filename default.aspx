@@ -49,6 +49,20 @@
 <title><% = http_host %></title>
 <style type="text/css" media="all">@import "/football/style4.css";</style>
 <style type="text/css" media="all">@import "/football/fbstyle.css";</style>
+<% Server.Execute("/football/meta.aspx") %>
+<style>
+ 
+ .content p 
+ {
+     padding: 10 10 10 10;
+ }
+ 
+.content a 
+{
+font-size: 2.0em;
+}
+
+</style>
 </head>
 
 <body>
@@ -83,10 +97,12 @@
 		Dim newsitems As New ArrayList
 			newsitems = fb.GetNewsItems()
 			Response.Write(fb.getrssfeed(Server.MapPath("/football/espn.xml"), Server.MapPath("/football/football.xsl")))
-			Response.Write("<br/><br/>")
+			Server.Execute("google_ad_leaderboard.aspx")
 			Response.Write(fb.getrssfeed(Server.MapPath("/football/espn-college.xml"), Server.MapPath("/football/football.xsl")))
-			Response.Write("<br/><br/>")
+			Server.Execute("google_ad_leaderboard.aspx")
 			Response.Write(fb.getrssfeed(Server.MapPath("/football/fox-nfl.xml"), Server.MapPath("/football/football.xsl")))
+			Server.Execute("google_ad_leaderboard.aspx")
+			Response.Write(fb.getrssfeed(Server.MapPath("/football/nfl-news.xml"), Server.MapPath("/football/football.xsl")))
 			               
 			
 	else

@@ -144,6 +144,7 @@ options_ht = fb.getPoolOptions(pool_id:=pool_id)
 
 <html>
 <head>
+	<% Server.Execute("/football/meta.aspx") %>
 	<title>Show Picks - <% = pool_name %> - [<% = myname %>]</title>
 	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	<style type="text/css">

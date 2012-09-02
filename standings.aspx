@@ -125,6 +125,7 @@ end if
 
 <html>
 <head>
+	<% Server.Execute("/football/meta.aspx") %>
 	<title>Pool Standings - <% = http_host %> - [<% = myname %>]</title>
 	<style type="text/css" media="screen">@import "/football/style4.css";</style>
 	<style type="text/css">

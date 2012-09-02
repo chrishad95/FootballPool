@@ -15,181 +15,195 @@
 			<height>39</height>
 		</image>
 		<ttl>10</ttl>
-		<lastBuildDate>2012-03-19T20:32:57.808Z</lastBuildDate>
-		<pubDate>2012-03-19T20:32:57.808Z</pubDate>
+		<lastBuildDate>2012-09-02T15:15:02.680Z</lastBuildDate>
+		<pubDate>2012-09-02T15:15:02.680Z</pubDate>
 		<atom:link rel="hub" href="http://www.pheedo.com/api/hub/"/>
 		<atom:link rel="self" href="http://feeds.pheedo.com/feedout/syndicatedContent_categoryId_5" type="application/rss+xml"/>
-		<item redirect="false">
-			<title>Source: Manning, Broncos work on deal</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=36bb4bca38df3d5b07dfe40f49244bc3</link>
-			<pheedo:origLink>http://msn.foxsports.com/nfl/story/Peyton-Manning-working-deal-with-Denver-Broncos-031912</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/Peyton-Manning-working-deal-with-Denver-Broncos-031912</guid>
-			<category>NFC</category>
-			<description>Looks like Manning is working a deal with the Broncos.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=36bb4bca38df3d5b07dfe40f49244bc3&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=36bb4bca38df3d5b07dfe40f49244bc3&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Mon, 19 Mar 2012 16:10:15 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/19/hellodenver-pi_20120319123610340_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/c87490b9e5a8d7ff7ab5e8c61e68e165/hellodenver-pi_20120319123610340_335_220.JPG"
-                    length=""
-                    type="image/jpeg"/>
-		</item>
 		<item redirect="true">
-			<title>Jay Glazer has the inside scoop on Peyton Manning and the Denver Broncos</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=0e405f1547d02127d2878fcfc1287c87</link>
-			<pheedo:origLink>http://msn.foxsports.com/video/NFL?vid=a8f49c8c-c56e-4a8d-a335-a61145471a26</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/video-redirect-Jay-Glazer-inside-scoop-on-Peyton-Manning-and-Denver-Broncos-031912</guid>
+			<title>MJD finally reports to Jags </title>
+			<link>http://www.pheedcontent.com/click.phdo?i=cbf5170df2c7690ea500a85f4a95cc6c</link>
+			<pheedo:origLink>http://profootball.scout.com/2/1217355.html</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/mjd-finally-reports-to-jags-</guid>
 			<category>NFL</category>
-			<description>Broncos thought all along they'd land Manning. Here's why.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=0e405f1547d02127d2878fcfc1287c87&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=0e405f1547d02127d2878fcfc1287c87&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Mon, 19 Mar 2012 17:39:41 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/19/milehighsmiles-pi_20120319135331378_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/d36682b71eee0d78087a48729dfb1150/milehighsmiles-pi_20120319135331378_335_220.JPG"
-                    length=""
-                    type="image/jpeg"/>
-		</item>
-		<item redirect="false">
-			<title>Broncos' offer includes several benefits</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=acc799693bc6396e4abdb4eadd29f021</link>
-			<pheedo:origLink>http://msn.foxsports.com/nfl/story/Peyton-Manning-Denver-Broncos-Tim-Tebow-offer-includes-several-benefits-031912</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/Peyton-Manning-Denver-Broncos-Tim-Tebow-offer-includes-several-benefits-031912</guid>
-			<category>NFL</category>
-			<description>How were Broncos' brass able to lure Peyton to Denver?&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=acc799693bc6396e4abdb4eadd29f021&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=acc799693bc6396e4abdb4eadd29f021&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Mon, 19 Mar 2012 19:17:39 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/19/peyup-pi_20120319151006402_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/bb63629837d2bbb5ecc37d7180213e29/peyup-pi_20120319151006402_335_220.JPG"
-                    length=""
-                    type="image/jpeg"/>
-		</item>
-		<item redirect="true">
-			<title>Tennessee Titans owner Bud Adam is obviously disappointed</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=b8096c9e112d964e5d9cafcb6de48e62</link>
-			<pheedo:origLink>http://profootball.scout.com/a.z?s=127&amp;amp;p=9&amp;amp;c=2&amp;amp;cid=1169176&amp;amp;nid=6109049&amp;amp;fhn=1</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/tennessee-titans-owner-bud-adam-is-obviously-disappointed</guid>
-			<category>NFL</category>
-			<description>Tennessee Titans owner Bud Adams expressed disappointment upon
-learning that Peyton Manning has chosen the Denver Broncos over the
-Titans and a competing bid from the San Francisco 49ers.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=b8096c9e112d964e5d9cafcb6de48e62&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=b8096c9e112d964e5d9cafcb6de48e62&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Mon, 19 Mar 2012 17:07:53 GMT</pubDate>
+			<description/>
+			<pubDate>Sun, 02 Sep 2012 14:58:17 GMT</pubDate>
 			<pheedo:origEnclosureLink>http://msn.foxsports.com/fe/img/foxsports_logo_65x99.jpg</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/ce86d0500523b3681bde9455dd49ca0d/foxsports_logo_65x99.jpg" length="3852"
+			<enclosure url="http://www.pheedo.com/e/d6aa123d52692d40de110553274c605e/foxsports_logo_65x99.jpg" length="3852"
                     type="image/jpeg"/>
 		</item>
 		<item redirect="false">
-			<title>NFL free agency: Follow all the moves</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=9f61cf642655de8732c889a20ca9d0c3</link>
-			<pheedo:origLink>http://msn.foxsports.com/nfl/story/2012-NFL-free-agency-monday-roster-moves-signings-031912</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/2012-NFL-free-agency-monday-roster-moves-signings-031912</guid>
-			<category>Lex Hilliard</category>
-			<description>Smith looking for a new home.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=9f61cf642655de8732c889a20ca9d0c3&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=9f61cf642655de8732c889a20ca9d0c3&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Mon, 19 Mar 2012 12:50:43 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/18/outoftown-pi_20120318180545938_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/f47c15ca5a42ef3cf80218c7ba6a6fa7/outoftown-pi_20120318180545938_335_220.JPG"
-                    length=""
-                    type="image/jpeg"/>
-		</item>
-		<item redirect="false">
-			<title>Report: Smith talking with Dolphins</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=8773fdec89fc8e983e2fec0bae45a793</link>
-			<pheedo:origLink>http://msn.foxsports.com/nfl/story/AP-Source-free-agent-quarterback-Alex-Smith-visits-with-Miami-Dolphins-Sunday-031812</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/AP-Source-free-agent-quarterback-Alex-Smith-visits-with-Miami-Dolphins-Sunday-031812</guid>
+			<title>Seattle surprisingly releases Winslow</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=5345fb6e5a41913377e4cefbf2e94d5b</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/seattle-seahawks-release-tight-end-kellen-winslow-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/seattle-seahawks-release-tight-end-kellen-winslow-090112</guid>
 			<category>MSN Headline 14</category>
-			<description>San Francisco 49ers free agent quarterback Alex Smith has left the Miami Dolphins' complex after a 51/2-hour meeting with the team.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+			<description>The Seattle Seahawks have waived tight end Kellen Winslow,
+keeping true to past form of tinkering with their roster even after
+final training camp cuts are made.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
 &lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=8773fdec89fc8e983e2fec0bae45a793&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=8773fdec89fc8e983e2fec0bae45a793&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=5345fb6e5a41913377e4cefbf2e94d5b&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=5345fb6e5a41913377e4cefbf2e94d5b&amp;p=1&quot;/&gt;&lt;/a&gt;
 &lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
-			<pubDate>Sun, 18 Mar 2012 10:22:12 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/01/22/730_20120122024506885_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/86d417efc351ecf02500193a3f9fcd85/730_20120122024506885_335_220.JPG"
-                    length=""
-                    type="image/jpeg"/>
-		</item>
-		<item redirect="true">
-			<title>Matt Flynn heads to Seattle Seahawks</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=5576090aeb07ab53cebc4bc075b7d814</link>
-			<pheedo:origLink>http://profootball.scout.com/a.z?s=127&amp;amp;p=9&amp;amp;c=2&amp;amp;cid=1168912&amp;amp;nid=5578913&amp;amp;fhn=1</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/matt-flynn-heads-to-seattle-seahawks</guid>
-			<category>NFL</category>
-			<description>Seahawks lock down sought-after QB.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=5576090aeb07ab53cebc4bc075b7d814&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=5576090aeb07ab53cebc4bc075b7d814&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Sun, 18 Mar 2012 21:34:49 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/18/031812-NFL-Their-New-Guy-EN-PI_20120318180307926_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/12dd775721991419f366a4a2ed167a39/031812-NFL-Their-New-Guy-EN-PI_20120318180307926_335_220.JPG"
+			<pubDate>Sat, 01 Sep 2012 18:25:18 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/09/01/730_20120901183934251_335_220.JPG</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/40610c23f94564a8c015416ec07cfb36/730_20120901183934251_335_220.JPG"
                     length=""
                     type="image/jpeg"/>
 		</item>
 		<item redirect="false">
-			<title>Atlanta sports writer Bisher dies at 93</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=20958736827f44940f553606c847affb</link>
-			<pheedo:origLink>http://msn.foxsports.com/nfl/story/renowned-atlanta-sports-writer-furman-bisher-dies-at-93-031912</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/renowned-atlanta-sports-writer-furman-bisher-dies-at-93-031912</guid>
-			<category>NFL</category>
-			<description>Renowned sports writer Furman Bisher, who spent 59 years with The
-Atlanta Journal-Constitution before retiring in 2009, died Sunday
-from a heart attack at the age of 93.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+			<title>Notable vets among NFL roster cuts</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=24fa96f361d491f135ffcd615caf0b5c</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/roster-cuts-NFL-veterans-new-england-patriots-Deion-Branch-Dan-Koppen-083112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/roster-cuts-NFL-veterans-new-england-patriots-Deion-Branch-Dan-Koppen-083112</guid>
+			<category>Broncos</category>
+			<description>Pats might want to appease Brady after cutting one of his top
+targets.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
 &lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=20958736827f44940f553606c847affb&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=20958736827f44940f553606c847affb&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=24fa96f361d491f135ffcd615caf0b5c&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=24fa96f361d491f135ffcd615caf0b5c&amp;p=1&quot;/&gt;&lt;/a&gt;
 &lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
 </description>
-			<pubDate>Mon, 19 Mar 2012 09:40:42 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2011/01/06/FOXSports-logo-PI_20110106152744153_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/9b38f9a93e4eeabfa6962f5d9257a06c/FOXSports-logo-PI_20110106152744153_335_220.JPG"
+			<pubDate>Fri, 31 Aug 2012 20:59:20 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/08/31/083112-NFL-Patriots-Tom-Brady-OLIVE-BRANCH-DG-PI_20120831161516346_335_220.JPG</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/517d1100b51f1eeb9cf06192160a3978/083112-NFL-Patriots-Tom-Brady-OLIVE-BRANCH-DG-PI_20120831161516346_335_220.JPG"
                     length=""
                     type="image/jpeg"/>
 		</item>
 		<item redirect="false">
-			<title>Peyton impressive in Titans workout</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=1e73b415110a61d7b58cccae6d7d48a6</link>
-			<pheedo:origLink>http://msn.foxsports.com/nfl/story/peyton-manning-impressive-in-work-out-for-Tennessee-Titans-031712</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/peyton-manning-impressive-in-work-out-for-Tennessee-Titans-031712</guid>
+			<title>NFL, officials' union meet again</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=8376f153069af04dfb619bbcb64c29c1</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/nfl-officials-union-meet-again-fail-to-reach-agreement-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/nfl-officials-union-meet-again-fail-to-reach-agreement-090112</guid>
 			<category>NFL</category>
-			<description>Peyton Manning worked out for Tennessee on Saturday in
-Knoxville, Titans general manager Ruston Webster said.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+			<description>The NFL and its on-field officials' union failed to reach an
+agreement when they met Saturday morning, making it more likely
+replacement officials will work the league's first week of
+regular-season games.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
 &lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=1e73b415110a61d7b58cccae6d7d48a6&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=1e73b415110a61d7b58cccae6d7d48a6&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=8376f153069af04dfb619bbcb64c29c1&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=8376f153069af04dfb619bbcb64c29c1&amp;p=1&quot;/&gt;&lt;/a&gt;
 &lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
-			<pubDate>Sat, 17 Mar 2012 22:02:52 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/16/031612-NFL-Peyton-Manning-PRIVATE-PRACTICE-JW-PI_20120316110653588_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/b724e27480d6fc52c3fa15671524785b/031612-NFL-Peyton-Manning-PRIVATE-PRACTICE-JW-PI_20120316110653588_335_220.JPG"
+			<pubDate>Sat, 01 Sep 2012 18:08:54 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://msn.foxsports.com/fe/img/foxsports_logo_65x99.jpg</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/8d78975421ba4ea4f561a6c2a7d0f00a/foxsports_logo_65x99.jpg" length="3852"
+                    type="image/jpeg"/>
+		</item>
+		<item redirect="false">
+			<title>Witten hoping to play in opener</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=1d5692319753cfa54f9568c01a9e2127</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/jason-witten-in-pads-dallas-cowboys-hopes-to-play-in-opener-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/jason-witten-in-pads-dallas-cowboys-hopes-to-play-in-opener-090112</guid>
+			<category>Unassigned Players</category>
+			<description>Dallas Cowboys tight end Jason Witten was on the practice field
+in pads and hopeful that he will be able to play in the season
+opener.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=1d5692319753cfa54f9568c01a9e2127&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=1d5692319753cfa54f9568c01a9e2127&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
+			<pubDate>Sat, 01 Sep 2012 16:17:05 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://msn.foxsports.com/fe/img/foxsports_logo_65x99.jpg</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/c8049ba31a4dbeb3ce6993b5481b22ba/foxsports_logo_65x99.jpg" length="3852"
+                    type="image/jpeg"/>
+		</item>
+		<item>
+			<title><![CDATA[Presented By:]]></title>
+			<link>http://ads.pheedo.com/click.phdo?s=1d5692319753cfa54f9568c01a9e2127&amp;p=4</link>
+			<guid isPermaLink="false">1d5692319753cfa54f9568c01a9e2127</guid>
+			<description><![CDATA[<a href="http://ads.pheedo.com/click.phdo?s=1d5692319753cfa54f9568c01a9e2127&amp;p=4"><img alt="" style="border: 0;" border="0" src="http://ads.pheedo.com/img.phdo?s=1d5692319753cfa54f9568c01a9e2127&amp;p=4"/></a>]]></description>
+			<pubDate>Sat, 01 Sep 2012 16:17:05 GMT</pubDate>
+		</item>
+		<item redirect="false">
+			<title>Amukamara unlikely to play vs. Dallas</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=8960d13d5ce0753f371c4ea8c6240fc0</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/new-york-giants-prince-amukamara-dallas-cowboys-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/new-york-giants-prince-amukamara-dallas-cowboys-090112</guid>
+			<category>NFL</category>
+			<description>New York Giants cornerback Prince Amukamara probably will miss
+the season opener against the Dallas Cowboys because of a high
+ankle sprain.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=8960d13d5ce0753f371c4ea8c6240fc0&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=8960d13d5ce0753f371c4ea8c6240fc0&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
+			<pubDate>Sat, 01 Sep 2012 17:56:04 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://msn.foxsports.com/fe/img/foxsports_logo_65x99.jpg</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/4a0757e38daed9d8353aca0763081e87/foxsports_logo_65x99.jpg" length="3852"
+                    type="image/jpeg"/>
+		</item>
+		<item redirect="false">
+			<title>Cowboys cut QB Stephen McGee</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=3f187fe61fd28173f68daa52dc716682</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/dallas-cowboys-cut-qb-stephen-mcgee-claim-tight-end-to-replace-jason-witten-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/dallas-cowboys-cut-qb-stephen-mcgee-claim-tight-end-to-replace-jason-witten-090112</guid>
+			<category>NFL</category>
+			<description>The Dallas Cowboys have released quarterback Stephen McGee from
+their 53-man roster and claimed tight end Colin Cochart off waivers
+from Cincinnati.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=3f187fe61fd28173f68daa52dc716682&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=3f187fe61fd28173f68daa52dc716682&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
+			<pubDate>Sat, 01 Sep 2012 17:41:05 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/09/01/090112-7-NFL-Cowboys-Stephen-McGee-OB-PI_20120901190650837_335_220.JPG</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/d287005382a6aeb993e0219295e45152/090112-7-NFL-Cowboys-Stephen-McGee-OB-PI_20120901190650837_335_220.JPG"
                     length=""
                     type="image/jpeg"/>
 		</item>
-		<item redirect="true">
-			<title>Source says 49ers land Manningham</title>
-			<link>http://www.pheedcontent.com/click.phdo?i=02207d65f2da5f53271943d91eb4aa5d</link>
-			<pheedo:origLink>http://profootball.scout.com/a.z?s=127&amp;amp;p=9&amp;amp;c=2&amp;amp;cid=1168781&amp;amp;nid=5862968&amp;amp;fhn=1</pheedo:origLink>
-			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/source-says-49ers-land-manningham</guid>
-			<category>NFL</category>
-			<description>Frisco lands Super Bowl hero Manningham - is Peyton next?&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+		<item redirect="false">
+			<title>Patriots acquire WR from Rams</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=cf50164cdfbcf70070f5bc3009ff7625</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/new-england-patriots-acquire-greg-salas-from-st-louis-rams-cut-bobby-carpenter-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/new-england-patriots-acquire-greg-salas-from-st-louis-rams-cut-bobby-carpenter-090112</guid>
+			<category>NFC</category>
+			<description>The Patriots acquired receiver Greg Salas from St. Louis on
+Saturday, claimed offensive lineman Matt Tennant off waivers from
+New Orleans, and released linebacker Bobby Carpenter.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
 &lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
-&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=02207d65f2da5f53271943d91eb4aa5d&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=02207d65f2da5f53271943d91eb4aa5d&amp;p=1&quot;/&gt;&lt;/a&gt;
-&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;
-</description>
-			<pubDate>Sun, 18 Mar 2012 04:19:57 GMT</pubDate>
-			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/03/18/031712-On-Cloud-Niner-SW-PI_2012031801031168_335_220.JPG</pheedo:origEnclosureLink>
-			<enclosure url="http://www.pheedo.com/e/a3a259646b1bb0d30b61d9d27c7f5c9e/031712-On-Cloud-Niner-SW-PI_2012031801031168_335_220.JPG"
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=cf50164cdfbcf70070f5bc3009ff7625&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=cf50164cdfbcf70070f5bc3009ff7625&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
+			<pubDate>Sat, 01 Sep 2012 23:10:20 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/09/01/730_20120901191235285_335_220.JPG</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/d3c6b09f5f9c2de839c2794665513635/730_20120901191235285_335_220.JPG"
                     length=""
                     type="image/jpeg"/>
+		</item>
+		<item redirect="false">
+			<title>Vikings acquire CB Jefferson</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=8d7d6ad1aa05f729fde257d3ef34c33d</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/minnesota-vikings-arizona-cardinals-trade-aj-jefferson-cornerback-090112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/minnesota-vikings-arizona-cardinals-trade-aj-jefferson-cornerback-090112</guid>
+			<category>NFL</category>
+			<description>The Minnesota Vikings acquired cornerback A.J. Jefferson from
+the Arizona Cardinals on Saturday for a conditional draft pick in
+2013.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=8d7d6ad1aa05f729fde257d3ef34c33d&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=8d7d6ad1aa05f729fde257d3ef34c33d&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
+			<pubDate>Sat, 01 Sep 2012 21:17:06 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://msn.foxsports.com/fe/img/foxsports_logo_65x99.jpg</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/bc9993259fcdef2dac2d9c309b351980/foxsports_logo_65x99.jpg" length="3852"
+                    type="image/jpeg"/>
+		</item>
+		<item redirect="false">
+			<title>Goodell writes open letter on bounties</title>
+			<link>http://www.pheedcontent.com/click.phdo?i=f67acda66fa6a291951260ec6691d18b</link>
+			<pheedo:origLink>http://msn.foxsports.com/nfl/story/Goodell-writes-open-bounty-letter-to-NFL-fans-083112</pheedo:origLink>
+			<guid isPermaLink="false">http://msn.foxsports.com/nfl/story/Goodell-writes-open-bounty-letter-to-NFL-fans-083112</guid>
+			<category>NFL</category>
+			<description>NFL Commissioner Roger Goodell has written an open letter to
+fans explaining the NFL's strict policy against bounty systems such
+as the one league investigators have said they uncovered in New
+Orleans.&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;br clear=&quot;both&quot; style=&quot;clear: both;&quot;/&gt;
+&lt;a href=&quot;http://ads.pheedo.com/click.phdo?s=f67acda66fa6a291951260ec6691d18b&amp;p=1&quot;&gt;&lt;img alt=&quot;&quot; style=&quot;border: 0;&quot; border=&quot;0&quot; src=&quot;http://ads.pheedo.com/img.phdo?s=f67acda66fa6a291951260ec6691d18b&amp;p=1&quot;/&gt;&lt;/a&gt;
+&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://tags.bluekai.com/site/5148&quot;/&gt;&lt;img alt=&quot;&quot; height=&quot;0&quot; width=&quot;0&quot; border=&quot;0&quot; style=&quot;display:none&quot; src=&quot;http://insight.adsrvr.org/track/evnt/?ct=0:nbu4f5v&amp;adv=wouzn4v&amp;fmt=3&quot;/&gt;</description>
+			<pubDate>Fri, 31 Aug 2012 14:31:05 GMT</pubDate>
+			<pheedo:origEnclosureLink>http://static.foxsports.com/content/fscom/img/2012/04/28/042812-NFL-Roger-Goodell-PI2_20120428164501395_335_220.JPG</pheedo:origEnclosureLink>
+			<enclosure url="http://www.pheedo.com/e/94972bf6d4b3cfaa1d94ea57c519a0b2/042812-NFL-Roger-Goodell-PI2_20120428164501395_335_220.JPG"
+                    length=""
+                    type="image/jpeg"/>
+		</item>
+		<item>
+			<title><![CDATA[Presented By:]]></title>
+			<link>http://ads.pheedo.com/click.phdo?s=f67acda66fa6a291951260ec6691d18b&amp;p=4</link>
+			<guid isPermaLink="false">f67acda66fa6a291951260ec6691d18b</guid>
+			<description><![CDATA[<a href="http://ads.pheedo.com/click.phdo?s=f67acda66fa6a291951260ec6691d18b&amp;p=4"><img alt="" style="border: 0;" border="0" src="http://ads.pheedo.com/img.phdo?s=f67acda66fa6a291951260ec6691d18b&amp;p=4"/></a>]]></description>
+			<pubDate>Fri, 31 Aug 2012 14:31:05 GMT</pubDate>
 		</item>
 	</channel>
 </rss>

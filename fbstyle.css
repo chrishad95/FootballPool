@@ -314,3 +314,7 @@
 		  margin-left: 123px; /* Width plus 3 (html space) */
 		}
 
+td.thread_title a{
+  font-size: 13px;
+}
+

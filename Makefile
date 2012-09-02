@@ -9,13 +9,14 @@ TESTDIR=/home/chadley/web/football/test/$(targetdir)
 PRODFTPDIR=$(targetdir)
 TESTFTPDIR=$(targetdir)
 
+xmlobjs= $(patsubst %.xml,$(PRODDIR)/%.xml,$(wildcard *.xml))
+
 prodobjs=$(patsubst %.aspx,$(PRODDIR)/%.aspx,$(wildcard *.aspx)) \
 	$(patsubst %.html,$(PRODDIR)/%.html,$(wildcard *.html)) \
 	$(patsubst %.js,$(PRODDIR)/%.js,$(wildcard *.js)) \
 	$(patsubst %.vb,$(PRODDIR)/%.vb,$(wildcard *.vb)) \
 	$(patsubst %.css,$(PRODDIR)/%.css,$(wildcard *.css)) \
 	$(patsubst %.xsl,$(PRODDIR)/%.xsl,$(wildcard *.xsl)) \
-	$(patsubst %.xml,$(PRODDIR)/%.xml,$(wildcard *.xml)) \
 	$(patsubst %.gif,$(PRODDIR)/%.gif,$(wildcard *.gif)) \
 	$(patsubst %.jpg,$(PRODDIR)/%.jpg,$(wildcard *.jpg)) \
 	$(patsubst %.png,$(PRODDIR)/%.png,$(wildcard *.png)) \
@@ -35,8 +36,18 @@ testobjs=$(patsubst %.aspx,$(TESTDIR)/%.aspx,$(wildcard *.aspx)) \
 GET:
 	get status
 
+prod_feeds: feeds $(xmlobjs)
+	@echo XML feeds are up to date.
+
 prod: $(prodobjs)
 	@echo Target is up to date.
+
+feeds:
+	wget -O nfl-news.xml http://www.nfl.com/rss/rsslanding?searchString=home
+	wget -O espn.xml http://sports.espn.go.com/espn/rss/nfl/news
+	wget -O espn-college.xml http://sports.espn.go.com/espn/rss/ncf/news
+	wget -O fox-nfl.xml http://feeds.pheedo.com/feedout/syndicatedContent_categoryId_5
+	wget -O profootballtalk.xml http://profootballtalk.nbcsports.com/category/rumor-mill/feed/atom/
 
 test: $(testobjs)
 	@echo Target is up to date.

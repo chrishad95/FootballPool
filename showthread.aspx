@@ -56,6 +56,7 @@ end if
 
 <html>
 <head>
+	<% Server.Execute("/football/meta.aspx") %>
 	<title>Pool Comments - www.SmackPools.com</title>
 	<link rel="stylesheet" href='/football/hoverbox.css' type="text/css" media="screen, projection" />
 	<!--[if IE]>
@@ -213,6 +214,7 @@ end if
 		<br />
 <%
 	try
+	dim first as boolean  = true
 		for each commentrow as datarow in comments_ds.tables(0).rows
 
 			dim comment_text as string = commentrow("comment_text")
@@ -309,7 +311,28 @@ end if
 
 			</table>
 			<br />
-			<%
+			<% if first then %>
+			<script type="text/javascript"><!--
+			google_ad_client = "pub-8829998647639174";
+			google_ad_width = 728;
+			google_ad_height = 90;
+			google_ad_format = "728x90_as";
+			google_ad_type = "text_image";
+			google_ad_channel = "";
+			google_color_border = "6699CC";
+			google_color_bg = "003366";
+			google_color_link = "FFFFFF";
+			google_color_text = "AECCEB";
+			google_color_url = "AECCEB";
+			//--></script>
+			<script type="text/javascript"
+			  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+			</script>
+			<br>
+			<% 
+			first = false
+			end if
+
 		next
 	catch ex as exception
 		fb.makesystemlog("error in showthread.aspx", ex.tostring())

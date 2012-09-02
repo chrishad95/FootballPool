@@ -49,6 +49,7 @@ threads_dt = fb.ShowThreads(count:=0)
 
 <html>
 <head>
+	<% Server.Execute("/football/meta.aspx") %>
 	<title>Trash Talk - www.SmackPools.com</title>
 	<style type="text/css" media="all">@import "/football/style4.css";</style> 
 	<style>
@@ -194,8 +195,10 @@ threads_dt = fb.ShowThreads(count:=0)
 			<%
 			dim threadrows as datarow()
 			threadrows = threads_dt.select(filterExpression:="1=1", sort:="thread_tsp desc")
+			dim count as integer = 0
 
 			for each threadrow as datarow in threadrows
+				count = count + 1
 
 				dim thread_title as string = threadrow("thread_title")
 				if thread_title.trim() = "" then
@@ -212,6 +215,28 @@ threads_dt = fb.ShowThreads(count:=0)
 				<tr><td class="thread_title"><span class="title_text"><a href="/football/showthread.aspx?t=<% = thread_id %>"><% = thread_title %></a></span><br /><span class="author_text"><% = thread_author %></span></td><td class="last_post"><span class="time_text"><% = thread_tsp.tostring().replace(" ", "&nbsp;") %></span><br />
 				by&nbsp;<span class="poster_text"><% = last_poster %></span></td><td class="replies"><% = replies %></td><td class="views"><% = views %></td></tr>
 				<%
+				if count mod 4 = 0 and count < 12 then
+				%>
+				<tr><td colspan=2>
+				<script type="text/javascript"><!--
+				google_ad_client = "pub-8829998647639174";
+				google_ad_width = 728;
+				google_ad_height = 90;
+				google_ad_format = "728x90_as";
+				google_ad_type = "text_image";
+				google_ad_channel = "";
+				google_color_border = "6699CC";
+				google_color_bg = "003366";
+				google_color_link = "FFFFFF";
+				google_color_text = "AECCEB";
+				google_color_url = "AECCEB";
+				//--></script>
+				<script type="text/javascript"
+				  src="http://pagead2.googlesyndication.com/pagead/show_ads.js">
+				</script>
+				</td></tr>
+				<%
+				end if
 			next
 		end if
 	catch ex as exception
